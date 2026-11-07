@@ -70,11 +70,22 @@ games/
 
 ## Bekannte Fehler
 
-- **Server-Crash in „So aber anders"**: Disconnectet der letzte Spieler einer
-  Session, während ein `setTimeout` für den nächsten Begriff läuft, greift der
-  Timeout auf eine gelöschte Session zu und der Node-Prozess stürzt ab
-  (`games/so-aber-anders/socket.js`, `sendNextWord`). Fix: prüfen, ob die
-  Session noch existiert, bevor darauf zugegriffen wird.
+Keine bekannten Abstürze. Folgendes ist bereits behoben:
+
+- **Server-Crash in „So aber anders"** (behoben): Disconnectet der letzte Spieler
+  einer Session, während ein `setTimeout` für den nächsten Begriff läuft, griff
+  der Timeout auf eine gelöschte Session zu und der Node-Prozess stürzte ab
+  (`games/so-aber-anders/socket.js`). Alle Zugriffe prüfen jetzt, ob die Session
+  noch existiert.
+
+## Nicht ausgewertete Einstellungen
+
+Diese Optionen werden vom Frontend angeboten, aber vom Server noch nicht
+ausgewertet:
+
+- **Das eine Wort**: `mode` (klassisch / Emote-Edition / Redewendungen)
+- **So aber anders**: `mode` (Einzelspieler / Teams) und `rotation`
+  (Reihum / Team-Rotation / Host wählt)
 
 ## Lizenz
 
