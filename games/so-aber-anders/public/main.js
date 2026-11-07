@@ -46,7 +46,10 @@ function createSession() {
     rounds:           parseInt(document.getElementById("setting-rounds").value),
     targetScore:      parseInt(document.getElementById("setting-target-score").value),
     wordsPerRound:    parseInt(document.getElementById("setting-words-per-round").value),
-    wordlist:         document.getElementById("setting-wordlist").value
+    wordlist:         document.getElementById("setting-wordlist").value,
+    // Moeser Mamster
+    moeserMamster:    document.getElementById("setting-moeser-mamster").value === "on",
+    letterMode:       document.getElementById("setting-letter-mode").value
   };
   socket.emit("createSession", { name: playerName, settings });
 }

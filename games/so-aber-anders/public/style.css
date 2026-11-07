@@ -131,3 +131,67 @@ input, select {
   font-weight: bold;
   color: #e94560;
 }
+
+/* --- Moeser Mamster --- */
+
+.hint {
+  color: #aaa;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+#letter-display {
+  margin: 10px 0;
+  font-size: 1.1rem;
+  color: #f0c040;
+}
+
+#waiting-letter,
+#controller-letter {
+  margin: 10px 0;
+  color: #f0c040;
+}
+
+#letter-helper {
+  background: #0f3460;
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+}
+
+#phrase-preview {
+  margin-top: 10px;
+}
+
+.phrase-sentence {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  word-spacing: 2px;
+}
+
+.phrase-word {
+  color: #7ddf7d;
+  font-weight: bold;
+}
+
+.phrase-invalid {
+  color: #e94560;
+  text-decoration: underline wavy #e94560;
+}
+
+.forbidden-word {
+  display: inline-block;
+  background: #e94560;
+  color: #fff;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: 3px 4px 3px 0;
+  font-weight: bold;
+}
+
+#letter-progress {
+  margin-top: 12px;
+  color: #f0c040;
+  font-weight: bold;
+}

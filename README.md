@@ -10,7 +10,7 @@ und hat eine eigene Lobby, Regeln-Seite und Punktelogik.
 |---|---|---|
 | 🎲 **Erzähl keinen Scheiß** | `/erzaehl` | Baue geheime Sätze oder Wörter unauffällig in echte Gespräche ein. Punkte über Bestätigung oder Aufdecken. |
 | 🎭 **Cyrano** | `/cyrano` | Schreibe zu einem Begriff eine Strophe, stimme über die besten ab und steige den Turm hoch. |
-| 🔄 **So aber anders** | `/so-aber-anders` | Erkläre einen Begriff nur durch Umschreibungen. Tabuwörter und ein Kontrolleur machen es tricky. |
+| 🔄 **So aber anders** | `/so-aber-anders` | Erkläre einen Begriff nur durch Umschreibungen. Tabuwörter und ein Kontrolleur machen es tricky. Mit der Option **Möser Mamster** muss jedes Wort deiner Beschreibung mit demselben Buchstaben beginnen. |
 | 💬 **Das eine Wort** | `/das-eine-wort` | Ein Spieler rät, alle anderen geben je einen Hinweis. Duplikate werden gemeinsam markiert. |
 
 ## Installation
@@ -86,6 +86,22 @@ ausgewertet:
 - **Das eine Wort**: `mode` (klassisch / Emote-Edition / Redewendungen)
 - **So aber anders**: `mode` (Einzelspieler / Teams) und `rotation`
   (Reihum / Team-Rotation / Host wählt)
+
+## Möser Mamster (Option in „So aber anders")
+
+Zusatzregel: Jedes Wort in der Beschreibung muss mit demselben Buchstaben
+beginnen. Der Buchstabe wird entweder per Zufallsgenerator gewählt oder von der
+Gruppe vorgeschlagen (einer der Vorschläge wird per Zufall ausgewählt).
+
+Beispiel: Begriff „Haus", Satz „man lebt darin", Buchstabe B →
+„Ban bebt barin".
+
+Der Erklärer schreibt seinen Satz in ein Textfeld und sieht sofort, wie er
+mit dem Buchstaben klingt. Wörter, die nicht mit dem Buchstaben beginnen, sind
+rot markiert.
+
+Alles andere bleibt unverändert: Tabuwörter, Punkte, Passen, Strafen, Timer und
+Spielende.
 
 ## Lizenz
 

@@ -6,6 +6,7 @@ const isHost = params.get("host") === "true";
 
 let timerInterval = null;
 let settings = null;
+let currentLetter = null;
 
 socket.emit("rejoinSession", { code: sessionCode, name: playerName });
 
@@ -13,6 +14,7 @@ socket.on("newTurn", (data) => {
   settings = data.settings;
   document.getElementById("round-display").textContent =
     "Runde " + data.round;
+  if (data.letter) showLetter(data.letter);
   if (data.explainer === playerName) {
     showScreen("screen-explainer");
     document.getElementById("term-display").textContent = "";
@@ -44,22 +46,56 @@ socket.on("newWord", (data) => {
       forbiddenList.appendChild(span);
     });
   }
-  const ctrlForbidden = document.getElementById("controller-forbidden");
-  if (ctrlForbidden) {
-    ctrlForbidden.innerHTML = "";
-    if (data.forbidden && data.forbidden.length > 0) {
-      ctrlForbidden.innerHTML = "<strong>🚫 Achte auf diese Woerter:</strong><br>";
-      data.forbidden.forEach(w => {
-        const span = document.createElement("span");
-        span.className = "forbidden-word";
-        span.textContent = w + " ";
-        ctrlForbidden.appendChild(span);
-      });
-    }
+  if (data.letter) {
+    currentLetter = data.letter;
+    showLetter(data.letter);
+  }
+  // Buchstaben-Helfer zuruecksetzen
+  const input = document.getElementById("phrase-input");
+  if (input) {
+    input.value = "";
+    document.getElementById("phrase-preview").innerHTML = "";
   }
   if (settings && settings.timer) {
     startTimer(settings.timerDuration);
   }
+});
+
+// Tabuwörter gehen separat an den Kontrolleur (nicht an die Rater).
+socket.on("forbiddenWords", (data) => {
+  const ctrlForbidden = document.getElementById("controller-forbidden");
+  if (!ctrlForbidden) return;
+  ctrlForbidden.innerHTML = "";
+  if (data.forbidden && data.forbidden.length > 0) {
+    ctrlForbidden.innerHTML = "<strong>🚫 Achte auf diese Woerter:</strong><br>";
+    data.forbidden.forEach(w => {
+      const span = document.createElement("span");
+      span.className = "forbidden-word";
+      span.textContent = w + " ";
+      ctrlForbidden.appendChild(span);
+    });
+  }
+});
+
+// --- Moeser Mamster: Buchstabenphase ---
+
+socket.on("letterPhase", (data) => {
+  showScreen("screen-letter");
+  document.getElementById("letter-input").value = "";
+  document.getElementById("letter-progress").textContent =
+    data.total > 0 ? "0 von " + data.total + " Vorschlägen" : "";
+});
+
+socket.on("letterProgress", (data) => {
+  document.getElementById("letter-progress").textContent =
+    "✅ " + data.submitted + " von " + data.total + " Vorschlägen";
+});
+
+socket.on("letterChosen", (data) => {
+  currentLetter = data.letter;
+  document.getElementById("letter-progress").textContent =
+    "🎲 Gewählt: " + data.letter;
+  // Der Bildschirm wechselt, sobald newTurn eintrifft.
 });
 
 socket.on("scoreUpdate", (players) => {
@@ -122,6 +158,96 @@ function restartGame() {
   socket.emit("restartGame", { code: sessionCode });
 }
 
+function submitLetter() {
+  const input = document.getElementById("letter-input");
+  const letter = input.value.trim().toUpperCase();
+  if (!/^[A-Z]$/.test(letter)) {
+    showError("Bitte genau einen Buchstaben A-Z eingeben.");
+    return;
+  }
+  socket.emit("submitLetter", { code: sessionCode, letter });
+  input.value = "";
+  input.disabled = true;
+}
+
+// --- Moeser Mamster: Satz-Pruefung ---
+// Jedes Wort des Satzes muss mit dem geforderten Buchstaben beginnen.
+// "man lebt darin" mit B wird zu "Ban bebt barin".
+
+function showLetter(letter) {
+  currentLetter = letter;
+
+  const display = document.getElementById("letter-display");
+  if (display) display.innerHTML = "<strong>🔤 Dein Buchstabe: " + letter + "</strong>";
+
+  const helper = document.getElementById("letter-helper");
+  if (helper) helper.style.display = "block";
+  const helperLetter = document.getElementById("letter-helper-letter");
+  if (helperLetter) helperLetter.textContent = letter;
+
+  const waiting = document.getElementById("waiting-letter");
+  if (waiting) waiting.innerHTML = "<p>🔤 Buchstabe dieser Runde: <strong>" + letter + "</strong></p>";
+
+  const ctrl = document.getElementById("controller-letter");
+  if (ctrl) ctrl.innerHTML = "<p>🔤 Buchstabe: <strong>" + letter + "</strong></p>";
+}
+
+// Prueft einen Satz und markiert Woerter, die nicht mit dem Buchstaben beginnen.
+function checkPhrase() {
+  const input = document.getElementById("phrase-input");
+  const preview = document.getElementById("phrase-preview");
+  if (!input || !preview) return;
+
+  const phrase = input.value.trim();
+  if (!phrase || !currentLetter) {
+    preview.innerHTML = "";
+    return;
+  }
+
+  const letter = currentLetter.toUpperCase();
+  const words = phrase.split(/\s+/).filter(Boolean);
+  let invalidCount = 0;
+
+  const parts = words.map((word, index) => {
+    // Fuehrende Satzzeichen und Anfuehrungszeichen ignorieren
+    const match = word.match(/^([^\p{L}]*)(\p{L})(.*)$/u);
+    if (!match) return word;
+    const prefix = match[1];
+    const first = match[2];
+    const rest = match[3];
+    const ok = first.toUpperCase() === letter;
+    if (!ok) invalidCount++;
+    // Der erste Buchstabe wird durch den geforderten Buchstaben ersetzt.
+    // Das erste Wort des Satzes beginnt gross, bei allen weiteren bleibt die
+    // Schreibweise des Originals erhalten (gross -> gross, klein -> klein).
+    const replacement = index === 0
+      ? letter
+      : (first === first.toUpperCase() ? letter : letter.toLowerCase());
+    const rewritten = prefix + replacement + rest;
+    const span = document.createElement("span");
+    span.className = ok ? "phrase-word" : "phrase-word phrase-invalid";
+    span.textContent = rewritten;
+    if (!ok) span.title = "Beginnt nicht mit " + letter;
+    return span;
+  });
+
+  preview.innerHTML = "";
+  const label = document.createElement("div");
+  label.className = "hint";
+  label.textContent = invalidCount === 0
+    ? "✅ Alle Wörter beginnen mit " + letter + " – so kannst du es sagen:"
+    : "⚠️ " + invalidCount + " Wörter beginnen nicht mit " + letter + ":";
+  preview.appendChild(label);
+
+  const sentence = document.createElement("div");
+  sentence.className = "phrase-sentence";
+  parts.forEach((span, i) => {
+    sentence.appendChild(span);
+    if (i < parts.length - 1) sentence.appendChild(document.createTextNode(" "));
+  });
+  preview.appendChild(sentence);
+}
+
 function startTimer(seconds) {
   stopTimer();
   let remaining = seconds;
@@ -145,7 +271,7 @@ function stopTimer() {
 }
 
 function showScreen(id) {
-  ["screen-waiting","screen-explainer","screen-controller","screen-gameover"]
+  ["screen-waiting","screen-explainer","screen-controller","screen-gameover","screen-letter"]
     .forEach(s => document.getElementById(s).style.display = "none");
   document.getElementById(id).style.display = "block";
 }
@@ -168,3 +294,9 @@ function showError(msg) {
   document.getElementById("error-msg").textContent = msg;
   setTimeout(() => document.getElementById("error-msg").textContent = "", 3000);
 }
+
+// Live-Pruefung des Satzes im Erklärer-Screen
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("phrase-input");
+  if (input) input.addEventListener("input", checkPhrase);
+});

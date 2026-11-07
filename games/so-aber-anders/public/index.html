@@ -90,6 +90,27 @@
         <option value="standard">Standard</option>
       </select>
 
+      <hr/>
+
+      <h3>🎲 Möser Mamster</h3>
+      <p class="hint">
+        Jedes Wort in deiner Beschreibung muss mit demselben Buchstaben beginnen.
+        Beispiel: Begriff „Haus", Buchstabe B – „man lebt darin" wird zu
+        „Ban bebt barin".
+      </p>
+
+      <label>Möser Mamster</label>
+      <select id="setting-moeser-mamster">
+        <option value="off">Aus</option>
+        <option value="on">An</option>
+      </select>
+
+      <label>Wer bestimmt den Buchstaben?</label>
+      <select id="setting-letter-mode">
+        <option value="random">Zufallsgenerator</option>
+        <option value="group">Die Gruppe stimmt ab</option>
+      </select>
+
       <button class="btn" onclick="createSession()">🚀 Lobby erstellen</button>
       <button class="btn" onclick="showStart()">🔙 Zurück</button>
     </div>

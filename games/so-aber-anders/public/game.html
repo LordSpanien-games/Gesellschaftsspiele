@@ -14,6 +14,7 @@
     <div id="screen-waiting">
       <h2>⏳ Warte auf deinen Zug...</h2>
       <div id="current-explainer"></div>
+      <div id="waiting-letter"></div>
       <div class="score-board" id="score-board"></div>
     </div>
 
@@ -21,7 +22,16 @@
       <h2>🗣️ Du erklaerst!</h2>
       <div id="word-card">
         <div id="term-display"></div>
+        <div id="letter-display"></div>
         <div id="forbidden-list"></div>
+      </div>
+      <div id="letter-helper" style="display:none">
+        <p class="hint">
+          Jedes Wort deiner Beschreibung muss mit <strong id="letter-helper-letter">B</strong> beginnen.
+          Schreib deinen Satz unten – ungueltige Woerter werden markiert.
+        </p>
+        <input id="phrase-input" type="text" placeholder="Dein Satz, z.B. man lebt darin" maxlength="200"/>
+        <div id="phrase-preview"></div>
       </div>
       <div id="timer-display"></div>
       <button class="btn" onclick="wordCorrect()">✅ Richtig erraten</button>
@@ -33,7 +43,19 @@
     <div id="screen-controller" style="display:none">
       <h2>👁️ Du kontrollierst!</h2>
       <div id="controller-forbidden"></div>
+      <div id="controller-letter"></div>
       <button class="btn" onclick="reportViolation()">🚨 Regelverstoss!</button>
+    </div>
+
+    <div id="screen-letter" style="display:none">
+      <h2>🔤 Wer bestimmt den Buchstaben?</h2>
+      <p class="hint">
+        Die Gruppe schlaegt Buchstaben vor – einer davon wird per Zufall ausgewaehlt.
+        Schlag deinen Buchstaben vor:
+      </p>
+      <input id="letter-input" type="text" placeholder="Buchstabe, z.B. B" maxlength="1"/>
+      <button class="btn" onclick="submitLetter()">📤 Vorschlag senden</button>
+      <div id="letter-progress"></div>
     </div>
 
     <div id="screen-gameover" style="display:none">
