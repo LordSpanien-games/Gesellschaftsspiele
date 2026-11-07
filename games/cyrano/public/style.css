@@ -1,0 +1,222 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background: #1a1a2e;
+  color: #eee;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+h1, h2, h3 {
+  margin-bottom: 1rem;
+  color: #e94560;
+}
+
+label {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+input, textarea, button, select {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.4rem 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+input, textarea, select {
+  background: #16213e;
+  color: #eee;
+  border: 1px solid #e94560;
+}
+
+textarea {
+  resize: none;
+  height: 60px;
+}
+
+button {
+  background: #e94560;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover { background: #c73652; }
+button:disabled { background: #555; cursor: not-allowed; }
+
+.hidden { display: none; }
+.error { color: #ff6b6b; margin-top: 0.5rem; }
+
+.host-btn {
+  background: #444;
+  margin-top: 0.5rem;
+}
+
+.host-btn:hover { background: #666; }
+
+.debug-label {
+  color: #f0a500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+#debug-badge {
+  background: #f0a500;
+  color: #1a1a2e;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+  text-align: center;
+}
+
+#screen-lobby, #screen-waiting, #screen-writing,
+#screen-voting, #screen-tower, #screen-end {
+  width: 100%;
+  max-width: 480px;
+}
+
+#create-options, #join-options {
+  background: #16213e;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+}
+
+ul { list-style: none; padding: 0; }
+
+ul li {
+  background: #16213e;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+hr { border-color: #e94560; margin: 1rem 0; }
+
+/* EMOTE PICKER */
+#emote-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.emote-btn {
+  width: auto;
+  font-size: 1.8rem;
+  background: #16213e;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+}
+
+.emote-btn:hover { border-color: #e94560; background: #16213e; }
+.emote-btn.selected { border-color: #e94560; background: #2a1a2e; }
+.emote-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* GEDICHT KARTE */
+.poem-card {
+  background: #16213e;
+  border: 1px solid #e94560;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0.5rem 0;
+}
+
+.poem-card p { margin: 0.3rem 0; line-height: 1.6; }
+.poem-card button { margin-top: 0.5rem; }
+
+/* TURM */
+#tower-display {
+  font-family: monospace;
+  font-size: 1.1rem;
+  background: #16213e;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  line-height: 2rem;
+  white-space: pre;
+}
+
+/* RANGLISTE */
+#end-scores p {
+  background: #16213e;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  margin: 0.3rem 0;
+}
+
+/* SPIELANLEITUNG */
+#rules {
+  width: 100%;
+  max-width: 600px;
+}
+
+.rules-section {
+  background: #16213e;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.rules-section h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.rules-section ul,
+.rules-section ol {
+  padding-left: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.rules-section li {
+  background: none;
+  padding: 0.2rem 0;
+  margin: 0;
+  display: list-item;
+}
+
+.rules-section p {
+  margin: 0.3rem 0;
+  color: #ccc;
+}
+
+.rules-link {
+  display: inline-block;
+  color: #e94560;
+  text-decoration: none;
+  margin: 0.5rem 0;
+  font-weight: bold;
+}
+
+.rules-link:hover { text-decoration: underline; }
+
+.info-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}

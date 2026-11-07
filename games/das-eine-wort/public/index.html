@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Das eine Wort</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- LOBBY -->
+<div id="screen-lobby" class="screen active">
+  <h1>🔤 Das eine Wort</h1>
+  <div class="card">
+    <input id="playerName" type="text" placeholder="Dein Name" maxlength="20"/>
+    <h3>Raum erstellen</h3>
+    <label>Runden: <input id="cfg-rounds" type="number" value="13" min="1" max="50"/></label>
+    <label>Begriffe pro Runde: <input id="cfg-words" type="number" value="1" min="1" max="5"/></label>
+    <label>Timer (Sek., 0=∞): <input id="cfg-timer" type="number" value="0" min="0" max="300"/></label>
+    <label>Schwierigkeit:
+      <select id="cfg-difficulty">
+        <option value="normal">Normal (50%)</option>
+        <option value="leicht">Leicht (60%)</option>
+        <option value="schwer">Schwer (70%)</option>
+      </select>
+    </label>
+    <label>Spielmodus:
+      <select id="cfg-mode">
+        <option value="klassisch">Klassisch</option>
+        <option value="emote">Emote-Edition</option>
+        <option value="redewendung">Redewendungen und Filmtitel</option>
+      </select>
+    </label>
+    <button onclick="createRoom()">Raum erstellen</button>
+    <hr/>
+    <h3>Raum beitreten</h3>
+    <input id="joinCode" type="text" placeholder="Raumcode" maxlength="8"/>
+    <button onclick="joinRoom()">Beitreten</button>
+    <hr/>
+    <a href="rules.html">📖 Spielregeln</a>
+  </div>
+</div>
+
+<!-- WARTERAUM -->
+<div id="screen-waiting" class="screen">
+  <h1>🔤 Das eine Wort</h1>
+  <div class="card">
+    <h2>Raumcode: <span id="display-code"></span></h2>
+    <p id="waiting-info"></p>
+    <ul id="player-list"></ul>
+    <button id="btn-start" style="display:none" onclick="startGame()">Spiel starten</button>
+  </div>
+</div>
+
+<!-- RUNDE -->
+<div id="screen-round" class="screen">
+  <div class="card">
+    <h2>Runde <span id="round-num"></span> / <span id="round-total"></span></h2>
+    <p id="round-role"></p>
+    <div id="word-display" style="display:none">
+      <h3>Das Wort ist:</h3>
+      <div class="big-word" id="secret-word"></div>
+    </div>
+    <div id="hint-input-area" style="display:none">
+      <input id="hint-input" type="text" placeholder="Dein Hinweis..."/>
+      <button onclick="submitHint()">OK</button>
+    </div>
+    <div id="timer-display"></div>
+    <p id="guesser-waiting" style="display:none"></p>
+  </div>
+</div>
+
+<!-- DUPLIKAT PRUEFUNG -->
+<div id="screen-review" class="screen">
+  <div class="card">
+    <h2>🔍 Duplikate markieren</h2>
+    <p>Tippe auf einen Hinweis um ihn zu streichen. Wenn alle fertig sind druecke LOS!</p>
+    <ul id="hints-review-list"></ul>
+    <p id="los-progress"></p>
+    <button id="btn-los" onclick="submitEliminated()">LOS!</button>
+  </div>
+</div>
+
+<!-- RATEN -->
+<div id="screen-guess" class="screen">
+  <div class="card">
+    <h2>🤔 Rate das Wort!</h2>
+    <div id="hints-for-guesser"></div>
+    <div id="guess-input-area">
+      <input id="guess-input" type="text" placeholder="Deine Antwort..."/>
+      <button onclick="submitGuess()">Antwort abgeben</button>
+    </div>
+    <div id="vote-area" style="display:none">
+      <h3>Antwort: <span id="guess-display"></span></h3>
+      <p>Wort war: <strong><span id="word-reveal"></span></strong></p>
+      <button class="btn-correct" onclick="voteResult(true)">✅ Richtig erraten</button>
+      <button class="btn-wrong" onclick="voteResult(false)">❌ Nicht erraten</button>
+    </div>
+  </div>
+</div>
+
+<!-- ERGEBNIS -->
+<div id="screen-result" class="screen">
+  <div class="card">
+    <h2 id="result-title"></h2>
+    <p id="result-score"></p>
+    <h3>Rangliste</h3>
+    <ol id="scoreboard"></ol>
+    <h3>Runden</h3>
+    <ul id="results-list"></ul>
+    <button onclick="location.reload()">Neues Spiel</button>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

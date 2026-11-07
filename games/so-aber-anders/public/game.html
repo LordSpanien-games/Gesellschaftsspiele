@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>So aber anders – Spiel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 So aber anders</h1>
+    <div id="round-display" style="text-align:center;font-size:1.2rem;margin-bottom:12px;"></div>
+
+    <div id="screen-waiting">
+      <h2>⏳ Warte auf deinen Zug...</h2>
+      <div id="current-explainer"></div>
+      <div class="score-board" id="score-board"></div>
+    </div>
+
+    <div id="screen-explainer" style="display:none">
+      <h2>🗣️ Du erklaerst!</h2>
+      <div id="word-card">
+        <div id="term-display"></div>
+        <div id="forbidden-list"></div>
+      </div>
+      <div id="timer-display"></div>
+      <button class="btn" onclick="wordCorrect()">✅ Richtig erraten</button>
+      <button class="btn" id="btn-skip" style="display:none" onclick="wordSkip()">
+        ⏭️ Passen
+      </button>
+    </div>
+
+    <div id="screen-controller" style="display:none">
+      <h2>👁️ Du kontrollierst!</h2>
+      <div id="controller-forbidden"></div>
+      <button class="btn" onclick="reportViolation()">🚨 Regelverstoss!</button>
+    </div>
+
+    <div id="screen-gameover" style="display:none">
+      <h2>🏆 Spiel beendet!</h2>
+      <div class="score-board" id="final-score"></div>
+      <button class="btn" id="btn-restart" style="display:none"
+              onclick="restartGame()">🔁 Nochmal spielen</button>
+      <a href="index.html" class="btn">🏠 Zurueck zur Lobby</a>
+    </div>
+
+    <p id="error-msg" class="error"></p>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

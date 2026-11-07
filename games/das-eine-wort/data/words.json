@@ -1,0 +1,93 @@
+[
+  "Apfel","Baum","Burg","Drache","Elefant","Feuer","Gitarre","Haus",
+  "Insel","Jaguar","Kaffee","Lampe","Meer","Nacht","Oper","Pirat",
+  "Quelle","Regen","Schiff","Turm","Uhr","Vulkan","Wasser","Xylophon",
+  "Yoga","Zebra","Mond","Sonne","Stern","Wolke","Brücke","Dorf",
+  "Engel","Fuchs","Geist","Held","Igel","Jäger","König","Löwe",
+  "Maus","Nebel","Ofen","Pferd","Ritter","Schloss","Tempel","Urwald",
+  "Vogel","Wald","Zwerg","Abenteuer","Bibliothek","Detektiv","Expedition",
+  "Fantasie","Geheimnis","Horizont","Illusion","Jahreszeit","Kristall",
+  "Labyrinth","Magie","Nostalgie","Ozean","Paradies","Ruine","Schatten",
+  "Traum","Universum","Vision","Wüste","Zauber",
+
+  "Berlin","Paris","London","Rom","Tokyo","New York","Sydney","Venedig",
+  "Barcelona","Amsterdam","Wien","Prag","Dubai","Istanbul","Kairo",
+  "Moskau","Peking","Mumbai","Rio","Havanna","Lissabon","Stockholm",
+  "Dublin","Athen","Budapest","Oslo","Helsinki","Warschau","Zürich",
+  "Singapur","Bangkok","Seoul","Mexiko","Toronto","Chicago","Miami",
+  "Las Vegas","Hollywood","Himalaya","Sahara","Amazonas","Nil","Everest",
+
+  "Napoleon","Kleopatra","Einstein","Mozart","Beethoven","Shakespeare",
+  "Darwin","Galileo","Newton","Picasso","Michelangelo","Leonardo",
+  "Columbus","Magellan","Cäsar","Alexander","Sokrates","Aristoteles",
+  "Konfuzius","Buddha","Gandhi","Churchill","Lincoln","Kennedy",
+  "Elvis","Beatles","Marilyn","Chaplin","Hitchcock","Rembrandt",
+
+  "Sherlock Holmes","Robin Hood","Dracula","Frankenstein","Tarzan",
+  "Zorro","Superman","Batman","Spiderman","Ironman","Hulk","Thor",
+  "Wonderwoman","Catwoman","Joker","Darth Vader","Yoda","Gandalf",
+  "Frodo","Gollum","Aragorn","Legolas","Dumbledore","Voldemort",
+  "Harry Potter","Hermione","Merlin","Kapitän Ahab","Robinson Crusoe",
+  "Don Quijote","Pinocchio","Aschenputtel","Rotkäppchen","Schneewittchen",
+  "Dornröschen","Rapunzel","Rumpelstilzchen","Sindbad","Aladdin",
+  "Shrek","Simba","Nemo","Bambi","Dumbo","Tarzan","Mulan","Moana",
+  "Elsa","Arielle","Pocahontas","Tinkerbell","Peter Pan","Captain Hook",
+  "Winnie Pooh","Paddington","Pippi Langstrumpf","Heidi","Lassie",
+  "Asterix","Obelix","Idefix","Spirou","Lucky Luke","Gaston",
+
+  "Titanic","Matrix","Avatar","Inception","Interstellar","Gladiator",
+  "Braveheart","Schindlers Liste","Casablanca","Metropolis",
+  "Der Pate","Scarface","Pulp Fiction","Fight Club","Forrest Gump",
+  "Cast Away","Jurassic Park","E.T.","Alien","Predator","Terminator",
+  "Robocop","Tron","Mad Max","Top Gun","Rocky","Rambo","Indiana Jones",
+  "Star Wars","Star Trek","Herr der Ringe","Hobbit","Narnia",
+  "James Bond","Mission Impossible","Oceans Eleven","Die Hard",
+  "Stirb Langsam","Ghostbusters","Beetlejuice","Edward Scissorhands",
+  "Nightmare","Shining","It","Saw","Scream","Psycho","Vertigo",
+  "Rear Window","Blade Runner","Total Recall","Minority Report",
+  "Catch Me If You Can","Rain Man","Good Will Hunting","Dead Poets",
+  "American Beauty","The Truman Show","Big Fish","Amélie",
+  "Das Leben ist schön","Brot und Tulpen","Cinema Paradiso",
+
+  "Gitarre","Klavier","Geige","Schlagzeug","Trompete","Saxophon",
+  "Harfe","Flöte","Tuba","Akkordeon","Banjo","Ukulele","Cello",
+  "Pizza","Sushi","Burger","Pasta","Döner","Taco","Curry","Ramen",
+  "Fondue","Raclette","Schnitzel","Brezel","Croissant","Baguette",
+  "Spaghetti","Lasagne","Risotto","Paella","Couscous","Hummus",
+
+  "Fußball","Basketball","Tennis","Golf","Boxen","Schwimmen",
+  "Skifahren","Surfen","Klettern","Radfahren","Reiten","Fechten",
+  "Bogenschießen","Turnen","Leichtathletik","Formel 1","Motorsport",
+
+  "Dinosaurier","Mammut","Säbelzahntiger","Dodo","Quagga",
+  "Hai","Wal","Delfin","Oktopus","Krokodil","Gorilla","Gepard",
+  "Pinguin","Flamingo","Papagei","Adler","Eule","Fledermaus",
+  "Skorpion","Kobra","Chamäleon","Axolotl","Qualle","Seepferdchen",
+
+  "Pyramide","Kolosseum","Eiffelturm","Freiheitsstatue","Akropolis",
+  "Stonehenge","Machu Picchu","Angkor Wat","Taj Mahal","Chinesische Mauer",
+  "Kolosseum","Alhambra","Sagrada Familia","Vatikan","Buckingham",
+
+  "Roboter","Rakete","Satellit","Raumstation","Schwarzes Loch",
+  "Supernova","Komet","Asteroid","Teleskop","Labor","Mikroskop",
+  "Zeitmaschine","Hologramm","Laserstrahl","Atombombe","Kernfusion",
+
+  "Regenbogen","Gewitter","Tornado","Tsunami","Erdbeben","Vulkanausbruch",
+  "Nordlicht","Sonnenfinsternis","Mondfinsternis","Meteorschauer",
+
+  "Karneval","Halloween","Weihnachten","Ostern","Silvester",
+  "Oktoberfest","Fasching","Erntedankfest","Valentinstag","Muttertag",
+
+  "Schatz","Fluch","Legende","Mythos","Prophezeiung","Ritual",
+  "Zeremonie","Expedition","Entdeckung","Erfindung","Revolution",
+  "Verschwörung","Geheimbund","Freimaurer","Illuminaten","Piratenschatz",
+
+  "Kompass","Sextant","Fernrohr","Landkarte","Schatzkarte","Tagebuch",
+  "Pergament","Siegel","Fackel","Laterne","Kerze","Lagerfeuer",
+
+  "Zirkus","Akrobat","Clown","Zauberer","Feuerspucker","Seiltänzer",
+  "Dompteur","Jongleur","Pantomime","Harlekin","Kasper","Marionette",
+
+  "Dschungel","Savanne","Tundra","Taiga","Mangrove","Korallenriff",
+  "Steppe","Moor","Sumpf","Delta","Fjord","Atoll","Gletscher","Eisberg"
+]

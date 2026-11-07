@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyrano</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LOBBY -->
+  <div id="screen-lobby">
+    <h1>🎭 Cyrano</h1>
+    <a href="rules.html" class="rules-link">📖 Spielanleitung</a>
+
+    <input id="input-name" type="text" placeholder="Dein Name" maxlength="20">
+
+    <div id="emote-picker">
+      <p>Wähle dein Emote:</p>
+      <div id="emote-options"></div>
+    </div>
+
+    <div id="create-options">
+      <h3>Raum erstellen</h3>
+      <label>Anzahl Runden / Turmetagen (0 = unbegrenzt):
+        <input id="input-floors" type="number" min="0" max="20" value="4">
+      </label>
+      <label>Begriff-Modus:
+        <select id="input-termmode">
+          <option value="system">System (zufällig)</option>
+          <option value="reihum">Reihum (Spieler gibt Begriff)</option>
+          <option value="all">Alle gleichzeitig (System wählt)</option>
+        </select>
+      </label>
+      <label>Thema-Modus:
+        <select id="input-thememode">
+          <option value="auto">System (zufällig)</option>
+          <option value="reihum">Reihum (ein Spieler gibt Thema)</option>
+          <option value="secret">Verdeckt (alle geben Thema, System wählt)</option>
+        </select>
+      </label>
+      <label>Abstimmung:
+        <select id="input-voting">
+          <option value="yes">Ja – meiste Stimmen steigt auf</option>
+          <option value="no_all">Nein – alle steigen auf</option>
+          <option value="no_none">Nein – niemand steigt auf</option>
+        </select>
+      </label>
+      <label class="debug-label">
+        <input id="input-debug" type="checkbox"> 🐛 Debugmodus (weniger als 4 Spieler)
+      </label>
+      <button id="btn-create">Raum erstellen</button>
+    </div>
+
+    <hr>
+
+    <div id="join-options">
+      <h3>Raum beitreten</h3>
+      <input id="input-code" type="text" placeholder="Raumcode" maxlength="6">
+      <button id="btn-join">Beitreten</button>
+    </div>
+
+    <p id="lobby-error" class="error"></p>
+  </div>
+
+  <!-- WARTERAUM -->
+  <div id="screen-waiting" class="hidden">
+    <h2>Warteraum</h2>
+    <p>Code: <strong id="room-code"></strong></p>
+    <div id="debug-badge" class="hidden">🐛 Debugmodus aktiv</div>
+    <ul id="player-list"></ul>
+    <button id="btn-start" class="hidden">Spiel starten</button>
+    <button id="btn-end-game" class="hidden host-btn">Spiel beenden</button>
+    <p id="waiting-msg">Warte auf Host...</p>
+  </div>
+
+  <!-- THEMA EINGEBEN (reihum) -->
+  <div id="screen-waiting-theme" class="hidden">
+    <h2>🎨 Thema für diese Session</h2>
+    <p id="theme-giver-label"></p>
+    <input id="input-theme" type="text" placeholder="Thema eingeben..." maxlength="40">
+    <button id="btn-submit-theme">Bestätigen</button>
+    <p id="theme-waiting-msg" class="hidden">Warte auf Thema...</p>
+  </div>
+
+  <!-- THEMA EINGEBEN (secret) -->
+  <div id="screen-waiting-theme-secret" class="hidden">
+    <h2>🎨 Thema vorschlagen</h2>
+    <p>Gib verdeckt ein Thema ein – das System wählt zufällig eines für alle Runden!</p>
+    <input id="input-theme-secret" type="text" placeholder="Dein Thema..." maxlength="40">
+    <button id="btn-submit-theme-secret">Abschicken</button>
+    <p id="theme-secret-status"></p>
+  </div>
+
+  <!-- BEGRIFF EINGEBEN (reihum) -->
+  <div id="screen-waiting-term" class="hidden">
+    <h2>🏷️ Begriff eingeben</h2>
+    <p id="term-giver-label"></p>
+    <input id="input-term" type="text" placeholder="Begriff eingeben..." maxlength="40">
+    <button id="btn-submit-term">Bestätigen</button>
+    <p id="term-waiting-msg" class="hidden">Warte auf Begriff...</p>
+  </div>
+
+  <!-- BEGRIFF EINGEBEN (alle gleichzeitig) -->
+  <div id="screen-waiting-term-all" class="hidden">
+    <h2>🏷️ Begriff vorschlagen</h2>
+    <p>Jeder gibt verdeckt einen Begriff ein – das System wählt zufällig einen!</p>
+    <input id="input-term-all" type="text" placeholder="Dein Begriff..." maxlength="40">
+    <button id="btn-submit-term-all">Abschicken</button>
+    <p id="term-all-status"></p>
+  </div>
+
+  <!-- SCHREIBPHASE -->
+  <div id="screen-writing" class="hidden">
+    <h2>✍️ Strophe schreiben</h2>
+    <div class="info-bar">
+      <span>🎨 Thema: <strong id="writing-theme"></strong></span>
+      <span>🏷️ Begriff: <strong id="writing-term"></strong></span>
+    </div>
+    <p id="term-giver-info"></p>
+    <textarea id="poem-text" placeholder="Schreibe deine Strophe..."></textarea>
+    <button id="btn-submit-poem">Abschicken</button>
+    <p id="writing-status"></p>
+    <button id="btn-end-writing" class="hidden host-btn">Spiel beenden</button>
+  </div>
+
+  <!-- ABSTIMMUNGSPHASE -->
+  <div id="screen-voting" class="hidden">
+    <h2>🗳️ Abstimmung</h2>
+    <p>Wähle die beste Strophe – nicht deine eigene!</p>
+    <div id="voting-poems"></div>
+    <button id="btn-abstain">🤐 Enthalten</button>
+    <p id="voting-status"></p>
+    <button id="btn-end-voting" class="hidden host-btn">Spiel beenden</button>
+  </div>
+
+  <!-- TURM -->
+  <div id="screen-tower" class="hidden">
+    <h2>🏰 Turm</h2>
+    <div id="tower-display"></div>
+    <div id="tower-round-result"></div>
+    <button id="btn-next-round" class="hidden host-btn">Nächste Runde</button>
+    <button id="btn-end-tower" class="hidden host-btn">Spiel beenden</button>
+  </div>
+
+  <!-- SPIELENDE -->
+  <div id="screen-end" class="hidden">
+    <h2>🏆 Spielende</h2>
+    <p id="end-reason"></p>
+    <p id="end-winner"></p>
+    <div id="tower-display-end"></div>
+    <div id="end-scores"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

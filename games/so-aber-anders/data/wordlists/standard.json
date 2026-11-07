@@ -1,0 +1,24 @@
+﻿{
+  "words": [
+    {
+      "term": "Elefant",
+      "forbidden": ["Rüssel", "Tier", "Afrika", "groß", "grau", "Savanne", "Stoßzahn"]
+    },
+    {
+      "term": "Sonne",
+      "forbidden": ["Licht", "warm", "Stern", "gelb", "Tag", "Strahlen", "Himmel"]
+    },
+    {
+      "term": "Fahrrad",
+      "forbidden": ["Rad", "fahren", "Lenker", "Pedal", "Sattel", "Kette", "Reifen"]
+    },
+    {
+      "term": "Kühlschrank",
+      "forbidden": ["kalt", "Küche", "Lebensmittel", "Tür", "Gefrierfach", "Strom"]
+    },
+    {
+      "term": "Gitarre",
+      "forbidden": ["Musik", "Saiten", "spielen", "Instrument", "Akkord", "Holz"]
+    }
+  ]
+}

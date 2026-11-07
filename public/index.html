@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesellschaftsspiele</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="launcher">
+        <h1>🎲 Gesellschaftsspiele</h1>
+        <div class="game-grid">
+            <div class="game-card" onclick="openGame('erzaehl')">
+                <span>🗣️</span>
+                <h3>Erzähl keinen Scheiß</h3>
+                <p>Baue geheime Sätze ins Gespräch ein</p>
+            </div>
+            <div class="game-card" onclick="openGame('cyrano')">
+                <span>🎭</span>
+                <h3>Cyrano</h3>
+                <p>Schreibe Strophen und steige den Turm hoch</p>
+            </div>
+            <div class="game-card" onclick="openGame('so-aber-anders')">
+                <span>🔄</span>
+                <h3>So aber Anders</h3>
+                <p>Beschreibe es anders!</p>
+            </div>
+            <div class="game-card" onclick="openGame('das-eine-wort')">
+                <span>💬</span>
+                <h3>Das eine Wort</h3>
+                <p>Findet gemeinsam das eine Wort</p>
+            </div>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

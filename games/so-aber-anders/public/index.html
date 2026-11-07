@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>So aber anders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 So aber anders</h1>
+
+    <div id="screen-start">
+      <input type="text" id="player-name" placeholder="Dein Name" maxlength="20">
+      <button class="btn" onclick="showCreate()">➕ Spiel erstellen</button>
+      <button class="btn" onclick="showJoin()">🔗 Spiel beitreten</button>
+      <a href="rules.html" class="btn">📖 Spielregeln</a>
+    </div>
+
+    <div id="screen-create" style="display:none">
+      <h2>⚙️ Einstellungen</h2>
+
+      <label>Spielmodus</label>
+      <select id="setting-mode">
+        <option value="single">Einzelspieler</option>
+        <option value="team">Teams</option>
+      </select>
+
+      <label>Rotationsmodus</label>
+      <select id="setting-rotation">
+        <option value="roundrobin">Reihum</option>
+        <option value="team">Team-Rotation</option>
+        <option value="host">Host wählt</option>
+      </select>
+
+      <label>Timer</label>
+      <select id="setting-timer">
+        <option value="off">Aus</option>
+        <option value="on">An</option>
+      </select>
+
+      <label>Timerdauer (Sekunden)</label>
+      <input type="number" id="setting-timer-duration" value="60" min="10" max="300">
+
+      <label>Tabu-Modus</label>
+      <select id="setting-taboo">
+        <option value="off">Aus</option>
+        <option value="on">An</option>
+      </select>
+
+      <label>Anzahl Tabuwörter (1–5)</label>
+      <input type="number" id="setting-taboo-count" value="3" min="1" max="5">
+
+      <label>Passen erlaubt</label>
+      <select id="setting-skip">
+        <option value="off">Nein</option>
+        <option value="on">Ja</option>
+      </select>
+
+      <label>Minuspunkt bei Passen</label>
+      <select id="setting-minus-skip">
+        <option value="off">Nein</option>
+        <option value="on">Ja</option>
+      </select>
+
+      <label>Minuspunkt bei Regelverstoß</label>
+      <select id="setting-minus-violation">
+        <option value="off">Nein</option>
+        <option value="on">Ja</option>
+      </select>
+
+      <label>Spielende per</label>
+      <select id="setting-endmode">
+        <option value="rounds">Rundenzahl</option>
+        <option value="points">Punktzahl</option>
+        <option value="both">Beides</option>
+      </select>
+
+      <label>Anzahl Runden</label>
+      <input type="number" id="setting-rounds" value="3" min="1">
+
+      <label>Zielpunktzahl</label>
+      <input type="number" id="setting-target-score" value="10" min="1">
+
+      <label>Wörter pro Runde (ohne Timer)</label>
+      <input type="number" id="setting-words-per-round" value="5" min="1">
+
+      <label>Wortliste</label>
+      <select id="setting-wordlist">
+        <option value="standard">Standard</option>
+      </select>
+
+      <button class="btn" onclick="createSession()">🚀 Lobby erstellen</button>
+      <button class="btn" onclick="showStart()">🔙 Zurück</button>
+    </div>
+
+    <div id="screen-join" style="display:none">
+      <h2>🔗 Beitreten</h2>
+      <input type="text" id="join-code" placeholder="Session-Code" maxlength="6">
+      <button class="btn" onclick="joinSession()">➡️ Beitreten</button>
+      <button class="btn" onclick="showStart()">🔙 Zurück</button>
+    </div>
+
+    <div id="screen-lobby" style="display:none">
+      <h2>🏠 Lobby</h2>
+      <p>Session-Code: <strong id="session-code-display"></strong></p>
+      <div id="player-list"></div>
+      <button class="btn" id="btn-start" style="display:none" onclick="startGame()">
+        ▶️ Spiel starten
+      </button>
+    </div>
+
+    <p id="error-msg" class="error"></p>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

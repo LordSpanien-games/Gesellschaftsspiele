@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html lang='de'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Erzähl keinen Scheiß</title>
+  <link rel='stylesheet' href='style.css'>
+</head>
+<body>
+
+  <!-- Startbereich -->
+  <div id='startArea' class='container'>
+    <h1>🗣️ Erzähl keinen Scheiß</h1>
+    <p class='subtitle'>Das Gesellschaftsspiel für echte Gespräche</p>
+
+    <div class='card'>
+      <input type='text' id='playerName' placeholder='Dein Name' maxlength='20'>
+
+      <div class='tabs'>
+        <button class='active' onclick="showTab(&quot;create&quot;, this)">Raum erstellen</button>
+        <button onclick="showTab(&quot;join&quot;, this)">Beitreten</button>
+      </div>
+
+      <div id='createTab'>
+        <label>Eigene Raum-ID (optional)</label>
+        <input type='text' id='customId' placeholder='z.B. PARTY (leer = zufällig)' maxlength='8'>
+        <label>Spielmodus</label>
+        <select id='gameMode'>
+          <option value='sentences'>💬 Satzmodus</option>
+          <option value='words'>🔤 Wortmodus</option>
+        </select>
+        <label>Max. Spieler</label>
+        <input type='number' id='maxPlayers' value='6' min='2' max='20'>
+        <label>Sätze / Wörter pro Spieler</label>
+        <input type='number' id='sentencesPerPlayer' value='2' min='1' max='5'>
+        <label>Strafe bei falschem Aufdecken</label>
+        <select id='penalty'>
+          <option value='none'>Keine</option>
+          <option value='cooldown'>Cooldown 30 Sek.</option>
+          <option value='minus'>Minuspunkt</option>
+        </select>
+        <button onclick='createRoom()'>🎮 Raum erstellen</button>
+      </div>
+
+      <div id='joinTab' style='display:none'>
+        <label>Raum-ID</label>
+        <input type='text' id='joinRoomId' placeholder='z.B. PARTY' maxlength='8'>
+        <button onclick='joinRoom()'>🔗 Beitreten</button>
+      </div>
+
+      <div id='errorMsg' class='error'></div>
+    </div>
+
+    <a href='rules.html' class='link'>
+      <button class='btn-secondary'>📖 Spielanleitung</button>
+    </a>
+  </div>
+
+  <!-- Lobby -->
+  <div id='lobbyArea' class='container' style='display:none'>
+    <h1>🗣️ Erzähl keinen Scheiß</h1>
+    <div class='card'>
+      <h3>Warteraum</h3>
+      <div class='roomIdDisplay'>
+        <div class='roomIdBadge' id='displayRoomId'></div>
+        <button class='btn-small' onclick='copyRoomId()'>📋</button>
+      </div>
+      <p id='displayMode' class='hint'></p>
+      <div id='lobbyPlayers'></div>
+    </div>
+    <button id='startBtn' style='display:none' onclick='startGame()'>▶️ Spiel starten</button>
+    <button id='endSessionBtnLobby' style='display:none' class='btn-danger' onclick='endSession()'>🛑 Session beenden</button>
+    <p id='waitMsg' class='hint' style='text-align:center'>? Warte auf Host...</p>
+  </div>
+
+  <!-- Spielbereich -->
+  <div id='gameArea' class='game-layout' style='display:none'>
+
+    <div class='sidebar'>
+      <div class='card'>
+        <h3 id='currentItemTitle'>🎯 Dein aktueller Satz</h3>
+        <div id='sentenceCounter' class='sentenceCounter'></div>
+        <div id='currentSentence' class='bigSentence'></div>
+        <div id='claimArea' style='display:none'>
+          <p class='hint' id='claimHint'>Bei wem hast du den Satz verwendet?</p>
+          <select id='confirmTargetSelect'></select>
+          <button onclick='requestConfirm()'>? Bestätigung anfragen</button>
+        </div>
+        <div id='allDone' style='display:none' class='actionMsg success'>🎉 Alle erledigt!</div>
+      </div>
+      <div class='card'>
+        <h3>🏆 Punkte</h3>
+        <div id='scoreboard'></div>
+      </div>
+      <div class='card'>
+        <button class='btn-danger' id='endSessionBtn' onclick='endSession()'>🛑 Session beenden</button>
+      </div>
+    </div>
+
+    <div class='mainArea'>
+      <div class='card'>
+        <h3>🚨 Aufdecken</h3>
+        <p class='hint' id='callOutHint'>Wähle den Spieler dessen Satz du erkannt hast.</p>
+        <select id='callOutPlayer'></select>
+        <button onclick='callOut()'>🔍 Aufdecken</button>
+      </div>
+      <div id='actionMsg' class='actionMsg'></div>
+    </div>
+
+    <div class='sidebar'>
+      <div class='card'>
+        <h3>🏅 Trophäenbord</h3>
+        <div id='trophyBoard'><p class='hint'>Noch keine Entdeckungen</p></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Session beendet -->
+  <div id='sessionEndArea' class='container' style='display:none'>
+    <h1>🗣️ Erzähl keinen Scheiß</h1>
+    <div class='card'>
+      <h3>🛑 Session beendet</h3>
+      <p class='hint'>Der Host hat die Session beendet.</p>
+      <div id='finalScoreboard'></div>
+      <button onclick='location.reload()'>🔄 Neues Spiel</button>
+    </div>
+  </div>
+
+  <!-- Popup -->
+  <div id='confirmPopup' class='popup' style='display:none'>
+    <div class='popupBox'>
+      <h3 id='popupTitle'></h3>
+      <p id='popupText'></p>
+      <div id='popupSentence' class='bigSentence' style='font-size:1rem;display:none'></div>
+      <div id='calloutSentenceArea' style='display:none'>
+        <p class='hint' id='calloutHint'>Welcher deiner Sätze wurde erkannt?</p>
+        <select id='confirmSentenceSelect'></select>
+      </div>
+      <div class='popupButtons'>
+        <button onclick='confirmAction()' class='btn-success'>? Bestätigen</button>
+        <button onclick='rejectAction()' class='btn-danger'>? Ablehnen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Name exists Popup -->
+  <div id='nameExistsPopup' class='popup' style='display:none'>
+    <div class='popupBox'>
+      <h3>⚠️ Name bereits vergeben</h3>
+      <p>Dieser Name ist bereits im Raum. Bist du das?</p>
+      <div class='popupButtons'>
+        <button onclick='confirmRejoin()' class='btn-success'>? Ja, das bin ich</button>
+        <button onclick='closeNamePopup()' class='btn-danger'>? Nein</button>
+      </div>
+    </div>
+  </div>
+
+  <script src='/socket.io/socket.io.js'></script>
+  <script src='main.js'></script>
+</body>
+</html>

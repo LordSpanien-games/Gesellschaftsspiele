@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erzähl kein Scheiß</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container game-layout">
+
+    <div class="sidebar">
+      <div class="card">
+        <h3>🎯 Dein aktueller Satz</h3>
+        <div id="currentSentence" class="bigSentence">Warte auf Saetze...</div>
+        <div id="sentenceCounter" class="hint"></div>
+        <div id="claimArea" style="display:none">
+          <p class="hint">Bei wem hast du den Satz verwendet?</p>
+          <select id="confirmTargetSelect"></select>
+          <button onclick="requestConfirm()">✅ Bestaetigung anfragen</button>
+        </div>
+        <div id="allDone" style="display:none" class="actionMsg success">🎉 Alle Saetze verwendet!</div>
+      </div>
+      <div class="card">
+        <h3>🏆 Punkte</h3>
+        <div id="scoreboard"></div>
+      </div>
+    </div>
+
+    <div class="mainArea">
+      <div class="card">
+        <h3>🚨 Satz aufdecken</h3>
+        <p class="hint">Waehle den Spieler dessen Satz du erkannt hast.</p>
+        <select id="callOutPlayer"></select>
+        <button onclick="callOut()">Aufdecken</button>
+      </div>
+      <div id="actionMsg" class="actionMsg"></div>
+    </div>
+
+    <div class="sidebar">
+      <div class="card">
+        <h3>🏅 Trophaeenbord</h3>
+        <div id="trophyBoard"><p style="color:#aaa;font-size:0.85rem">Noch keine Entdeckungen</p></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="confirmPopup" class="popup" style="display:none">
+    <div class="popupBox">
+      <h3 id="popupTitle"></h3>
+      <p id="popupText"></p>
+      <div id="popupSentence" class="bigSentence" style="font-size:1rem;display:none"></div>
+      <div id="calloutSentenceArea" style="display:none">
+        <p class="hint">Welcher deiner Saetze wurde erkannt?</p>
+        <select id="confirmSentenceSelect"></select>
+      </div>
+      <div class="popupButtons">
+        <button onclick="confirmAction()" class="btnSuccess">✅ Bestaetigen</button>
+        <button onclick="rejectAction()" class="btnDanger">❌ Ablehnen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
