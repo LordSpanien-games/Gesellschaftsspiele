@@ -3,11 +3,13 @@
  * update.js - Holt vor dem Start die neuesten Dateien vom Repository.
  *
  * Wird von npm automatisch vor "npm start" ausgefuehrt (prestart-Hook).
- * Verhalten:
+ *
+ * Der lokale Ordner wird als Spiegel des Repository behandelt:
  *   1. Ohne Git-Repo, ohne "origin"-Remote oder mit SKIP_UPDATE=1 -> ueberspringen
  *   2. git fetch origin <branch>
- *   3. Wenn Remote != lokal: lokale Versionen verwerfen und auf Remote-Stand setzen
- *      (git reset --hard). Von .gitignore ignorierte Dateien bleiben unberuehrt.
+ *   3. Arbeitsverzeichnis auf den Remote-Stand setzen:
+ *      git reset --hard <remote-sha>  (tracked Dateien)
+ *      git clean -fd                 (untracked Dateien, .gitignore bleibt erhalten)
  *   4. Wenn package-lock.json sich geaendert hat oder node_modules fehlt: npm install
  *   5. Bei Netzwerkfehlern: Warnung ausgeben und mit der lokalen Version weiterlaufen
  */
@@ -55,6 +57,18 @@ function hashFile(file) {
   }
 }
 
+function npmInstall() {
+  // Auf Windows muss npm.cmd ueber eine Shell gestartet werden,
+  // sonst schlaegt spawnSync mit EINVAL fehl.
+  const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  execFileSync(npmCmd, ['install', '--no-audit', '--no-fund'], {
+    cwd: ROOT,
+    stdio: 'inherit',
+    shell: true,
+    timeout: 600000
+  });
+}
+
 function main() {
   if (SKIP) {
     log('SKIP_UPDATE gesetzt - Update uebersprungen.');
@@ -95,24 +109,56 @@ function main() {
   const localSha = headRes.out.trim();
   const remoteSha = remoteRes.out.trim();
 
-  // 2. Auf den neuesten Stand setzen
-  if (localSha !== remoteSha) {
+  // 2. Was unterscheidet sich?
+  const dirty = gitTry(['status', '--porcelain']);
+  const dirtyFiles = dirty.ok ? dirty.out.trim() : '';
+  const shaChanged = localSha !== remoteSha;
+
+  if (shaChanged) {
     const stat = gitTry(['diff', '--stat', localSha, remoteSha]);
     if (stat.ok && stat.out.trim()) {
       log('Neue Version verfuegbar - geaenderte Dateien:');
       stat.out.trim().split('\n').forEach(line => log('  ' + line.trim()));
     }
-    const reset = gitTry(['reset', '--hard', remoteSha]);
-    if (!reset.ok) {
-      warn('Reset fehlgeschlagen - lokalen Stand beibehalten.');
-      return;
-    }
-    log('Auf aktuellen Stand aktualisiert (' + localSha.slice(0, 7) + ' -> ' + remoteSha.slice(0, 7) + ').');
+    log('Aktualisiere ' + localSha.slice(0, 7) + ' -> ' + remoteSha.slice(0, 7) + '.');
+  } else if (dirtyFiles) {
+    log('Lokale Aenderungen gefunden, setze Arbeitsverzeichnis auf den Repo-Stand zurueck.');
+    dirtyFiles.split('\n').forEach(line => log('  ' + line.trim()));
   } else {
     log('Bereits auf dem neuesten Stand (' + localSha.slice(0, 7) + ').');
   }
 
-  // 3. Abhaengigkeiten pruefen
+  // 3. Arbeitsverzeichnis auf den Repo-Stand setzen. Das passiert auch dann,
+  //    wenn der SHA gleich ist, aber lokal etwas geaendert wurde - so entspricht
+  //    der Ordner garantiert dem Repository.
+  //
+  //    Lokale Aenderungen werden vorher mit "git stash -u" weggelegt (nicht
+  //    geloescht) - sie lassen sich mit "git stash pop" zurueckholen.
+  //    Ignorierte Dateien (node_modules, playerhistory.json, sessions) bleiben
+  //    unangetastet.
+  if (shaChanged || dirtyFiles) {
+    if (dirtyFiles) {
+      const stash = gitTry(['stash', 'push', '-u', '-m', 'auto-update backup']);
+      if (stash.ok) {
+        log('Lokale Aenderungen wurden nach "git stash" ausgelagert (mit "git stash pop" zurueckholbar).');
+      } else {
+        warn('git stash fehlgeschlagen - lokale Aenderungen bleiben erhalten, setze nur den Repo-Stand durch.');
+      }
+    }
+
+    const reset = gitTry(['reset', '--hard', remoteSha]);
+    if (!reset.ok) {
+      warn('git reset fehlgeschlagen - lokalen Stand beibehalten.');
+    } else {
+      const clean = gitTry(['clean', '-fd']);
+      if (clean.ok && clean.out.trim()) {
+        clean.out.trim().split('\n').forEach(line => log('  entfernt: ' + line.trim()));
+      }
+      log('Arbeitsverzeichnis entspricht jetzt dem Repository-Stand.');
+    }
+  }
+
+  // 4. Abhaengigkeiten pruefen
   const lockAfter = hashFile(path.join(ROOT, 'package-lock.json'));
   const nodeModules = fs.existsSync(path.join(ROOT, 'node_modules'));
   const lockChanged = lockBefore && lockAfter && lockBefore !== lockAfter;
@@ -121,15 +167,10 @@ function main() {
     log(!nodeModules ? 'node_modules fehlt - installiere Abhaengigkeiten...'
                      : 'package-lock.json hat sich geaendert - installiere Abhaengigkeiten...');
     try {
-      const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-      execFileSync(npm, ['install', '--no-audit', '--no-fund'], {
-        cwd: ROOT,
-        stdio: 'inherit',
-        timeout: 600000
-      });
+      npmInstall();
       log('Abhaengigkeiten installiert.');
     } catch (err) {
-      warn('npm install fehlgeschlagen: ' + err.message);
+      warn('npm install fehlgeschlagen: ' + (err.stderr || err.message).toString().trim());
       warn('Starte trotzdem - vorhandene Abhaengigkeiten werden verwendet.');
     }
   }
