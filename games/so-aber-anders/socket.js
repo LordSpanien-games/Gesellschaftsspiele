@@ -18,6 +18,10 @@ function loadWordlists() {
 
 const wordlists = loadWordlists();
 const sessions = {};
+// Timeout-Handles des Timers. Sie stehen bewusst getrennt von den
+// Session-Objekten: diese werden an Clients serialisiert, und ein
+// Node-Timeout enthaelt zyklische Referenzen -> Serialisierungs-Crash.
+const timerHandles = {};
 
 function generateCode() {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -36,6 +40,53 @@ function isExplainer(session, socketId) {
 // Ist die Socket-ID der aktuell aktive Kontrolleur?
 function isController(session, socketId) {
   return !!session.controllerId && session.controllerId === socketId;
+}
+
+// --- Timer ---
+// Der Server ist die einzige Zeitquelle: alle Spieler sehen dadurch
+// denselben Countdown. Der Client zeigt nur noch an, was der Server schickt.
+
+// Startet den Timer neu. Bei timerScope "turn" wird er nur einmal pro Zug
+// gestartet (und laeuft ueber alle Woerter weiter), bei "word" pro Begriff.
+function startTurnTimer(code, io, session) {
+  clearTurnTimer(code, io, session);
+  if (!session.settings.timer) return;
+
+  const seconds = session.settings.timerDuration || 60;
+  const endsAt = Date.now() + seconds * 1000;
+  session.timerEndsAt = endsAt;
+
+  io.to(code).emit("timerState", {
+    active: true,
+    endsAt: endsAt,
+    duration: seconds,
+    scope: session.settings.timerScope || "turn"
+  });
+
+  timerHandles[code] = setTimeout(() => {
+    // Zustand kann sich inzwischen geaendert haben -> immer neu pruefen
+    const current = sessions[code];
+    if (!current) return;
+    if (current.timerEndsAt !== endsAt) return; // Timer wurde ersetzt
+    delete timerHandles[code];
+    current.timerEndsAt = null;
+    io.to(code).emit("timerState", { active: false });
+    io.to(code).emit("timerExpired");
+    advanceToNextPlayer(code, io);
+  }, seconds * 1000);
+}
+
+// Stoppt den Timer und informiert die Clients.
+function clearTurnTimer(code, io, session) {
+  if (timerHandles[code]) {
+    clearTimeout(timerHandles[code]);
+    delete timerHandles[code];
+  }
+  const had = session.timerEndsAt !== null;
+  session.timerEndsAt = null;
+  if (had && io) {
+    io.to(code).emit("timerState", { active: false });
+  }
 }
 
 module.exports = function(io) {
@@ -62,7 +113,9 @@ module.exports = function(io) {
         letterSubmissions: {},
         // Aktueller Begriff inkl. Tabuwörtern (nur an die Rollen verteilt)
         currentTerm: null,
-        currentForbidden: []
+        currentForbidden: [],
+        // Timer-Endzeitpunkt (serverautoritativ, wird serialisiert)
+        timerEndsAt: null
       };
       socket.join(code);
       socket.emit("sessionCreated", { code });
@@ -153,9 +206,8 @@ module.exports = function(io) {
     socket.on("timerEnd", ({ code }) => {
       const session = sessions[code];
       if (!session) return;
-      // Nur der Erklärer steuert den Timer
-      if (!isExplainer(session, socket.id)) return;
-      advanceToNextPlayer(code, io);
+      // Der Server steuert den Timer selbst. Diese Meldung kommt nur von
+      // aelteren Clients und wird ignoriert.
     });
 
     // --- Moeser Mamster: Buchstabe vorschlagen (Gruppe bestimmt mit) ---
@@ -206,6 +258,15 @@ module.exports = function(io) {
           }
           // Begriff an die passenden Rollen nachschieben
           sendWordToRoles(code, io, session);
+          // Laufenden Timer an den Wiederverbindenden melden
+          if (session.timerEndsAt) {
+            socket.emit("timerState", {
+              active: true,
+              endsAt: session.timerEndsAt,
+              duration: session.settings.timerDuration || 60,
+              scope: session.settings.timerScope || "turn"
+            });
+          }
         }
       }
     });
@@ -217,6 +278,12 @@ module.exports = function(io) {
         delete session.letterSubmissions[socket.id];
 
         if (session.players.length === 0) {
+          // Timer laeuft nicht mehr weiter, wenn niemand mehr da ist
+          if (timerHandles[code]) {
+            clearTimeout(timerHandles[code]);
+            delete timerHandles[code];
+          }
+          session.timerEndsAt = null;
           delete sessions[code];
           continue;
         }
@@ -249,6 +316,11 @@ function resetSession(session) {
   session.letterSubmissions = {};
   session.currentTerm = null;
   session.currentForbidden = [];
+  session.timerEndsAt = null;
+  if (timerHandles[session.code]) {
+    clearTimeout(timerHandles[session.code]);
+    delete timerHandles[session.code];
+  }
   session.players.forEach(p => p.score = 0);
 }
 
@@ -291,6 +363,11 @@ function beginTurn(code, io) {
     settings: session.settings,
     round: session.currentRound
   });
+  // Bei timerScope "turn" startet die Uhr hier einmal fuer den ganzen Zug
+  // und laeuft ueber alle Woerter weiter.
+  if ((session.settings.timerScope || "turn") === "turn") {
+    startTurnTimer(code, io, session);
+  }
   setTimeout(() => sendNextWord(code, io), 300);
 }
 
@@ -352,6 +429,12 @@ function sendNextWord(code, io) {
   session.currentTerm = word.term;
   session.currentForbidden = forbidden;
   sendWordToRoles(code, io, session);
+
+  // Bei timerScope "word" startet die Uhr fuer jedes Wort neu.
+  // Bei "turn" laeuft die Uhr weiter und wird hier nicht angefasst.
+  if ((session.settings.timerScope || "turn") === "word") {
+    startTurnTimer(code, io, session);
+  }
 }
 
 function checkTurnEnd(code, io) {
@@ -371,6 +454,8 @@ function checkTurnEnd(code, io) {
 function advanceToNextPlayer(code, io) {
   const session = sessions[code];
   if (!session) return;
+  // Timer des bisherigen Zugs beenden, bevor der naechste startet
+  clearTurnTimer(code, io, session);
   const nextIndex = session.currentPlayerIndex + 1;
 
   if (nextIndex < session.players.length) {

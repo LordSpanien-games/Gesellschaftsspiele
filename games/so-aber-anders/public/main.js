@@ -37,6 +37,7 @@ function createSession() {
     rotation:         document.getElementById("setting-rotation").value,
     timer:            document.getElementById("setting-timer").value === "on",
     timerDuration:    parseInt(document.getElementById("setting-timer-duration").value),
+    timerScope:       document.getElementById("setting-timer-scope").value,
     taboo:            document.getElementById("setting-taboo").value === "on",
     tabooCount:       parseInt(document.getElementById("setting-taboo-count").value),
     skipAllowed:      document.getElementById("setting-skip").value === "on",

@@ -196,6 +196,17 @@ input, select {
   font-weight: bold;
 }
 
+/* Timer-Anzeige - fuer alle Spieler sichtbar */
+
+.timer-display {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f0c040;
+  margin-bottom: 10px;
+  min-height: 1.5rem;
+}
+
 /* Statusmeldung fuer alle Spieler (z.B. "hat gepasst") */
 
 .status-msg {

@@ -118,6 +118,20 @@ Der Button zeigt die Konsequenz direkt an („Passen (keine Punkte)" bzw.
 „Passen (−1 Punkt)"), und die ganze Gruppe bekommt eine Meldung, wenn gepasst
 wurde.
 
+### Timer
+
+Der Timer läuft **standardmäßig pro Runde**: die eingestellten Sekunden gelten
+für den ganzen Zug eines Spielers. Wird ein Wort nach 10 Sekunden erraten,
+läuft der Timer mit den restlichen 50 Sekunden weiter — er startet nicht neu.
+
+| Einstellung | Optionen | Standard |
+|---|---|---|
+| Timer läuft | Pro Runde (läuft über alle Wörter weiter) / Pro Wort (startet bei jedem Wort neu) | Pro Runde |
+
+Der Countdown wird vom Server gesteuert: alle Spieler sehen dieselbe Restzeit,
+unabhängig von Uhr- oder Netzwerkabweichungen. Der Timer ist für alle sichtbar,
+nicht nur für den Erklärer.
+
 ## Lizenz
 
 Privat / frei verwendbar.

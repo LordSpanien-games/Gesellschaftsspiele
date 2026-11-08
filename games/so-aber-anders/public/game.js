@@ -66,9 +66,24 @@ socket.on("newWord", (data) => {
     input.value = "";
     document.getElementById("phrase-preview").innerHTML = "";
   }
-  if (settings && settings.timer) {
-    startTimer(settings.timerDuration);
+  // Der Timer laeuft unabhaengig vom Wort weiter und wird vom Server
+  // gesteuert - hier wird er deshalb nicht neu gestartet.
+});
+
+// Der Server steuert den Timer. Der Client zeigt nur an, was kommt.
+socket.on("timerState", (data) => {
+  if (!data.active) {
+    stopTimer();
+    const display = document.getElementById("timer-display");
+    if (display) display.textContent = "";
+    return;
   }
+  startTimer(data.endsAt);
+});
+
+socket.on("timerExpired", () => {
+  const display = document.getElementById("timer-display");
+  if (display) display.textContent = "⏱️ Zeit abgelaufen!";
 });
 
 // Tabuwörter gehen separat an den Kontrolleur (nicht an die Rater).
@@ -274,19 +289,21 @@ function checkPhrase() {
   preview.appendChild(sentence);
 }
 
-function startTimer(seconds) {
+// Startet die Anzeige eines servergesteuerten Countdown.
+// Der Server liefert den absoluten Endzeitpunkt - so zeigen alle Spieler
+// dieselbe Restzeit, unabhaengig von lokalen Uhr- oder Latenzabweichungen.
+function startTimer(endsAt) {
   stopTimer();
-  let remaining = seconds;
   const display = document.getElementById("timer-display");
-  display.textContent = "⏱️ " + remaining + "s";
-  timerInterval = setInterval(() => {
-    remaining--;
+  if (!display) return;
+
+  const tick = () => {
+    const remaining = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
     display.textContent = "⏱️ " + remaining + "s";
-    if (remaining <= 0) {
-      stopTimer();
-      socket.emit("timerEnd", { code: sessionCode });
-    }
-  }, 1000);
+    if (remaining <= 0) stopTimer();
+  };
+  tick();
+  timerInterval = setInterval(tick, 500);
 }
 
 function stopTimer() {
