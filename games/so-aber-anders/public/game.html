@@ -10,6 +10,7 @@
   <div class="container">
     <h1>🎯 So aber anders</h1>
     <div id="round-display" style="text-align:center;font-size:1.2rem;margin-bottom:12px;"></div>
+    <div id="status-msg" class="status-msg"></div>
 
     <div id="screen-waiting">
       <h2>⏳ Warte auf deinen Zug...</h2>
@@ -34,8 +35,9 @@
         <div id="phrase-preview"></div>
       </div>
       <div id="timer-display"></div>
+      <div id="skip-hint" class="hint"></div>
       <button class="btn" onclick="wordCorrect()">✅ Richtig erraten</button>
-      <button class="btn" id="btn-skip" style="display:none" onclick="wordSkip()">
+      <button class="btn btn-skip" id="btn-skip" style="display:none" onclick="wordSkip()">
         ⏭️ Passen
       </button>
     </div>

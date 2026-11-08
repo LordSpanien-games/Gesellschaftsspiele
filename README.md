@@ -103,6 +103,21 @@ rot markiert.
 Alles andere bleibt unverändert: Tabuwörter, Punkte, Passen, Strafen, Timer und
 Spielende.
 
+### Passen
+
+Wird ein Begriff zu schwer, kann der Erklärer passen. Standardmäßig ist das
+erlaubt und kostet **keine Punkte** — das überprungene Wort zählt einfach nicht.
+In den Lobby-Einstellungen lässt sich beides umschalten:
+
+| Einstellung | Optionen | Standard |
+|---|---|---|
+| Passen erlaubt | Ja (überprungene Wörter zählen nicht) / Nein (jedes Wort muss erraten werden) | Ja |
+| Minuspunkt bei Passen | Nein (kostet nichts) / Ja (kostet 1 Punkt) | Nein |
+
+Der Button zeigt die Konsequenz direkt an („Passen (keine Punkte)" bzw.
+„Passen (−1 Punkt)"), und die ganze Gruppe bekommt eine Meldung, wenn gepasst
+wurde.
+
 ## Lizenz
 
 Privat / frei verwendbar.

@@ -20,8 +20,18 @@ socket.on("newTurn", (data) => {
     document.getElementById("term-display").textContent = "";
     document.getElementById("forbidden-list").innerHTML = "";
     document.getElementById("timer-display").textContent = "";
-    document.getElementById("btn-skip").style.display =
-      settings.skipAllowed ? "block" : "none";
+    // Passen-Button: sichtbar und mit der Konsequenz beschriftet
+    const skipBtn = document.getElementById("btn-skip");
+    skipBtn.style.display = settings.skipAllowed ? "block" : "none";
+    skipBtn.textContent = settings.minusOnSkip
+      ? "⏭️ Passen (−1 Punkt)"
+      : "⏭️ Passen (keine Punkte)";
+    const skipHint = document.getElementById("skip-hint");
+    skipHint.textContent = settings.skipAllowed
+      ? (settings.minusOnSkip
+          ? "Wird das Wort nicht erraten, kannst du passen – das kostet 1 Punkt."
+          : "Wird das Wort nicht erraten, kannst du passen – das kostet keine Punkte.")
+      : "Passen ist in diesem Spiel nicht erlaubt – jedes Wort muss erraten werden.";
   } else if (data.controller === playerName) {
     showScreen("screen-controller");
     document.getElementById("controller-forbidden").innerHTML = "";
@@ -100,6 +110,22 @@ socket.on("letterChosen", (data) => {
 
 socket.on("scoreUpdate", (players) => {
   updateScoreBoard(players);
+});
+
+// Ein Wort wurde uebersprungen - die Gruppe soll das wissen.
+socket.on("wordSkipped", (data) => {
+  const msg = data.penalty
+    ? "⏭️ " + data.skippedBy + " hat gepasst (−1 Punkt)"
+    : "⏭️ " + data.skippedBy + " hat gepasst (keine Punkte)";
+  const status = document.getElementById("status-msg");
+  if (status) {
+    status.textContent = msg;
+    status.classList.add("visible");
+    setTimeout(() => {
+      status.classList.remove("visible");
+      status.textContent = "";
+    }, 3000);
+  }
 });
 
 socket.on("roundEnd", (data) => {

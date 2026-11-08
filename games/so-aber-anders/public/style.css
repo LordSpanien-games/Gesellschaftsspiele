@@ -195,3 +195,32 @@ input, select {
   color: #f0c040;
   font-weight: bold;
 }
+
+/* Statusmeldung fuer alle Spieler (z.B. "hat gepasst") */
+
+.status-msg {
+  display: none;
+  text-align: center;
+  background: #0f3460;
+  border-left: 4px solid #f0c040;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  color: #f0c040;
+  font-weight: bold;
+}
+
+.status-msg.visible {
+  display: block;
+}
+
+/* Passen-Button optisch vom "Richtig erraten"-Button abheben */
+
+.btn-skip {
+  background: #0f3460;
+  border: 1px solid #f0c040;
+}
+
+.btn-skip:hover {
+  background: #164a7d;
+}

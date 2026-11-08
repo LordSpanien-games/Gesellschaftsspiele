@@ -118,6 +118,9 @@ module.exports = function(io) {
       const session = sessions[code];
       if (!session) return;
       if (!isExplainer(session, socket.id)) return;
+      // Passen muss in der Lobby erlaubt sein - auch serverseitig geprueft,
+      // damit ein manipulierter Client es nicht umgehen kann.
+      if (!session.settings.skipAllowed) return;
       const player = session.players[session.currentPlayerIndex];
       if (!player) return;
       if (session.settings.minusOnSkip) {
@@ -125,6 +128,10 @@ module.exports = function(io) {
       }
       session.wordsThisTurn += 1;
       io.to(code).emit("scoreUpdate", session.players);
+      io.to(code).emit("wordSkipped", {
+        skippedBy: player.name,
+        penalty: session.settings.minusOnSkip ? -1 : 0
+      });
       checkTurnEnd(code, io);
     });
 
