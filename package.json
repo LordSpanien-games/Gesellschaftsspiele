@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Gesellschaftsspiele Launcher",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LordSpanien-games/Gesellschaftsspiele.git"
+  },
   "scripts": {
     "prestart": "node scripts/update.js",
     "start": "node server.js",

@@ -6,6 +6,9 @@ games/*/node_modules/
 games/erzaehl/data/sessions/
 games/erzaehl/data/playerhistory.json
 
+# Statusdatei des Auto-Updates (nur lokal)
+.update-state.json
+
 # Logs
 *.log
 npm-debug.log*

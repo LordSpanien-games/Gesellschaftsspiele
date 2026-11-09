@@ -4,14 +4,27 @@
  *
  * Wird von npm automatisch vor "npm start" ausgefuehrt (prestart-Hook).
  *
- * Der lokale Ordner wird als Spiegel des Repository behandelt:
- *   1. Ohne Git-Repo, ohne "origin"-Remote oder mit SKIP_UPDATE=1 -> ueberspringen
- *   2. git fetch origin <branch>
- *   3. Arbeitsverzeichnis auf den Remote-Stand setzen:
- *      git reset --hard <remote-sha>  (tracked Dateien)
- *      git clean -fd                 (untracked Dateien, .gitignore bleibt erhalten)
- *   4. Wenn package-lock.json sich geaendert hat oder node_modules fehlt: npm install
- *   5. Bei Netzwerkfehlern: Warnung ausgeben und mit der lokalen Version weiterlaufen
+ * Es werden zwei Installationsarten unterstuetzt:
+ *
+ * A) git clone (empfohlen)
+ *    1. git fetch origin <branch>
+ *    2. Arbeitsverzeichnis auf den Remote-Stand setzen:
+ *       git reset --hard <remote-sha>  (tracked Dateien)
+ *       git clean -fd                 (untracked Dateien, .gitignore bleibt erhalten)
+ *
+ * B) ZIP-Download von GitHub (kein .git-Ordner)
+ *    1. Archiv-URL des Repositorys bestimmen (aus package.json -> repository)
+ *    2. pruefen, ob sich das Archiv seit dem letzten Lauf geaendert hat (ETag)
+ *    3. Archiv herunterladen, entpacken, Dateien in den Ordner kopieren
+ *    4. Dateien, die es im Repository nicht mehr gibt, entfernen
+ *
+ * In beiden Faellen gilt:
+ *   - Wenn package-lock.json sich geaendert hat oder node_modules fehlt:
+ *     npm install
+ *   - Bei Netzwerkfehlern: Warnung ausgeben und mit der lokalen Version
+ *     weiterlaufen
+ *   - Lokale Daten (node_modules, playerhistory.json, sessions) bleiben
+ *     unangetastet
  */
 
 'use strict';
@@ -19,10 +32,22 @@
 const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const crypto = require('crypto');
+const https = require('https');
 
 const ROOT = path.join(__dirname, '..');
 const SKIP = process.env.SKIP_UPDATE === '1' || process.env.NO_UPDATE === '1';
+const STATE_FILE = path.join(ROOT, '.update-state.json');
+
+// Ordner/Dateien, die nie vom Update angefasst werden
+const PRESERVE = [
+  'node_modules',
+  '.git',
+  '.update-state.json',
+  'games/erzaehl/data/sessions',
+  'games/erzaehl/data/playerhistory.json'
+];
 
 function log(msg) {
   console.log('[update] ' + msg);
@@ -69,17 +94,55 @@ function npmInstall() {
   });
 }
 
-function main() {
-  if (SKIP) {
-    log('SKIP_UPDATE gesetzt - Update uebersprungen.');
-    return;
-  }
+// --- gemeinsame Teile ---
 
-  if (!fs.existsSync(path.join(ROOT, '.git'))) {
-    log('Kein Git-Repository gefunden - Update uebersprungen.');
-    return;
+function readState() {
+  try {
+    return JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+  } catch {
+    return { etag: null, manifest: [] };
   }
+}
 
+function writeState(state) {
+  try {
+    fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2), 'utf8');
+  } catch (err) {
+    warn('Statusdatei konnte nicht geschrieben werden: ' + err.message);
+  }
+}
+
+// Darf diese Datei vom Update ueberschrieben werden?
+function isPreserved(relPath) {
+  const normalized = relPath.split(path.sep).join('/');
+  return PRESERVE.some(p => {
+    const pNorm = p.split(path.sep).join('/');
+    return normalized === pNorm || normalized.startsWith(pNorm + '/');
+  });
+}
+
+// Nach dem Update: Abhaengigkeiten pruefen
+function ensureDependencies(lockBefore) {
+  const lockAfter = hashFile(path.join(ROOT, 'package-lock.json'));
+  const nodeModules = fs.existsSync(path.join(ROOT, 'node_modules'));
+  const lockChanged = lockBefore && lockAfter && lockBefore !== lockAfter;
+
+  if (!nodeModules || lockChanged) {
+    log(!nodeModules ? 'node_modules fehlt - installiere Abhaengigkeiten...'
+                     : 'package-lock.json hat sich geaendert - installiere Abhaengigkeiten...');
+    try {
+      npmInstall();
+      log('Abhaengigkeiten installiert.');
+    } catch (err) {
+      warn('npm install fehlgeschlagen: ' + (err.stderr || err.message).toString().trim());
+      warn('Starte trotzdem - vorhandene Abhaengigkeiten werden verwendet.');
+    }
+  }
+}
+
+// --- A) Installation per git clone ---
+
+function updateViaGit() {
   const remote = gitTry(['remote', 'get-url', 'origin']);
   if (!remote.ok) {
     log('Kein "origin"-Remote - Update uebersprungen.');
@@ -91,7 +154,6 @@ function main() {
 
   const lockBefore = hashFile(path.join(ROOT, 'package-lock.json'));
 
-  // 1. Remote-Stand holen
   const fetch = gitTry(['fetch', 'origin', branch, '--quiet'], 45000);
   if (!fetch.ok) {
     warn('Fetch fehlgeschlagen (' + (fetch.err.stderr || fetch.err.message).toString().trim() + ')');
@@ -109,7 +171,6 @@ function main() {
   const localSha = headRes.out.trim();
   const remoteSha = remoteRes.out.trim();
 
-  // 2. Was unterscheidet sich?
   const dirty = gitTry(['status', '--porcelain']);
   const dirtyFiles = dirty.ok ? dirty.out.trim() : '';
   const shaChanged = localSha !== remoteSha;
@@ -128,21 +189,14 @@ function main() {
     log('Bereits auf dem neuesten Stand (' + localSha.slice(0, 7) + ').');
   }
 
-  // 3. Arbeitsverzeichnis auf den Repo-Stand setzen. Das passiert auch dann,
-  //    wenn der SHA gleich ist, aber lokal etwas geaendert wurde - so entspricht
-  //    der Ordner garantiert dem Repository.
-  //
-  //    Lokale Aenderungen werden vorher mit "git stash -u" weggelegt (nicht
-  //    geloescht) - sie lassen sich mit "git stash pop" zurueckholen.
-  //    Ignorierte Dateien (node_modules, playerhistory.json, sessions) bleiben
-  //    unangetastet.
+  // Lokale Aenderungen werden mit "git stash -u" weggelegt (nicht geloescht).
   if (shaChanged || dirtyFiles) {
     if (dirtyFiles) {
       const stash = gitTry(['stash', 'push', '-u', '-m', 'auto-update backup']);
       if (stash.ok) {
         log('Lokale Aenderungen wurden nach "git stash" ausgelagert (mit "git stash pop" zurueckholbar).');
       } else {
-        warn('git stash fehlgeschlagen - lokale Aenderungen bleiben erhalten, setze nur den Repo-Stand durch.');
+        warn('git stash fehlgeschlagen - lokale Aenderungen bleiben erhalten.');
       }
     }
 
@@ -158,27 +212,194 @@ function main() {
     }
   }
 
-  // 4. Abhaengigkeiten pruefen
-  const lockAfter = hashFile(path.join(ROOT, 'package-lock.json'));
-  const nodeModules = fs.existsSync(path.join(ROOT, 'node_modules'));
-  const lockChanged = lockBefore && lockAfter && lockBefore !== lockAfter;
+  ensureDependencies(lockBefore);
+}
 
-  if (!nodeModules || lockChanged) {
-    log(!nodeModules ? 'node_modules fehlt - installiere Abhaengigkeiten...'
-                     : 'package-lock.json hat sich geaendert - installiere Abhaengigkeiten...');
-    try {
-      npmInstall();
-      log('Abhaengigkeiten installiert.');
-    } catch (err) {
-      warn('npm install fehlgeschlagen: ' + (err.stderr || err.message).toString().trim());
-      warn('Starte trotzdem - vorhandene Abhaengigkeiten werden verwendet.');
+// --- B) Installation per ZIP (kein .git) ---
+
+// Repository-URL aus package.json lesen
+function readRepoUrl() {
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+    const repo = pkg.repository;
+    let url = typeof repo === 'string' ? repo : (repo && repo.url);
+    if (!url) return null;
+    url = url.replace(/^git\+/, '').replace(/\.git$/, '').replace(/\/$/, '');
+    return url;
+  } catch {
+    return null;
+  }
+}
+
+// HTTPS-Request mit Redirect-Follow (max. 5)
+function request(url, method = 'GET', redirects = 0) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(url, { method, timeout: 60000 }, (res) => {
+      const status = res.statusCode || 0;
+      if (status >= 300 && status < 400 && res.headers.location) {
+        res.resume();
+        if (redirects >= 5) return reject(new Error('zu viele Redirects'));
+        const next = new URL(res.headers.location, url).toString();
+        return resolve(request(next, method, redirects + 1));
+      }
+      if (status !== 200) {
+        res.resume();
+        return reject(new Error('HTTP ' + status + ' bei ' + url));
+      }
+      const chunks = [];
+      res.on('data', c => chunks.push(c));
+      res.on('end', () => resolve({
+        body: Buffer.concat(chunks),
+        headers: res.headers
+      }));
+    });
+    req.on('error', reject);
+    req.on('timeout', () => { req.destroy(); reject(new Error('Zeitüberschreitung bei ' + url)); });
+    req.end();
+  });
+}
+
+// ZIP entpacken: Windows -> PowerShell, sonst -> unzip
+function extractZip(zipPath, destDir) {
+  fs.mkdirSync(destDir, { recursive: true });
+  if (process.platform === 'win32') {
+    execFileSync('powershell', [
+      '-NoProfile', '-Command',
+      "Expand-Archive -LiteralPath '" + zipPath.replace(/'/g, "''") +
+      "' -DestinationPath '" + destDir.replace(/'/g, "''") + "' -Force"
+    ], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 180000 });
+    return;
+  }
+  let unzip = null;
+  try {
+    unzip = execFileSync('which', ['unzip'], { encoding: 'utf8' }).trim();
+  } catch { /* unzip fehlt */ }
+  if (unzip) {
+    execFileSync(unzip, ['-q', '-o', zipPath, '-d', destDir], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 180000 });
+    return;
+  }
+  execFileSync('tar', ['-xf', zipPath, '-C', destDir], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 180000 });
+}
+
+// Ordnerinhalt rekursiv kopieren, Liste der kopierten Dateien sammeln
+function copyTree(srcDir, destDir, relBase, collected) {
+  const entries = fs.readdirSync(srcDir, { withFileTypes: true });
+  for (const entry of entries) {
+    const rel = relBase ? path.join(relBase, entry.name) : entry.name;
+    if (isPreserved(rel)) continue;
+    const src = path.join(srcDir, entry.name);
+    const dest = path.join(destDir, entry.name);
+    if (entry.isDirectory()) {
+      fs.mkdirSync(dest, { recursive: true });
+      copyTree(src, dest, rel, collected);
+    } else {
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.copyFileSync(src, dest);
+      collected.push(rel.split(path.sep).join('/'));
     }
   }
 }
 
-try {
-  main();
-} catch (err) {
+async function updateViaArchive() {
+  const repoUrl = readRepoUrl();
+  if (!repoUrl) {
+    log('Kein Git-Repository und keine Repository-URL in package.json gefunden - Update uebersprungen.');
+    log('Tipp: Mit "git clone" statt ZIP-Installation laeuft das automatische Update auch ohne diesen Hinweis.');
+    return;
+  }
+
+  const branch = process.env.GS_BRANCH || 'main';
+  const archiveUrl = repoUrl + '/archive/refs/heads/' + branch + '.zip';
+
+  const lockBefore = hashFile(path.join(ROOT, 'package-lock.json'));
+  const state = readState();
+
+  // 1. Pruefen, ob sich das Archiv seit dem letzten Lauf geaendert hat
+  let etag = null;
+  try {
+    const head = await request(archiveUrl, 'HEAD');
+    etag = head.headers.etag || null;
+  } catch (err) {
+    warn('Repository nicht erreichbar (' + err.message + ')');
+    warn('Starte mit der lokal vorhanden Version.');
+    return;
+  }
+
+  if (etag && state.etag && state.etag === etag) {
+    log('Bereits auf dem neuesten Stand (ZIP-Installation).');
+    ensureDependencies(lockBefore);
+    return;
+  }
+
+  // 2. Archiv herunterladen und entpacken
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gs-update-'));
+  try {
+    log('Lade neue Version von ' + archiveUrl + ' ...');
+    const res = await request(archiveUrl, 'GET');
+    const zipPath = path.join(tmpDir, 'repo.zip');
+    fs.writeFileSync(zipPath, res.body);
+
+    const extractDir = path.join(tmpDir, 'extract');
+    extractZip(zipPath, extractDir);
+
+    // GitHub legt alles in einen Ordner "Repo-Branch" ab
+    const topEntries = fs.readdirSync(extractDir, { withFileTypes: true })
+      .filter(e => e.isDirectory());
+    if (topEntries.length !== 1) {
+      warn('Archiv hat ein unerwartetes Layout - Update uebersprungen.');
+      return;
+    }
+    const sourceDir = path.join(extractDir, topEntries[0].name);
+
+    // 3. Dateien kopieren
+    const collected = [];
+    copyTree(sourceDir, ROOT, '', collected);
+    log(collected.length + ' Dateien aktualisiert.');
+
+    // 4. Dateien entfernen, die es im Repository nicht mehr gibt
+    const previous = state.manifest || [];
+    const current = new Set(collected);
+    let removed = 0;
+    for (const rel of previous) {
+      if (current.has(rel)) continue;
+      if (isPreserved(rel)) continue;
+      const abs = path.join(ROOT, rel);
+      if (fs.existsSync(abs)) {
+        try {
+          fs.unlinkSync(abs);
+          removed++;
+        } catch (err) {
+          warn('Konnte ' + rel + ' nicht entfernen: ' + err.message);
+        }
+      }
+    }
+    if (removed > 0) log(removed + ' veraltete Datei(en) entfernt.');
+
+    // 5. Status speichern und Abhaengigkeiten pruefen
+    writeState({ etag: etag, manifest: collected });
+    ensureDependencies(lockBefore);
+  } catch (err) {
+    warn('Update fehlgeschlagen: ' + err.message);
+    warn('Starte mit der lokal vorhanden Version.');
+  } finally {
+    try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch { /* ignorieren */ }
+  }
+}
+
+async function main() {
+  if (SKIP) {
+    log('SKIP_UPDATE gesetzt - Update uebersprungen.');
+    return;
+  }
+
+  if (fs.existsSync(path.join(ROOT, '.git'))) {
+    updateViaGit();
+  } else {
+    await updateViaArchive();
+  }
+}
+
+main().catch((err) => {
   warn('Update fehlgeschlagen: ' + err.message);
   warn('Starte mit der lokal vorhanden Version.');
-}
+});
