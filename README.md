@@ -15,19 +15,33 @@ und hat eine eigene Lobby, Regeln-Seite und Punktelogik.
 
 ## Installation
 
+**Variante 1 – mit Git (empfohlen)**
+
 ```bash
-git clone <repository-url>
-cd gesellschaftsspiele
+git clone https://github.com/LordSpanien-games/Gesellschaftsspiele.git
+cd Gesellschaftsspiele
 npm install
 npm start
 ```
 
-Der Launcher läuft danach auf http://localhost:3000
+**Variante 2 – als ZIP von GitHub**
+
+Auf GitHub „Code" → „Download ZIP", entpacken, im Ordner:
+
+```bash
+npm install
+npm start
+```
+
+Beide Varianten starten den Launcher danach auf http://localhost:3000
 
 ### Automatisches Update
 
 `npm start` holt **vor** dem eigentlichen Start immer die neuesten Dateien vom
-Repository:
+Repository. Das Update läuft über `scripts/update.js`, das per npm-`prestart`-Hook
+vor `server.js` ausgeführt wird.
+
+**Bei Git-Installation:**
 
 1. `git fetch origin <branch>`
 2. Falls der Remote-Stand neuer ist: lokale Versionen verwerfen und auf den
@@ -36,10 +50,18 @@ Repository:
    `npm install`
 4. Danach startet der Server
 
-Das Update läuft über `scripts/update.js`, das per npm-`prestart`-Hook vor
-`server.js` ausgeführt wird.
+**Bei ZIP-Installation** (kein `.git`-Ordner vorhanden) lädt das Skript das
+Repository-Archiv selbst von GitHub, entpackt es und kopiert die Dateien in den
+lokalen Ordner. Über einen ETag-Vergleich wird nur heruntergeladen, wenn sich
+etwas geändert hat. Dateien, die es im Repository nicht mehr gibt, werden
+entfernt.
 
-Offline-Verhalten: Schlägt der Fetch fehl (kein Netz), gibt es eine Warnung und
+In beiden Fällen bleiben lokale Daten unangetastet: `node_modules`, die
+Spielhistorie (`playerhistory.json`) und gespeicherte Sessions. Bei Git- werden
+eigene Änderungen mit `git stash` ausgelagert (mit `git stash pop`
+zurückholbar) statt gelöscht.
+
+Offline-Verhalten: Ist das Repository nicht erreichbar, gibt es eine Warnung und
 der Server startet mit der lokal vorhanden Version.
 
 Update überspringen:
