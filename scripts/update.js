@@ -300,6 +300,27 @@ function copyTree(srcDir, destDir, relBase, collected) {
   }
 }
 
+// Alle Dateien im lokalen Ordner sammeln (ohne die zu erhaltenden Bereiche)
+function collectLocalFiles(dir, relBase, collected) {
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return collected;
+  }
+  for (const entry of entries) {
+    const rel = relBase ? path.join(relBase, entry.name) : entry.name;
+    if (isPreserved(rel)) continue;
+    const abs = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectLocalFiles(abs, rel, collected);
+    } else {
+      collected.push(rel.split(path.sep).join('/'));
+    }
+  }
+  return collected;
+}
+
 async function updateViaArchive() {
   const repoUrl = readRepoUrl();
   if (!repoUrl) {
@@ -356,11 +377,13 @@ async function updateViaArchive() {
     copyTree(sourceDir, ROOT, '', collected);
     log(collected.length + ' Dateien aktualisiert.');
 
-    // 4. Dateien entfernen, die es im Repository nicht mehr gibt
-    const previous = state.manifest || [];
+    // 4. Dateien entfernen, die es im Repository nicht mehr gibt.
+    //    Gescannt wird der lokale Ordner (nicht nur das Manifest), damit
+    //    auch veraltete Dateien aus frueheren Installationen verschwinden.
+    const localFiles = collectLocalFiles(ROOT, '', []);
     const current = new Set(collected);
     let removed = 0;
-    for (const rel of previous) {
+    for (const rel of localFiles) {
       if (current.has(rel)) continue;
       if (isPreserved(rel)) continue;
       const abs = path.join(ROOT, rel);
