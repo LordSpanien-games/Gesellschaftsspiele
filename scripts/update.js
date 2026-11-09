@@ -321,6 +321,33 @@ function collectLocalFiles(dir, relBase, collected) {
   return collected;
 }
 
+// Die Dateiliste des letzten Laufs als "bekannte Repository-Dateien"
+function collectedFromManifest(state) {
+  return state.manifest || [];
+}
+
+// Entfernt lokale Dateien, die nicht zum Repository gehoeren.
+function removeStaleFiles(repoFiles, etag) {
+  const localFiles = collectLocalFiles(ROOT, '', []);
+  const known = new Set(repoFiles);
+  let removed = 0;
+  for (const rel of localFiles) {
+    if (known.has(rel)) continue;
+    if (isPreserved(rel)) continue;
+    const abs = path.join(ROOT, rel);
+    if (fs.existsSync(abs)) {
+      try {
+        fs.unlinkSync(abs);
+        removed++;
+      } catch (err) {
+        warn('Konnte ' + rel + ' nicht entfernen: ' + err.message);
+      }
+    }
+  }
+  if (removed > 0) log(removed + ' veraltete Datei(en) entfernt.');
+  return removed;
+}
+
 async function updateViaArchive() {
   const repoUrl = readRepoUrl();
   if (!repoUrl) {
@@ -348,6 +375,9 @@ async function updateViaArchive() {
 
   if (etag && state.etag && state.etag === etag) {
     log('Bereits auf dem neuesten Stand (ZIP-Installation).');
+    // Trotzdem aufraeumen: es koennen Dateien liegen, die es im
+    // Repository nicht mehr gibt (z.B. aus einer aelteren Installation).
+    removeStaleFiles(collectedFromManifest(state), etag);
     ensureDependencies(lockBefore);
     return;
   }
@@ -380,23 +410,7 @@ async function updateViaArchive() {
     // 4. Dateien entfernen, die es im Repository nicht mehr gibt.
     //    Gescannt wird der lokale Ordner (nicht nur das Manifest), damit
     //    auch veraltete Dateien aus frueheren Installationen verschwinden.
-    const localFiles = collectLocalFiles(ROOT, '', []);
-    const current = new Set(collected);
-    let removed = 0;
-    for (const rel of localFiles) {
-      if (current.has(rel)) continue;
-      if (isPreserved(rel)) continue;
-      const abs = path.join(ROOT, rel);
-      if (fs.existsSync(abs)) {
-        try {
-          fs.unlinkSync(abs);
-          removed++;
-        } catch (err) {
-          warn('Konnte ' + rel + ' nicht entfernen: ' + err.message);
-        }
-      }
-    }
-    if (removed > 0) log(removed + ' veraltete Datei(en) entfernt.');
+    removeStaleFiles(collected, etag);
 
     // 5. Status speichern und Abhaengigkeiten pruefen
     writeState({ etag: etag, manifest: collected });
