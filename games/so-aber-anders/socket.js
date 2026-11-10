@@ -162,7 +162,7 @@ module.exports = function(io) {
       const player = session.players[session.currentPlayerIndex];
       if (!player) return;
       player.score += 1;
-      session.wordsThisTurn += 1;
+      countWord(session);
       io.to(code).emit("scoreUpdate", session.players);
       checkTurnEnd(code, io);
     });
@@ -179,7 +179,7 @@ module.exports = function(io) {
       if (session.settings.minusOnSkip) {
         player.score -= 1;
       }
-      session.wordsThisTurn += 1;
+      countWord(session);
       io.to(code).emit("scoreUpdate", session.players);
       io.to(code).emit("wordSkipped", {
         skippedBy: player.name,
@@ -198,7 +198,7 @@ module.exports = function(io) {
       if (session.settings.minusOnViolation) {
         player.score -= 1;
       }
-      session.wordsThisTurn += 1;
+      countWord(session);
       io.to(code).emit("scoreUpdate", session.players);
       checkTurnEnd(code, io);
     });
@@ -361,7 +361,8 @@ function beginTurn(code, io) {
     letter: session.currentLetter,
     players: session.players,
     settings: session.settings,
-    round: session.currentRound
+    round: session.currentRound,
+    wordsThisTurn: session.wordsThisTurn
   });
   // Bei timerScope "turn" startet die Uhr hier einmal fuer den ganzen Zug
   // und laeuft ueber alle Woerter weiter.
@@ -411,13 +412,20 @@ function sendNextWord(code, io) {
   const session = sessions[code];
   if (!session) return;
   const listName = session.settings.wordlist || "standard";
-  const list = (wordlists[listName] || wordlists.standard).words.filter(
-    w => !session.usedWords.includes(w.term)
-  );
+  const allWords = (wordlists[listName] || wordlists.standard).words;
+  let list = allWords.filter(w => !session.usedWords.includes(w.term));
+
+  // Alle Woerter sind schon gespielt worden. Das ist KEIN Spielende -
+  // das Spielende legt allein die Einstellung "Spielende per" fest.
+  // Stattdessen wird die Wortliste neu gemischt, damit es weitergeht.
   if (list.length === 0) {
-    io.to(code).emit("gameOver", session.players);
-    return;
+    session.usedWords = [];
+    list = allWords;
+    io.to(code).emit("wordListRefreshed", {
+      total: allWords.length
+    });
   }
+
   const word = list[Math.floor(Math.random() * list.length)];
   session.usedWords.push(word.term);
   const tabooCount = session.settings.tabooCount || 3;
@@ -437,9 +445,23 @@ function sendNextWord(code, io) {
   }
 }
 
+// Zaehlt ein Wort fuer die Anzeige "Wort X von Y".
+// Mit aktivem Timer gibt es keine Wortgrenze - der Zaehler bleibt dann
+// bei 0, damit die Anzeige nicht eine Begrenzung vortaeuscht, die es
+// nicht gibt.
+function countWord(session) {
+  if (session.settings.timer) return;
+  session.wordsThisTurn += 1;
+}
+
 function checkTurnEnd(code, io) {
   const session = sessions[code];
   if (!session) return;
+  // Wortzaehler melden (nur ohne Timer sinnvoll - mit Timer gibt es
+  // keine Wortgrenze)
+  io.to(code).emit("wordProgress", { wordsThisTurn: session.wordsThisTurn });
+  // Mit aktivem Timer ist die Zahl der Woerter pro Runde unbegrenzt:
+  // der Zug endet ausschliesslich, wenn der Timer ablaeuft.
   if (session.settings.timer) {
     sendNextWord(code, io);
     return;

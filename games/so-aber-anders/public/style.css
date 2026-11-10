@@ -207,6 +207,14 @@ input, select {
   min-height: 1.5rem;
 }
 
+.word-counter {
+  text-align: center;
+  font-size: 1rem;
+  color: #8ab4f8;
+  margin-bottom: 8px;
+  min-height: 1.2rem;
+}
+
 /* Statusmeldung fuer alle Spieler (z.B. "hat gepasst") */
 
 .status-msg {

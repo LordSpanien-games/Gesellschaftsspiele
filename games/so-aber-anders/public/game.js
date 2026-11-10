@@ -7,6 +7,7 @@ const isHost = params.get("host") === "true";
 let timerInterval = null;
 let settings = null;
 let currentLetter = null;
+let wordsThisTurn = 0;
 
 socket.emit("rejoinSession", { code: sessionCode, name: playerName });
 
@@ -14,6 +15,7 @@ socket.on("newTurn", (data) => {
   settings = data.settings;
   document.getElementById("round-display").textContent =
     "Runde " + data.round;
+  updateWordCounter();
   if (data.letter) showLetter(data.letter);
   if (data.explainer === playerName) {
     showScreen("screen-explainer");
@@ -123,6 +125,24 @@ socket.on("letterChosen", (data) => {
   // Der Bildschirm wechselt, sobald newTurn eintrifft.
 });
 
+socket.on("wordProgress", (data) => {
+  updateWordCounter(data.wordsThisTurn);
+});
+
+// Alle Woerter der Liste sind gespielt - die Liste startet neu.
+// Das Spiel laeuft dabei weiter, es ist kein Spielende.
+socket.on("wordListRefreshed", (data) => {
+  const status = document.getElementById("status-msg");
+  if (!status) return;
+  status.textContent = "🔄 Alle " + data.total +
+    " Wörter gespielt – die Wortliste startet neu!";
+  status.classList.add("visible");
+  setTimeout(() => {
+    status.classList.remove("visible");
+    status.textContent = "";
+  }, 3000);
+});
+
 socket.on("scoreUpdate", (players) => {
   updateScoreBoard(players);
 });
@@ -145,6 +165,8 @@ socket.on("wordSkipped", (data) => {
 
 socket.on("roundEnd", (data) => {
   stopTimer();
+  wordsThisTurn = 0;
+  updateWordCounter(0);
   showScreen("screen-waiting");
   document.getElementById("current-explainer").textContent =
     "✅ Runde " + data.round + " beendet! Naechste Runde startet...";
@@ -317,6 +339,22 @@ function showScreen(id) {
   ["screen-waiting","screen-explainer","screen-controller","screen-gameover","screen-letter"]
     .forEach(s => document.getElementById(s).style.display = "none");
   document.getElementById(id).style.display = "block";
+}
+
+// Zeigt "Wort X von Y" - nur ohne Timer. Mit aktivem Timer gibt es
+// keine Wortgrenze, dann wird nichts angezeigt.
+function updateWordCounter(words) {
+  if (typeof words === "number") wordsThisTurn = words;
+  const el = document.getElementById("word-counter");
+  if (!el) return;
+  if (!settings || settings.timer) {
+    el.textContent = "";
+    return;
+  }
+  const total = settings.wordsPerRound || 0;
+  el.textContent = total > 0
+    ? "Wort " + wordsThisTurn + " von " + total
+    : "";
 }
 
 function updateScoreBoard(players) {
