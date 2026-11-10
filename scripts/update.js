@@ -259,26 +259,50 @@ function request(url, method = 'GET', redirects = 0) {
   });
 }
 
-// ZIP entpacken: Windows -> PowerShell, sonst -> unzip
+// ZIP entpacken. Reihenfolge:
+//   1. tar.exe aus dem Windows-System (bsdtar - kann ZIPs entpacken)
+//   2. unzip (falls im PATH vorhanden)
+//   3. PowerShell Expand-Archive als letzte Option
 function extractZip(zipPath, destDir) {
   fs.mkdirSync(destDir, { recursive: true });
+
+  const runTool = (cmd, args) => {
+    try {
+      execFileSync(cmd, args, { stdio: ['ignore', 'pipe', 'pipe'], timeout: 180000 });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  // 1. Windows-System-tar (bsdtar) - unterstuetzt ZIP-Archive.
+  //    Wichtig: "/usr/bin/unzip" ist ein MSYS-Pfad und von Node aus
+  //    nicht aufrufbar, daher hier bewusst nur echte Windows-Pfade.
+  const winTar = 'C:/Windows/System32/tar.exe';
+  if (process.platform === 'win32' && fs.existsSync(winTar)) {
+    if (runTool(winTar, ['-xf', zipPath, '-C', destDir])) return;
+  }
+
+  // 2. unzip aus dem PATH
+  if (runTool('unzip', ['-q', '-o', zipPath, '-d', destDir])) return;
+
+  // 3. tar aus dem PATH
+  if (runTool('tar', ['-xf', zipPath, '-C', destDir])) return;
+
+  // 4. PowerShell
   if (process.platform === 'win32') {
+    // Forward-Slashes verwenden: Backslashes sind in PowerShell-Strings
+    // je nach Kontext Escape-Zeichen.
+    const psPath = p => p.split(path.sep).join('/').replace(/'/g, "''");
     execFileSync('powershell', [
       '-NoProfile', '-Command',
-      "Expand-Archive -LiteralPath '" + zipPath.replace(/'/g, "''") +
-      "' -DestinationPath '" + destDir.replace(/'/g, "''") + "' -Force"
+      "Expand-Archive -LiteralPath '" + psPath(zipPath) +
+      "' -DestinationPath '" + psPath(destDir) + "' -Force"
     ], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 180000 });
     return;
   }
-  let unzip = null;
-  try {
-    unzip = execFileSync('which', ['unzip'], { encoding: 'utf8' }).trim();
-  } catch { /* unzip fehlt */ }
-  if (unzip) {
-    execFileSync(unzip, ['-q', '-o', zipPath, '-d', destDir], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 180000 });
-    return;
-  }
-  execFileSync('tar', ['-xf', zipPath, '-C', destDir], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 180000 });
+
+  throw new Error('kein Entpackwerkzeug verfuegbar');
 }
 
 // Ordnerinhalt rekursiv kopieren, Liste der kopierten Dateien sammeln
