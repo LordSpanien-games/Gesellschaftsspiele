@@ -1,24 +1,6168 @@
-﻿{
+{
   "words": [
     {
+      "term": "Kühlschrank",
+      "forbidden": [
+        "kalt",
+        "Küche",
+        "Lebensmittel",
+        "Tür",
+        "Gefrierfach",
+        "Strom"
+      ]
+    },
+    {
+      "term": "Waschmaschine",
+      "forbidden": [
+        "Textil",
+        "sauber",
+        "Fluscheimer",
+        "Trommel",
+        "Schleuder",
+        "Wäsche"
+      ]
+    },
+    {
+      "term": "Staubsauger",
+      "forbidden": [
+        "Boden",
+        "Schmutz",
+        "Sauger",
+        "Teppich",
+        "Staub",
+        "Schlauch"
+      ]
+    },
+    {
+      "term": "Mikrowelle",
+      "forbidden": [
+        "Ofen",
+        "heizen",
+        "Welle",
+        "Herdschalt",
+        "warm",
+        "Gericht"
+      ]
+    },
+    {
+      "term": "Toaster",
+      "forbidden": [
+        "Toast",
+        "Brot",
+        "knusprig",
+        "Steckdose",
+        "Scheibe",
+        "grillen"
+      ]
+    },
+    {
+      "term": "Bügeleisen",
+      "forbidden": [
+        "Bügel",
+        "glatt",
+        "Wäsche",
+        "Heizplatte",
+        "Sprühwasser",
+        "Hemd"
+      ]
+    },
+    {
+      "term": "Kaffeemaschine",
+      "forbidden": [
+        "Bohnen",
+        "Espresso",
+        "Filter",
+        "Tasse",
+        "Milch",
+        "Kaffee"
+      ]
+    },
+    {
+      "term": "Wasserkocher",
+      "forbidden": [
+        "Wasser",
+        "kochen",
+        "Heizelement",
+        "Tasse",
+        "aufkochen",
+        "Sprudler"
+      ]
+    },
+    {
+      "term": "Spülmaschine",
+      "forbidden": [
+        "Teller",
+        "Geschirr",
+        "besteck",
+        "sauber",
+        "Glanz",
+        "Tabletten"
+      ]
+    },
+    {
+      "term": "Herd",
+      "forbidden": [
+        "kochen",
+        "platten",
+        "Pfanne",
+        "backen",
+        "Feuer",
+        "Braten"
+      ]
+    },
+    {
+      "term": "Bratpfanne",
+      "forbidden": [
+        "braten",
+        "heiß",
+        "Handle",
+        "Koch",
+        "spiegeln"
+      ]
+    },
+    {
+      "term": "Kochtopf",
+      "forbidden": [
+        "kochen",
+        "Wasser",
+        "sprudeln",
+        "Deckel",
+        "Koch",
+        "Suppe"
+      ]
+    },
+    {
+      "term": "Schneidebrett",
+      "forbidden": [
+        "schneiden",
+        "Holz",
+        "Brett",
+        "Messer",
+        "Gemüse",
+        "sägen"
+      ]
+    },
+    {
+      "term": "Besteck",
+      "forbidden": [
+        "Gabel",
+        "Messer",
+        "Löffel",
+        "Teller",
+        "schneiden"
+      ]
+    },
+    {
+      "term": "Teller",
+      "forbidden": [
+        "rund",
+        "flach",
+        "Rand",
+        "Porzellan",
+        "Suppe",
+        "Abwasch"
+      ]
+    },
+    {
+      "term": "Trinkglas",
+      "forbidden": [
+        "trinken",
+        "Becher",
+        "Flüssigkeit",
+        "Rand",
+        "Milch",
+        "Saft"
+      ]
+    },
+    {
+      "term": "Schneebesen",
+      "forbidden": [
+        "Schlag",
+        "Teig",
+        "rühren",
+        "schwingen",
+        "Eier",
+        "Mixer"
+      ]
+    },
+    {
+      "term": "Salatschüssel",
+      "forbidden": [
+        "mischen",
+        "Salat",
+        "Gemüse",
+        "grand",
+        "serveieren",
+        "Bowl"
+      ]
+    },
+    {
+      "term": "Serviette",
+      "forbidden": [
+        "Papier",
+        "abwischen",
+        "Tisch",
+        "bestecken",
+        "Tuch",
+        "Servierdecke"
+      ]
+    },
+    {
+      "term": "Küchenmesser",
+      "forbidden": [
+        "schneiden",
+        "scharf",
+        "Klinge",
+        "schneidebrett",
+        "schälen",
+        "Saft"
+      ]
+    },
+    {
+      "term": "Schere",
+      "forbidden": [
+        "schneiden",
+        "scheren",
+        "schnell",
+        "Kreativität",
+        "Papier",
+        "Faden"
+      ]
+    },
+    {
+      "term": "Korkenzieher",
+      "forbidden": [
+        "Flasche",
+        "Kork",
+        "öffnen",
+        "Wein",
+        "Korken",
+        "Weinbesteck"
+      ]
+    },
+    {
+      "term": "Dosenöffner",
+      "forbidden": [
+        "Dose",
+        "öffnen",
+        "Büchse",
+        "Blech",
+        "Ring",
+        "Konserve"
+      ]
+    },
+    {
+      "term": "Pfannenwender",
+      "forbidden": [
+        "wenden",
+        "braten",
+        "Pfanne",
+        "Holz",
+        "spiegeln",
+        "Kuchen"
+      ]
+    },
+    {
+      "term": "Nudelholz",
+      "forbidden": [
+        "ausrollen",
+        "Teig",
+        "rollen",
+        "Holz",
+        "Mehl",
+        "Kuchen"
+      ]
+    },
+    {
+      "term": "Backform",
+      "forbidden": [
+        "backen",
+        "Kuchen",
+        "Form",
+        "Rohr",
+        "Tee",
+        "Backblech"
+      ]
+    },
+    {
+      "term": "Muffinform",
+      "forbidden": [
+        "Muffins",
+        "backen",
+        "Form",
+        "Teig",
+        "Papier",
+        "Kuchen"
+      ]
+    },
+    {
+      "term": "Sieb",
+      "forbidden": [
+        "gießen",
+        "Abgießen",
+        "Kochen",
+        "Maschen",
+        "Tee",
+        "Nudeln"
+      ]
+    },
+    {
+      "term": "Messbecher",
+      "forbidden": [
+        "messen",
+        "Milch",
+        "Mehl",
+        "Volumen",
+        "Flüssigkeit",
+        "Hafermilch"
+      ]
+    },
+    {
+      "term": "Küchenwaage",
+      "forbidden": [
+        "wiegen",
+        "gewicht",
+        "Gramm",
+        "Kilo",
+        "Zwiebeln",
+        "Maß"
+      ]
+    },
+    {
+      "term": "Eierkocher",
+      "forbidden": [
+        "Eier",
+        "kochen",
+        "Holz",
+        "dampfen",
+        "weich",
+        "Omelett"
+      ]
+    },
+    {
+      "term": "Fritteuse",
+      "forbidden": [
+        "frittieren",
+        "heiß",
+        "Öl",
+        "Fett",
+        "Kartoffeln",
+        "ausbacken"
+      ]
+    },
+    {
+      "term": "Waffeleisen",
+      "forbidden": [
+        "Waffeln",
+        "backen",
+        "Eisen",
+        "Teig",
+        "Haube",
+        "Herz"
+      ]
+    },
+    {
+      "term": "Dosenbohrer",
+      "forbidden": [
+        "Dose",
+        "bohren",
+        "Loch",
+        "Deckel",
+        "Büchse",
+        "Konserve"
+      ]
+    },
+    {
+      "term": "Salatbesteck",
+      "forbidden": [
+        "besteck",
+        "Salat",
+        "schöpfen",
+        "Gabel",
+        "spinat"
+      ]
+    },
+    {
+      "term": "Flaschenöffner",
+      "forbidden": [
+        "Flasche",
+        "öffnen",
+        "Bier",
+        "Korken",
+        "hebeln",
+        "Bierflasche"
+      ]
+    },
+    {
+      "term": "Schneeschaufel",
+      "forbidden": [
+        "Schnee",
+        "räumen",
+        "schieben",
+        "Winter",
+        "Streusalz",
+        "Schaufel"
+      ]
+    },
+    {
+      "term": "Besen",
+      "forbidden": [
+        "kehren",
+        "Staub",
+        "fegen",
+        "Boden",
+        "Kehrbesen",
+        "Staubwischen"
+      ]
+    },
+    {
+      "term": "Wischmopp",
+      "forbidden": [
+        "wischen",
+        "Boden",
+        "Lappen",
+        "Eimer",
+        "Schmutz",
+        "Aufwischen"
+      ]
+    },
+    {
+      "term": "Putzlappen",
+      "forbidden": [
+        "Lappen",
+        "wischen",
+        "fettig",
+        "reinigen",
+        "Farbe",
+        "Schaum"
+      ]
+    },
+    {
+      "term": "Schwamm",
+      "forbidden": [
+        "abwaschen",
+        "schaumig",
+        "Seife",
+        "reinigen",
+        "Lappen"
+      ]
+    },
+    {
+      "term": "Eimer",
+      "forbidden": [
+        "Wasser",
+        "tragen",
+        "voller",
+        "Mopp",
+        "Boden"
+      ]
+    },
+    {
+      "term": "Wäschekorb",
+      "forbidden": [
+        "Wäsche",
+        "sammeln",
+        "Korb",
+        "voller",
+        "sortieren",
+        "Schmutzwäsche"
+      ]
+    },
+    {
+      "term": "Bügelbrett",
+      "forbidden": [
+        "Bügeln",
+        "glatt",
+        "brett",
+        "Holz",
+        "hemd",
+        "Bügel"
+      ]
+    },
+    {
+      "term": "Wäscheständer",
+      "forbidden": [
+        "Wäsche",
+        "trocknen",
+        "klappt",
+        "halten",
+        "Ständer",
+        "Handtuch"
+      ]
+    },
+    {
+      "term": "Kleiderbügel",
+      "forbidden": [
+        "Kleidung",
+        "aufhängen",
+        "Bügel",
+        "Haken",
+        "Schrank",
+        "Kleider"
+      ]
+    },
+    {
+      "term": "Trittleiter",
+      "forbidden": [
+        "Leiter",
+        "steigen",
+        "hoch",
+        "Stufe",
+        "Stufe",
+        "Absturz"
+      ]
+    },
+    {
+      "term": "Werkzeugkasten",
+      "forbidden": [
+        "Werkzeug",
+        "reparatur",
+        "Hammer",
+        "Schraubenzieher",
+        "Kiste",
+        "Werkbank"
+      ]
+    },
+    {
+      "term": "Schraubenzieher",
+      "forbidden": [
+        "Schraube",
+        "drehen",
+        "Phillips",
+        "Kreuz",
+        "Schraubenkopf",
+        "Inbus"
+      ]
+    },
+    {
+      "term": "Hammer",
+      "forbidden": [
+        "klopfen",
+        "nagel",
+        "Holz",
+        "head",
+        "Schlag",
+        "Baustelle"
+      ]
+    },
+    {
+      "term": "Zange",
+      "forbidden": [
+        "greifen",
+        "quetschen",
+        "Kabel",
+        "Pinzette",
+        "draht"
+      ]
+    },
+    {
+      "term": "Säge",
+      "forbidden": [
+        "sägen",
+        "Holz",
+        "Blatt",
+        "Schnitt",
+        "Trennen",
+        "Sägeblatt"
+      ]
+    },
+    {
+      "term": "Feile",
+      "forbidden": [
+        "feilen",
+        "rauh",
+        "Schleifen",
+        "Feilspur",
+        "Stahl",
+        "Werkstatt"
+      ]
+    },
+    {
+      "term": "Wasserwaage",
+      "forbidden": [
+        "waage",
+        "eben",
+        "horizontal",
+        "Blas",
+        "gerade",
+        "Maßband"
+      ]
+    },
+    {
+      "term": "Maßband",
+      "forbidden": [
+        "messen",
+        "Länge",
+        "Zentimeter",
+        "Meter",
+        "Strecke"
+      ]
+    },
+    {
+      "term": "Bohrer",
+      "forbidden": [
+        "bohren",
+        "Löcher",
+        "SDS",
+        "Bohrhammer",
+        "Bit",
+        "Schraube"
+      ]
+    },
+    {
+      "term": "Steckdose",
+      "forbidden": [
+        "Strom",
+        "anschließen",
+        "Stecker",
+        "Wand",
+        "Dose"
+      ]
+    },
+    {
+      "term": "Verlängerungskabel",
+      "forbidden": [
+        "Kabel",
+        "Strom",
+        "verlängern",
+        "Stecker",
+        "Leitung",
+        "Abschnitt"
+      ]
+    },
+    {
+      "term": "Glühbirne",
+      "forbidden": [
+        "Licht",
+        "Birne",
+        "Schraubsockel",
+        "warmes Licht",
+        "Sockel"
+      ]
+    },
+    {
+      "term": "Fernbedienung",
+      "forbidden": [
+        "TV",
+        "Knopf",
+        "programm",
+        "Zapper",
+        "Fernseher"
+      ]
+    },
+    {
+      "term": "Taschenlampe",
+      "forbidden": [
+        "Licht",
+        "Handy",
+        "Strahl",
+        "beleuchten",
+        "Dunkelheit",
+        "Stab"
+      ]
+    },
+    {
+      "term": "Kerze",
+      "forbidden": [
+        "Wachs",
+        "Docht",
+        "brennen",
+        "Licht",
+        "Weihnachten",
+        "duftet"
+      ]
+    },
+    {
+      "term": "Streichholzschachtel",
+      "forbidden": [
+        "Streichholz",
+        "Feuer",
+        "anzünden",
+        "Schachtel",
+        "Glut",
+        "funken"
+      ]
+    },
+    {
+      "term": "Feuerlöscher",
+      "forbidden": [
+        "Feuer",
+        "löschen",
+        "Schaum",
+        "Löschmittel",
+        "Brand",
+        "Feuerwehr"
+      ]
+    },
+    {
+      "term": "Rauchmelder",
+      "forbidden": [
+        "Rauch",
+        "Feuer",
+        "piept",
+        "Melder",
+        "Batterie",
+        "Brandschutz"
+      ]
+    },
+    {
+      "term": "Türschloss",
+      "forbidden": [
+        "Schloss",
+        "Tür",
+        "abschließen",
+        "schließen",
+        "Schlüssel",
+        "Riegel"
+      ]
+    },
+    {
+      "term": "Schlüssel",
+      "forbidden": [
+        "Schloss",
+        "öffnen",
+        "Schlüsselbund",
+        "passen",
+        "Steckplatz"
+      ]
+    },
+    {
+      "term": "Vorgängeschloss",
+      "forbidden": [
+        "Schloss",
+        "sichern",
+        "Vorhänger",
+        "Kette",
+        "Bügel"
+      ]
+    },
+    {
+      "term": "Briefkasten",
+      "forbidden": [
+        "Brief",
+        "Post",
+        "Zustellung",
+        "Kasten",
+        "Hausnummer"
+      ]
+    },
+    {
+      "term": "Klingel",
+      "forbidden": [
+        "Tür",
+        "öffnen",
+        "Summer",
+        "klingeln",
+        "Haus",
+        "Eingang"
+      ]
+    },
+    {
+      "term": "Briefmarke",
+      "forbidden": [
+        "Post",
+        "Brief",
+        "stempeln",
+        "Marke",
+        "frankieren"
+      ]
+    },
+    {
+      "term": "Kugelschreiber",
+      "forbidden": [
+        "schreiben",
+        "Stift",
+        "Kappe",
+        "Tinte",
+        "Pen",
+        "Schreibtisch"
+      ]
+    },
+    {
+      "term": "Füllfederhalter",
+      "forbidden": [
+        "Tinte",
+        "Feder",
+        "schreiben",
+        "Edelstahl",
+        "Pen",
+        "Füllfeder"
+      ]
+    },
+    {
+      "term": "Bleistift",
+      "forbidden": [
+        "zeichnen",
+        "Graphit",
+        "Büro",
+        "Spitze",
+        "Holz",
+        "Malstift"
+      ]
+    },
+    {
+      "term": "Radiergummi",
+      "forbidden": [
+        "löschen",
+        "radieren",
+        "Gummi",
+        "spuren",
+        "Korrektur",
+        "Graphit"
+      ]
+    },
+    {
+      "term": "Lineal",
+      "forbidden": [
+        "liniieren",
+        "cm",
+        "Messen",
+        "maßstab",
+        "Kante"
+      ]
+    },
+    {
+      "term": "Haftnotiz",
+      "forbidden": [
+        "notiz",
+        "merken",
+        "kleben",
+        "Zettel",
+        "Merkzettel",
+        "haken"
+      ]
+    },
+    {
+      "term": "Kalender",
+      "forbidden": [
+        "Datum",
+        "Jahr",
+        "monat",
+        "Blatt",
+        "Tage",
+        "Feiertag"
+      ]
+    },
+    {
+      "term": "Bilderrahmen",
+      "forbidden": [
+        "Bild",
+        "rahmen",
+        "einhängen",
+        "Wand",
+        "Photo",
+        "Kunst"
+      ]
+    },
+    {
+      "term": "Kerzenhalter",
+      "forbidden": [
+        "Kerze",
+        "halten",
+        "Leuchter",
+        "Weihnachten",
+        "Metall",
+        "Halter"
+      ]
+    },
+    {
+      "term": "Blumenvase",
+      "forbidden": [
+        "Blumen",
+        "vasen",
+        "stellen",
+        "Sträuß",
+        "Tisch",
+        "deko"
+      ]
+    },
+    {
+      "term": "Blumentopf",
+      "forbidden": [
+        "Blume",
+        "Topf",
+        "pflanzen",
+        "Erde",
+        "Garten"
+      ]
+    },
+    {
+      "term": "Gießkanne",
+      "forbidden": [
+        "Wasser",
+        "gießen",
+        "Kanne",
+        "Pflanzen",
+        "Erde",
+        "Brunnen"
+      ]
+    },
+    {
+      "term": "Gartenschere",
+      "forbidden": [
+        "schneiden",
+        "Rosen",
+        "Äste",
+        "Garten",
+        "Zweig",
+        "Blüte"
+      ]
+    },
+    {
+      "term": "Rasenmäher",
+      "forbidden": [
+        "mähen",
+        "Rasen",
+        "Gras",
+        "heben",
+        "Garten",
+        "Mähwerk"
+      ]
+    },
+    {
+      "term": "Schubkarre",
+      "forbidden": [
+        "Erde",
+        "transportieren",
+        "karre",
+        "Schub",
+        "Transport",
+        "Sack"
+      ]
+    },
+    {
+      "term": "Spaten",
+      "forbidden": [
+        "graben",
+        "Erde",
+        "Stechen",
+        "Garten",
+        "Grab",
+        "Spatenblatt"
+      ]
+    },
+    {
+      "term": "Rechen",
+      "forbidden": [
+        "Heu",
+        "harken",
+        "Garten",
+        "Blätter",
+        "Zinken",
+        "Rasen"
+      ]
+    },
+    {
+      "term": "Harke",
+      "forbidden": [
+        "harken",
+        "Blätter",
+        "Garten",
+        "Rechen",
+        "laub",
+        "Zinken"
+      ]
+    },
+    {
+      "term": "Gartenschlauch",
+      "forbidden": [
+        "Wasser",
+        "Garten",
+        "gießen",
+        "Schlauch",
+        "Rohr",
+        "Brunnen"
+      ]
+    },
+    {
+      "term": "Vogelhaus",
+      "forbidden": [
+        "Vogel",
+        "Nest",
+        "Vogelfutter",
+        "Holz",
+        "Taube"
+      ]
+    },
+    {
+      "term": "Bienenstock",
+      "forbidden": [
+        "Biene",
+        "Honig",
+        "Wachs",
+        "Kasten",
+        "Schwarm",
+        "Imkerei"
+      ]
+    },
+    {
+      "term": "Komposthaufen",
+      "forbidden": [
+        "Kompost",
+        "Erde",
+        "Abfall",
+        "Garten",
+        "Rotten",
+        "Dünger"
+      ]
+    },
+    {
+      "term": "Gartenbank",
+      "forbidden": [
+        "Bank",
+        "sitzen",
+        "Garten",
+        "Holz",
+        "Outdoor",
+        "Terrasse"
+      ]
+    },
+    {
+      "term": "Sonnenbrille",
+      "forbidden": [
+        "Sonne",
+        "UV",
+        "glas",
+        "Schatten",
+        "Brille",
+        "Augen"
+      ]
+    },
+    {
       "term": "Elefant",
-      "forbidden": ["Rüssel", "Tier", "Afrika", "groß", "grau", "Savanne", "Stoßzahn"]
+      "forbidden": [
+        "Rüssel",
+        "Tier",
+        "Afrika",
+        "groß",
+        "grau",
+        "Savanne",
+        "Stoßzahn"
+      ]
     },
     {
       "term": "Sonne",
-      "forbidden": ["Licht", "warm", "Stern", "gelb", "Tag", "Strahlen", "Himmel"]
+      "forbidden": [
+        "Licht",
+        "warm",
+        "Stern",
+        "gelb",
+        "Tag",
+        "Strahlen",
+        "Himmel"
+      ]
     },
     {
       "term": "Fahrrad",
-      "forbidden": ["Rad", "fahren", "Lenker", "Pedal", "Sattel", "Kette", "Reifen"]
-    },
-    {
-      "term": "Kühlschrank",
-      "forbidden": ["kalt", "Küche", "Lebensmittel", "Tür", "Gefrierfach", "Strom"]
+      "forbidden": [
+        "Rad",
+        "fahren",
+        "Lenker",
+        "Pedal",
+        "Sattel",
+        "Kette",
+        "Reifen"
+      ]
     },
     {
       "term": "Gitarre",
-      "forbidden": ["Musik", "Saiten", "spielen", "Instrument", "Akkord", "Holz"]
+      "forbidden": [
+        "Musik",
+        "Saiten",
+        "spielen",
+        "Instrument",
+        "Akkord",
+        "Holz"
+      ]
+    },
+    {
+      "term": "Regenschirm",
+      "forbidden": [
+        "Regen",
+        "schützen",
+        "Schirm",
+        "Tropfen",
+        "Wetter",
+        "Stange"
+      ]
+    },
+    {
+      "term": "Schneemann",
+      "forbidden": [
+        "Schnee",
+        "Knie",
+        "Nasen",
+        "Spalten",
+        "Winter",
+        "Kugeln"
+      ]
+    },
+    {
+      "term": "Eisberg",
+      "forbidden": [
+        "Wasser",
+        "gletscher",
+        "kalt",
+        "schwimmen",
+        "Arktis",
+        "Klima"
+      ]
+    },
+    {
+      "term": "Vulkan",
+      "forbidden": [
+        "Lava",
+        "Feuer",
+        "Ausbruch",
+        "Erde",
+        "Magma",
+        "Krater"
+      ]
+    },
+    {
+      "term": "Blitz",
+      "forbidden": [
+        "Donner",
+        "Gewitter",
+        "Sturm",
+        "elektrisch",
+        "Himmel",
+        "Blitzschlag"
+      ]
+    },
+    {
+      "term": "Regenbogen",
+      "forbidden": [
+        "Farben",
+        "Wasser",
+        "Tropfen",
+        "Bogen",
+        "Wetter",
+        "Prisma"
+      ]
+    },
+    {
+      "term": "Wolke",
+      "forbidden": [
+        "Himmel",
+        "weiß",
+        "Regen",
+        "schweben",
+        "Luft",
+        "Form"
+      ]
+    },
+    {
+      "term": "Fluss",
+      "forbidden": [
+        "Wasser",
+        "fließen",
+        "Bach",
+        "Ufer",
+        "Strömung",
+        "Quelle"
+      ]
+    },
+    {
+      "term": "Wasserfall",
+      "forbidden": [
+        "Wasser",
+        "fallen",
+        "Felsen",
+        "Höhe",
+        "Kaskade",
+        "strom"
+      ]
+    },
+    {
+      "term": "See",
+      "forbidden": [
+        "Wasser",
+        "still",
+        "Ufer",
+        "schwimmen",
+        "Fisch",
+        "Teich"
+      ]
+    },
+    {
+      "term": "Meer",
+      "forbidden": [
+        "Ozean",
+        "Welle",
+        "Salz",
+        "Strand",
+        "Fisch",
+        "Küste"
+      ]
+    },
+    {
+      "term": "Insel",
+      "forbidden": [
+        "Land",
+        "Wasser",
+        "Strand",
+        "umgeben",
+        "Meer",
+        "Bucht"
+      ]
+    },
+    {
+      "term": "Wüste",
+      "forbidden": [
+        "Sand",
+        "Dürre",
+        "Kaktus",
+        "heiß",
+        "Oase",
+        "Wüsten"
+      ]
+    },
+    {
+      "term": "Gletscher",
+      "forbidden": [
+        "Eis",
+        "schmelzen",
+        "Pol",
+        "Arktis",
+        "Kälte",
+        "Schnee"
+      ]
+    },
+    {
+      "term": "Wald",
+      "forbidden": [
+        "Baum",
+        "grün",
+        "Blätter",
+        "Wälder",
+        "Forst"
+      ]
+    },
+    {
+      "term": "Baum",
+      "forbidden": [
+        "Stamm",
+        "Äste",
+        "Wurzel",
+        "Blätter",
+        "Blüten",
+        "Krone"
+      ]
+    },
+    {
+      "term": "Blume",
+      "forbidden": [
+        "Blüte",
+        "Petalen",
+        "Stiel",
+        "Garten",
+        "duften",
+        "Wurzel"
+      ]
+    },
+    {
+      "term": "Gras",
+      "forbidden": [
+        "Halm",
+        "Grasland",
+        "grün",
+        "Rasen",
+        "Saat",
+        "Kuh"
+      ]
+    },
+    {
+      "term": "Klee",
+      "forbidden": [
+        "Blüte",
+        "Wiese",
+        "Biene",
+        "grün",
+        "Pflanze",
+        "Halme"
+      ]
+    },
+    {
+      "term": "Pilz",
+      "forbidden": [
+        "Hut",
+        "Stiel",
+        "myzel",
+        "Wald",
+        "spor",
+        "gemüse",
+        "parasit"
+      ]
+    },
+    {
+      "term": "Laubblatt",
+      "forbidden": [
+        "Blatt",
+        "grün",
+        "Ahorn",
+        "Eiche",
+        "Herbst",
+        "Tanne"
+      ]
+    },
+    {
+      "term": "Tanne",
+      "forbidden": [
+        "Nadeln",
+        "Wald",
+        "Weihnachten",
+        "grün",
+        "Baum",
+        "Holz"
+      ]
+    },
+    {
+      "term": "Eiche",
+      "forbidden": [
+        "Holz",
+        "Stamm",
+        "Rinde",
+        "Eichel",
+        "Baum",
+        "Ast"
+      ]
+    },
+    {
+      "term": "Buche",
+      "forbidden": [
+        "Blatt",
+        "Rinde",
+        "Wald",
+        "braun",
+        "Holz",
+        "Tanne"
+      ]
+    },
+    {
+      "term": "Kaktus",
+      "forbidden": [
+        "Stacheln",
+        "Wüste",
+        "Sukkulent",
+        "grün",
+        "Trockenheit",
+        "Pflanze"
+      ]
+    },
+    {
+      "term": "Schnecke",
+      "forbidden": [
+        "Kreuz",
+        "Küche",
+        "temp",
+        "Feucht",
+        "Schleim",
+        "Kriechtier"
+      ]
+    },
+    {
+      "term": "Frosch",
+      "forbidden": [
+        "Sprung",
+        "Teich",
+        "grün",
+        "Beine",
+        "Lunge",
+        "Quak"
+      ]
+    },
+    {
+      "term": "Eule",
+      "forbidden": [
+        "Nacht",
+        "Vogel",
+        "Flügel",
+        "Flug",
+        "rufen",
+        "Sumpf"
+      ]
+    },
+    {
+      "term": "Adler",
+      "forbidden": [
+        "Flug",
+        "Jagd",
+        "Nest",
+        "Horizont",
+        "Kralle",
+        "Gefieder"
+      ]
+    },
+    {
+      "term": "Fuchs",
+      "forbidden": [
+        "Wald",
+        "rot",
+        "Röcke",
+        "Schwanz",
+        "Tier",
+        "List"
+      ]
+    },
+    {
+      "term": "Wolf",
+      "forbidden": [
+        "Wald",
+        "heulen",
+        "Horde",
+        "Pack",
+        "Druck",
+        "Zahn"
+      ]
+    },
+    {
+      "term": "Bär",
+      "forbidden": [
+        "Wald",
+        "Honig",
+        "Spelz",
+        "winterfest",
+        "Kralle",
+        "Höhle"
+      ]
+    },
+    {
+      "term": "Hase",
+      "forbidden": [
+        "Wiese",
+        "Feld",
+        "Sprung",
+        "Löffel",
+        "Ohr",
+        "Winter"
+      ]
+    },
+    {
+      "term": "Dachs",
+      "forbidden": [
+        "Wald",
+        "Bau",
+        "Riegel",
+        "Nacht",
+        "Tier",
+        "Stachel"
+      ]
+    },
+    {
+      "term": "Igel",
+      "forbidden": [
+        "Stachel",
+        "Wiese",
+        "Nest",
+        "Nacht",
+        "Rüssel",
+        "Tier"
+      ]
+    },
+    {
+      "term": "Maus",
+      "forbidden": [
+        "Feld",
+        "Nest",
+        "Käse",
+        "Löcher",
+        "Klein",
+        "Schnurrhaar"
+      ]
+    },
+    {
+      "term": "Pferd",
+      "forbidden": [
+        "Hufe",
+        "Sattel",
+        "Stall",
+        "Heu",
+        "Galopp",
+        "Mähren"
+      ]
+    },
+    {
+      "term": "Kuh",
+      "forbidden": [
+        "Milch",
+        "Hof",
+        "Heu",
+        "Horn",
+        "Kuhstall",
+        "Bauer"
+      ]
+    },
+    {
+      "term": "Schaf",
+      "forbidden": [
+        "Wolle",
+        "Herde",
+        "Weide",
+        "Fell",
+        "Lamm",
+        "Mähren"
+      ]
+    },
+    {
+      "term": "Ziege",
+      "forbidden": [
+        "Milch",
+        "Horn",
+        "Stall",
+        "Gebirge",
+        "Käse"
+      ]
+    },
+    {
+      "term": "Ente",
+      "forbidden": [
+        "Wasser",
+        "Flügel",
+        "Sumpf",
+        "Eier",
+        "Bad",
+        "Geflügel"
+      ]
+    },
+    {
+      "term": "Gans",
+      "forbidden": [
+        "Geflügel",
+        "Nase",
+        "Laut",
+        "Wasser",
+        "Feder"
+      ]
+    },
+    {
+      "term": "Huhn",
+      "forbidden": [
+        "Ei",
+        "Hühnerstall",
+        "Kamm",
+        "Feder",
+        "Geflügel",
+        "Hahn"
+      ]
+    },
+    {
+      "term": "Papagei",
+      "forbidden": [
+        "Flügel",
+        "Farbenvielfalt",
+        "Käfig",
+        "Nagel",
+        "Sprache",
+        "Vogel"
+      ]
+    },
+    {
+      "term": "Kranich",
+      "forbidden": [
+        "Flügel",
+        "Tanz",
+        "Käfig",
+        "Reis",
+        "Vogel",
+        "Langer Hals"
+      ]
+    },
+    {
+      "term": "Delfin",
+      "forbidden": [
+        "Wasser",
+        "Sprung",
+        "Flossen",
+        "Meer",
+        "Tümmler",
+        "Sprache"
+      ]
+    },
+    {
+      "term": "Wal",
+      "forbidden": [
+        "Wasser",
+        "Riesentier",
+        "Meer",
+        "Fluke",
+        "Sprung",
+        "Ozean"
+      ]
+    },
+    {
+      "term": "Pinguin",
+      "forbidden": [
+        "Eis",
+        "Antarktis",
+        "Flügel",
+        "tauchen",
+        "Winter",
+        "Vogel"
+      ]
+    },
+    {
+      "term": "Krokodil",
+      "forbidden": [
+        "Amphibie",
+        "Fluss",
+        "Zähne",
+        "Panzerschale",
+        "tauchen",
+        "Gebiss"
+      ]
+    },
+    {
+      "term": "Giftpilz",
+      "forbidden": [
+        "Speise",
+        "Garten",
+        "Rotkappe",
+        "Fliegenpilz",
+        "giftig"
+      ]
+    },
+    {
+      "term": "Ameise",
+      "forbidden": [
+        "Tier",
+        "Insekt",
+        "Tunnel",
+        "Haus",
+        "Ameisenweg",
+        "Kolon"
+      ]
+    },
+    {
+      "term": "Biene",
+      "forbidden": [
+        "Honig",
+        "Wachs",
+        "Bestäubung",
+        "Stock",
+        "Stachel",
+        "Flug"
+      ]
+    },
+    {
+      "term": "Schmetterling",
+      "forbidden": [
+        "Flügel",
+        "Flug",
+        "Schmetterlingsflügel",
+        "Raupe",
+        "Blüte",
+        "Kokon"
+      ]
+    },
+    {
+      "term": "Spinne",
+      "forbidden": [
+        "Netz",
+        "Acht Beine",
+        "Faden",
+        "Insekt",
+        "Weben",
+        "Gift"
+      ]
+    },
+    {
+      "term": "Kakerlakeke",
+      "forbidden": [
+        "Tier",
+        "Insekt",
+        "Küche",
+        "Küchenschabe",
+        "Nacht",
+        "Läufe"
+      ]
+    },
+    {
+      "term": "Wurm",
+      "forbidden": [
+        "Tier",
+        "Boden",
+        "Würmer",
+        "Regen",
+        "Erde",
+        "Schlucken"
+      ]
+    },
+    {
+      "term": "Echse",
+      "forbidden": [
+        "Tier",
+        "Kriechtier",
+        "Schuppen",
+        "Sonne",
+        "Grün",
+        "Flinke"
+      ]
+    },
+    {
+      "term": "Gorilla",
+      "forbidden": [
+        "Affe",
+        "Wald",
+        "Gruppe",
+        "Kraft",
+        "Männchen",
+        "Hu"
+      ]
+    },
+    {
+      "term": "Schimpanse",
+      "forbidden": [
+        "Affe",
+        "Intelligenz",
+        "Wald",
+        "Forschung",
+        "Affenhaus",
+        "Sprache"
+      ]
+    },
+    {
+      "term": "Faultier",
+      "forbidden": [
+        "Langsam",
+        "Hängematte",
+        "Affe",
+        "Arm",
+        "Wald",
+        "Tempo"
+      ]
+    },
+    {
+      "term": "Goldfisch",
+      "forbidden": [
+        "Wasser",
+        "Fisch",
+        "Schwanz",
+        "glas",
+        "Aquarium",
+        "Koi"
+      ]
+    },
+    {
+      "term": "Haifisch",
+      "forbidden": [
+        "Fisch",
+        "Zähne",
+        "Meer",
+        "Flossen",
+        "Köder",
+        "Räuber"
+      ]
+    },
+    {
+      "term": "Clownfisch",
+      "forbidden": [
+        "Meer",
+        "Riff",
+        "orange",
+        "Anemone",
+        "Korallen",
+        "Nemo"
+      ]
+    },
+    {
+      "term": "Marienkäfer",
+      "forbidden": [
+        "Insekt",
+        "rot",
+        "schwarz",
+        "Punkte",
+        "Glück",
+        "Käfer"
+      ]
+    },
+    {
+      "term": "Libelle",
+      "forbidden": [
+        "Insekt",
+        "Flügel",
+        "Teich",
+        "Wasser",
+        "Schmetterling",
+        "Insektenfresser"
+      ]
+    },
+    {
+      "term": "Tausendfüßler",
+      "forbidden": [
+        "Wurm",
+        "Tier",
+        "Boden",
+        "Beine",
+        "Segment"
+      ]
+    },
+    {
+      "term": "Honigbiene",
+      "forbidden": [
+        "Wachs",
+        "Honig",
+        "Bestäubung",
+        "Stock",
+        "Stockwerk",
+        "Springschwanz"
+      ]
+    },
+    {
+      "term": "Seepferdchen",
+      "forbidden": [
+        "Pferd",
+        "Meer",
+        "Nase",
+        "Tanz",
+        "Koralle",
+        "Strömung"
+      ]
+    },
+    {
+      "term": "Kieselstein",
+      "forbidden": [
+        "Stein",
+        "Bach",
+        "Gestein",
+        "runde",
+        "Sand",
+        "Flussbett"
+      ]
+    },
+    {
+      "term": "Fossil",
+      "forbidden": [
+        "Knochen",
+        "Museum",
+        "Prähistorisch",
+        "Dinosaurier",
+        "Ausgrabungen"
+      ]
+    },
+    {
+      "term": "Dinosaurier",
+      "forbidden": [
+        "Prähistorisch",
+        "Knochen",
+        "Museum",
+        "Fossil",
+        "Ausgrabungen",
+        "Ei"
+      ]
+    },
+    {
+      "term": "Bienenwachs",
+      "forbidden": [
+        "Wachs",
+        "Honig",
+        "Kerze",
+        "Bienen",
+        "Bienenstock",
+        "Stock"
+      ]
+    },
+    {
+      "term": "Apfel",
+      "forbidden": [
+        "Frucht",
+        "rot",
+        "saft",
+        "Kern",
+        "Baum",
+        "süß"
+      ]
+    },
+    {
+      "term": "Banane",
+      "forbidden": [
+        "Frucht",
+        "gelb",
+        "schälen",
+        "Schale",
+        "Tropen",
+        "süß"
+      ]
+    },
+    {
+      "term": "Brot",
+      "forbidden": [
+        "Backstube",
+        "Teig",
+        "Mehl",
+        "Scheibe",
+        "Kruste",
+        "Sandwich"
+      ]
+    },
+    {
+      "term": "Käse",
+      "forbidden": [
+        "Milch",
+        "Würfel",
+        "reifen",
+        "Holz",
+        "Loch",
+        "Schnitt"
+      ]
+    },
+    {
+      "term": "Ei",
+      "forbidden": [
+        "Runde",
+        "Hühnerstall",
+        "weiß",
+        "gelege",
+        "Frittata",
+        "Speise"
+      ]
+    },
+    {
+      "term": "Butter",
+      "forbidden": [
+        "Milch",
+        "Fett",
+        "Brot",
+        "Aufstrich",
+        "salzig",
+        "Kühlschrank"
+      ]
+    },
+    {
+      "term": "Honig",
+      "forbidden": [
+        "Biene",
+        "süß",
+        "Imbiss",
+        "Glas",
+        "Frühstück",
+        "Bienenstock"
+      ]
+    },
+    {
+      "term": "Zucker",
+      "forbidden": [
+        "Süßigkeit",
+        "Würfel",
+        "Tee",
+        "Kaffee",
+        "Kristall",
+        "Süßen"
+      ]
+    },
+    {
+      "term": "Salz",
+      "forbidden": [
+        "Gewürz",
+        "Mineral",
+        "Meer",
+        "Küche",
+        "Geschmack",
+        "Streuer"
+      ]
+    },
+    {
+      "term": "Pfeffer",
+      "forbidden": [
+        "Gewürz",
+        "gemahlen",
+        "schwarz",
+        "Mühle",
+        "Würze",
+        "Heißer"
+      ]
+    },
+    {
+      "term": "Küchenschabe",
+      "forbidden": [
+        "Insekt",
+        "Küche",
+        "Nacht",
+        "Läufe",
+        "Tier",
+        "Schaben"
+      ]
+    },
+    {
+      "term": "Suppe",
+      "forbidden": [
+        "Kelle",
+        "Teller",
+        "heiß",
+        "Gemüse",
+        "Koch",
+        "Bowl"
+      ]
+    },
+    {
+      "term": "Schnitzel",
+      "forbidden": [
+        "Fleisch",
+        "Pfanne",
+        "paniert",
+        "Kartoffel",
+        "Koch",
+        "Gebraten"
+      ]
+    },
+    {
+      "term": "Bratwurst",
+      "forbidden": [
+        "Grill",
+        "grillen",
+        "Pfeffer",
+        "Wurst",
+        "BBQ",
+        "Fleisch"
+      ]
+    },
+    {
+      "term": "Käsebrot",
+      "forbidden": [
+        "Brot",
+        "Scheibe",
+        "belegen",
+        "schnell",
+        "Mittagessen",
+        "Snack"
+      ]
+    },
+    {
+      "term": "Pizza",
+      "forbidden": [
+        "Teig",
+        "Ofen",
+        "Käse",
+        "Salami",
+        "Rund",
+        "Italien"
+      ]
+    },
+    {
+      "term": "Hamburger",
+      "forbidden": [
+        "Bun",
+        "Fleisch",
+        "Patty",
+        "Cheeseburger",
+        "fast food",
+        "Restaurant"
+      ]
+    },
+    {
+      "term": "Pommesfrites",
+      "forbidden": [
+        "Kartoffel",
+        "frittieren",
+        "Öl",
+        "salzig",
+        "Beilage",
+        "McDonald's"
+      ]
+    },
+    {
+      "term": "Döner",
+      "forbidden": [
+        "Fleisch",
+        "Dürüm",
+        "Pita",
+        "Fladenbrot",
+        "Lamm",
+        "Verlängerte"
+      ]
+    },
+    {
+      "term": "Currywurst",
+      "forbidden": [
+        "Bratwurst",
+        "Ketchup",
+        "Curry",
+        "Pommes",
+        "Sauce"
+      ]
+    },
+    {
+      "term": "Pasta",
+      "forbidden": [
+        "Nudeln",
+        "Sauce",
+        "Italien",
+        "spaghetti",
+        "Nudel",
+        "Beilage"
+      ]
+    },
+    {
+      "term": "Reis",
+      "forbidden": [
+        "Korn",
+        "Asia",
+        "Pfanne",
+        "Sushi",
+        "Beilage",
+        "Bowl"
+      ]
+    },
+    {
+      "term": "Sushi",
+      "forbidden": [
+        "Reis",
+        "Fisch",
+        "Rolle",
+        "Japan",
+        "Ingwer",
+        "Maki"
+      ]
+    },
+    {
+      "term": "Burger",
+      "forbidden": [
+        "brötchen",
+        "patty",
+        "cheese",
+        "grillen",
+        "Speise",
+        "Fastfood"
+      ]
+    },
+    {
+      "term": "Müsli",
+      "forbidden": [
+        "Haferflocken",
+        "Milch",
+        "Frühstück",
+        "Obst",
+        "Schale",
+        "Granola"
+      ]
+    },
+    {
+      "term": "Pfannkuchen",
+      "forbidden": [
+        "Teig",
+        "braten",
+        "Marmelade",
+        "Ei",
+        "Sirup",
+        "Fladen"
+      ]
+    },
+    {
+      "term": "Keks",
+      "forbidden": [
+        "Plätzchen",
+        "Teig",
+        "Backen",
+        "Schokolade",
+        "Gebäck",
+        "dose"
+      ]
+    },
+    {
+      "term": "Torte",
+      "forbidden": [
+        "Kuchen",
+        "Sahne",
+        "Kerze",
+        "Geburtstag",
+        "Backform",
+        "Schichten"
+      ]
+    },
+    {
+      "term": "Eis",
+      "forbidden": [
+        "H Eisbecher",
+        "Geschmack",
+        "Sommer",
+        "Cream",
+        "Frozen"
+      ]
+    },
+    {
+      "term": "Gummibärchen",
+      "forbidden": [
+        "Fruchtgummi",
+        "Süßigkeit",
+        "Tüte",
+        "Bär",
+        "Diplomat"
+      ]
+    },
+    {
+      "term": "Schokolade",
+      "forbidden": [
+        "Kakao",
+        "Süßigkeit",
+        "Tafel",
+        "Milch",
+        "Praline",
+        "Edel"
+      ]
+    },
+    {
+      "term": "Chips",
+      "forbidden": [
+        "Tüte",
+        "Salz",
+        "knusprig",
+        "Kartoffel",
+        "Snack",
+        "Crisps"
+      ]
+    },
+    {
+      "term": "Popcorn",
+      "forbidden": [
+        "Mais",
+        "Kino",
+        "Salz",
+        "Butter",
+        "Peplos",
+        "Becher"
+      ]
+    },
+    {
+      "term": "Kaffee",
+      "forbidden": [
+        "Bohne",
+        "Espresso",
+        "Filter",
+        "Tasse",
+        "Milchschäum",
+        "Südamerika"
+      ]
+    },
+    {
+      "term": "Tee",
+      "forbidden": [
+        "Blatt",
+        "Beutel",
+        "aufbrühen",
+        "Grüntee",
+        "Kamille",
+        "Teekanne"
+      ]
+    },
+    {
+      "term": "Kakao",
+      "forbidden": [
+        "Schokolade",
+        "heiß",
+        "Milch",
+        "Pulver",
+        "Becher",
+        "Trink"
+      ]
+    },
+    {
+      "term": "Limonade",
+      "forbidden": [
+        "Zitrone",
+        "Sprudler",
+        "Kohlensäure",
+        "Flasche",
+        "spritzig",
+        "eingekocht"
+      ]
+    },
+    {
+      "term": "Mineralwasser",
+      "forbidden": [
+        "Sprudler",
+        "Quelle",
+        "Bubbles",
+        "still",
+        "Flasche",
+        "Kohlensäure"
+      ]
+    },
+    {
+      "term": "Apfelschorle",
+      "forbidden": [
+        "Saft",
+        "sprudeln",
+        "Schorle",
+        "Apfel",
+        "eingekocht",
+        "Mischung"
+      ]
+    },
+    {
+      "term": "Smoothie",
+      "forbidden": [
+        "Obst",
+        "Mixer",
+        "Becher",
+        "Joghurt",
+        "Bananen",
+        "Flüssig"
+      ]
+    },
+    {
+      "term": "Joghurt",
+      "forbidden": [
+        "Milch",
+        "Becher",
+        "Beeren",
+        "Drehmilch",
+        "Frühstück",
+        "probiotisch"
+      ]
+    },
+    {
+      "term": "Butterbrot",
+      "forbidden": [
+        "Brot",
+        "Scheibe",
+        "Marmelade",
+        "Frühstück",
+        "Schmiere",
+        "Aufstrich"
+      ]
+    },
+    {
+      "term": "Brezel",
+      "forbidden": [
+        "Salz",
+        "Ofen",
+        "Hefe",
+        "Snack",
+        "schwarz"
+      ]
+    },
+    {
+      "term": "Semmel",
+      "forbidden": [
+        "Backstube",
+        "Weizenbrötchen",
+        "Rinde",
+        "geröstet",
+        "Butter",
+        "Brot"
+      ]
+    },
+    {
+      "term": "Croissant",
+      "forbidden": [
+        "Butter",
+        "Teig",
+        "Ofen",
+        "französisch",
+        "Hörnchen",
+        "Gebäck"
+      ]
+    },
+    {
+      "term": "Doughnut",
+      "forbidden": [
+        "Teig",
+        "glasiert",
+        "Zucker",
+        "ringförmig",
+        "Donut",
+        "Frittieren"
+      ]
+    },
+    {
+      "term": "Rührei",
+      "forbidden": [
+        "Ei",
+        "verklopfen",
+        "Milch",
+        "Pfanne",
+        "Frühstück"
+      ]
+    },
+    {
+      "term": "Spiegelei",
+      "forbidden": [
+        "Ei",
+        "glasig",
+        "Pfanne",
+        "Frühstück",
+        "Bratwurst"
+      ]
+    },
+    {
+      "term": "Bowl",
+      "forbidden": [
+        "Mische",
+        "Quinoa",
+        "Suppe",
+        "Schüssel",
+        "Müslischale"
+      ]
+    },
+    {
+      "term": "Curry",
+      "forbidden": [
+        "Reis",
+        "Kokos",
+        "Gewürze",
+        "Scharf",
+        "Asien",
+        "Topf"
+      ]
+    },
+    {
+      "term": "Tofu",
+      "forbidden": [
+        "Sojabohne",
+        "weiß",
+        "Käse",
+        "vegan",
+        "Quadrat",
+        "Asia"
+      ]
+    },
+    {
+      "term": "Miso",
+      "forbidden": [
+        "Soysoße",
+        "Suppe",
+        "Japan",
+        "Fermentation",
+        "Bowl",
+        "Tradition"
+      ]
+    },
+    {
+      "term": "Kimchi",
+      "forbidden": [
+        "Kohl",
+        "fermentiert",
+        "scharf",
+        "Korea",
+        "Einmach",
+        "Gemüse"
+      ]
+    },
+    {
+      "term": "Hummus",
+      "forbidden": [
+        "Kichererbsen",
+        "cremig",
+        "Mitte",
+        "Orient",
+        "Pita",
+        "aufstreichen"
+      ]
+    },
+    {
+      "term": "Falafel",
+      "forbidden": [
+        "Kichererbsen",
+        "gebraten",
+        "Kugel",
+        "Mitte",
+        "Fladenbrot",
+        "Pflanzen"
+      ]
+    },
+    {
+      "term": "Tzatziki",
+      "forbidden": [
+        "Joghurt",
+        "Gurke",
+        "Knoblauch",
+        "Griechenland",
+        "Sauce",
+        "Dip"
+      ]
+    },
+    {
+      "term": "Guacamole",
+      "forbidden": [
+        "Avocado",
+        "salsa",
+        "Mexiko",
+        "Tortilla",
+        "rauchig",
+        "Dip"
+      ]
+    },
+    {
+      "term": "Gebrannte Mandeln",
+      "forbidden": [
+        "Mandeln",
+        "geröstet",
+        "Zucker",
+        "Markt",
+        "Knusprig",
+        "Süßung"
+      ]
+    },
+    {
+      "term": "Würstchen",
+      "forbidden": [
+        "grillen",
+        "Glühwurst",
+        "Bratwurst",
+        "Boche",
+        "Pfeffer",
+        "Bauernhof"
+      ]
+    },
+    {
+      "term": "Käseteller",
+      "forbidden": [
+        "Wurst",
+        "Brot",
+        "Gurke",
+        "Scheibe",
+        "Snack",
+        "Vorabdruck"
+      ]
+    },
+    {
+      "term": "Obstsalat",
+      "forbidden": [
+        "Obst",
+        "Beere",
+        "Apfel",
+        "Birne",
+        "schneiden",
+        "Süße"
+      ]
+    },
+    {
+      "term": "Brotzeit",
+      "forbidden": [
+        "Brot",
+        "Wurst",
+        "Käse",
+        "Gurke",
+        "Scheibe",
+        "schnell"
+      ]
+    },
+    {
+      "term": "Keksdose",
+      "forbidden": [
+        "Gebäck",
+        "Plätzchen",
+        "Schokolade",
+        "Weihnachten",
+        "Keks",
+        "Dose"
+      ]
+    },
+    {
+      "term": "Geburtstagstorte",
+      "forbidden": [
+        "Sahne",
+        "Kerzen",
+        "Schokolade",
+        "Feier",
+        "Höhe",
+        "Backform"
+      ]
+    },
+    {
+      "term": "Erdbeertorte",
+      "forbidden": [
+        "Erdbeere",
+        "Sahne",
+        "Sommer",
+        "Backform",
+        "Frucht",
+        "Kuchen"
+      ]
+    },
+    {
+      "term": "Marmelade",
+      "forbidden": [
+        "Erdbeere",
+        "Toast",
+        "Frühstück",
+        "Gläschen",
+        "Aufstrich"
+      ]
+    },
+    {
+      "term": "Konfitüre",
+      "forbidden": [
+        "Marmelade",
+        "Toast",
+        "Gläschen",
+        "Frucht",
+        "Backstube",
+        "Aufstrich"
+      ]
+    },
+    {
+      "term": "Arzt",
+      "forbidden": [
+        "Krankenhaus",
+        "Patient",
+        "Stethoskop",
+        "Heilkunde",
+        "Medizin",
+        "Diagnose"
+      ]
+    },
+    {
+      "term": "Lehrer",
+      "forbidden": [
+        "Klassenzimmer",
+        "Tafel",
+        "Heft",
+        "Schüler",
+        "Unterricht",
+        "Korrektur"
+      ]
+    },
+    {
+      "term": "Polizist",
+      "forbidden": [
+        "Marke",
+        "Polizei",
+        "Hut",
+        "Streife",
+        "Uniform",
+        "Autos"
+      ]
+    },
+    {
+      "term": "Feuerwehrmann",
+      "forbidden": [
+        "Feuer",
+        "Feuerwehr",
+        "Lösch",
+        "Schlauch",
+        "Helm",
+        "Retter"
+      ]
+    },
+    {
+      "term": "Bäcker",
+      "forbidden": [
+        "Backstube",
+        "Ofen",
+        "Teig",
+        "Mehl",
+        "Brot",
+        "bringen"
+      ]
+    },
+    {
+      "term": "Koch",
+      "forbidden": [
+        "Küche",
+        "Pfanne",
+        "Schnetzel",
+        "Messer",
+        "Kellner",
+        "Kochlöffel"
+      ]
+    },
+    {
+      "term": "Maurer",
+      "forbidden": [
+        "Mauer",
+        "Zement",
+        "Mörtel",
+        "Baustein",
+        "Stein",
+        "putzen"
+      ]
+    },
+    {
+      "term": "Schlosser",
+      "forbidden": [
+        "Schlüssel",
+        "Schloss",
+        "Nagel",
+        "Schraube",
+        "Zange",
+        "Werkstatt"
+      ]
+    },
+    {
+      "term": "Elektriker",
+      "forbidden": [
+        "Steckdose",
+        "Strom",
+        "Kabel",
+        "Sicherung",
+        "lampe",
+        "Werkzeug"
+      ]
+    },
+    {
+      "term": "Zahnarzt",
+      "forbidden": [
+        "Bohrer",
+        "Zahn",
+        "Medizin",
+        "Krankenhaus",
+        "spiegel"
+      ]
+    },
+    {
+      "term": "Friseur",
+      "forbidden": [
+        "Schere",
+        "Kamm",
+        "Haare",
+        "Fön",
+        "Salon",
+        "Kunde"
+      ]
+    },
+    {
+      "term": "Schneider",
+      "forbidden": [
+        "Nadel",
+        "Stich",
+        "Faden",
+        "Kleidung",
+        "Textil",
+        "maß"
+      ]
+    },
+    {
+      "term": "Maler",
+      "forbidden": [
+        "Pinsel",
+        "Farbe",
+        "Wand",
+        "Kunst",
+        "Leinwand",
+        "streichen"
+      ]
+    },
+    {
+      "term": "Tischler",
+      "forbidden": [
+        "Holz",
+        "Säge",
+        "Tisch",
+        "Stuhl",
+        "furnitur",
+        "Werkstatt"
+      ]
+    },
+    {
+      "term": "Metzger",
+      "forbidden": [
+        "Messer",
+        "Fleisch",
+        "Wurst",
+        "Haken",
+        "Laden",
+        "Aufschnitt"
+      ]
+    },
+    {
+      "term": "Pilot",
+      "forbidden": [
+        "Flugzeug",
+        "Cockpit",
+        "Flughafen",
+        "Start",
+        "Landung",
+        "Captain"
+      ]
+    },
+    {
+      "term": "Fahrer",
+      "forbidden": [
+        "Steuer",
+        "Auto",
+        "Lenkrad",
+        "Verkehr",
+        "chauffeur",
+        "Straße"
+      ]
+    },
+    {
+      "term": "Kapitän",
+      "forbidden": [
+        "Schiff",
+        "Hafen",
+        "Steuer",
+        "Offizier",
+        "Anker",
+        "Reise"
+      ]
+    },
+    {
+      "term": "Zimmermann",
+      "forbidden": [
+        "Hammer",
+        "Holz",
+        "Nagel",
+        "Säge",
+        "Zimmer",
+        "Werkbank"
+      ]
+    },
+    {
+      "term": "Gärtner",
+      "forbidden": [
+        "Garten",
+        "Spaten",
+        "Pflanze",
+        "Erde",
+        "Rasen",
+        "Blume"
+      ]
+    },
+    {
+      "term": "Tierarzt",
+      "forbidden": [
+        "Hund",
+        "Katze",
+        "Tier",
+        "Veterinär",
+        "Impfung",
+        "Krankenhaus"
+      ]
+    },
+    {
+      "term": "Optiker",
+      "forbidden": [
+        "Brille",
+        "Gläser",
+        "Sehen",
+        "augen",
+        "Linsen",
+        "test"
+      ]
+    },
+    {
+      "term": "Fotograf",
+      "forbidden": [
+        "Kamera",
+        "Objektiv",
+        "Blitz",
+        "Foto",
+        "Aufnahme",
+        "Licht"
+      ]
+    },
+    {
+      "term": "Journalist",
+      "forbidden": [
+        "Mikrofon",
+        "Interview",
+        "Artikel",
+        "Redaktion",
+        "Report",
+        "Nachricht"
+      ]
+    },
+    {
+      "term": "Schauspieler",
+      "forbidden": [
+        "Theater",
+        "Rolle",
+        "Bühne",
+        "Kostüm",
+        "Schauspiel",
+        "Darsteller"
+      ]
+    },
+    {
+      "term": "Sänger",
+      "forbidden": [
+        "Mikrofon",
+        "Stimme",
+        "Gesang",
+        "Konzert",
+        "Refrain",
+        "Auftritt"
+      ]
+    },
+    {
+      "term": "Musiker",
+      "forbidden": [
+        "Instrument",
+        "Gitarre",
+        "Takt",
+        "Orchester",
+        "Note",
+        "Band"
+      ]
+    },
+    {
+      "term": "Tänzer",
+      "forbidden": [
+        "Tanz",
+        "Schuh",
+        "Bühne",
+        "Bewegung",
+        "Choreografie",
+        "Puplatte"
+      ]
+    },
+    {
+      "term": "Restaurantkoch",
+      "forbidden": [
+        "Koch",
+        "Haube",
+        "Messer",
+        "Küche",
+        "Sterne",
+        "Feuer"
+      ]
+    },
+    {
+      "term": "Steward",
+      "forbidden": [
+        "Kabine",
+        "Sicherheitsgurt",
+        "Flugzeug",
+        "Dienst",
+        "Trolley",
+        "Host"
+      ]
+    },
+    {
+      "term": "Hutmacher",
+      "forbidden": [
+        "Hut",
+        "Filz",
+        "Kopf",
+        "Naht",
+        "Form",
+        "Mode"
+      ]
+    },
+    {
+      "term": "Goldschmied",
+      "forbidden": [
+        "Gold",
+        "Ring",
+        "Feinwerk",
+        "Silber",
+        "Edelstein",
+        "Werkstatt"
+      ]
+    },
+    {
+      "term": "Schmied",
+      "forbidden": [
+        "Hammer",
+        "Amboss",
+        "Eisen",
+        "schmieden",
+        "Feuer",
+        "Glut"
+      ]
+    },
+    {
+      "term": "Busfahrer",
+      "forbidden": [
+        "Bus",
+        "Haltestelle",
+        "Fahrgäste",
+        "Straße",
+        "Karte",
+        "Automat"
+      ]
+    },
+    {
+      "term": "Zugbegleiter",
+      "forbidden": [
+        "Zug",
+        "Wagen",
+        "Sitzplatz",
+        "Ticket",
+        "Gleis",
+        "Reise"
+      ]
+    },
+    {
+      "term": "Steuerberater",
+      "forbidden": [
+        "Finanzamt",
+        "Bilanz",
+        "Quittung",
+        "Buchhaltung",
+        "Konto",
+        "Ordner"
+      ]
+    },
+    {
+      "term": "Notar",
+      "forbidden": [
+        "Vertrag",
+        "Stempel",
+        "Dokument",
+        "Zeuge",
+        "Recht",
+        "Unterschrift"
+      ]
+    },
+    {
+      "term": "Kellner",
+      "forbidden": [
+        "Teller",
+        "Service",
+        "Bestellung",
+        "Trinkgeld",
+        "Restaurant",
+        "Gast"
+      ]
+    },
+    {
+      "term": "Empfangistin",
+      "forbidden": [
+        "Telefon",
+        "Empfang",
+        "Termin",
+        "Kunde",
+        "Willkommen",
+        "Hotline"
+      ]
+    },
+    {
+      "term": "Verkäufer",
+      "forbidden": [
+        "Kasse",
+        "Regal",
+        "Einkaufswagen",
+        "Preis",
+        "Kunden",
+        "Supermarkt"
+      ]
+    },
+    {
+      "term": "Fahrlehrer",
+      "forbidden": [
+        "Fahrstunde",
+        "Lenkrad",
+        "Verkehrsregeln",
+        "Führerschein",
+        "Schüler",
+        "prüfung"
+      ]
+    },
+    {
+      "term": "Fitnesstrainer",
+      "forbidden": [
+        "Hantel",
+        "Sportstudio",
+        "Fitness",
+        "Workout",
+        "Trainer",
+        "Kurs"
+      ]
+    },
+    {
+      "term": "Reiseleiter",
+      "forbidden": [
+        "Reise",
+        "Gruppe",
+        "Bus",
+        "Flug",
+        "Hotel",
+        "Führung"
+      ]
+    },
+    {
+      "term": "Dolmetscher",
+      "forbidden": [
+        "Übersetzung",
+        "Sprache",
+        "Übersetzer",
+        "Dolmetschen",
+        "Zweisprachig",
+        "Fremdsprache"
+      ]
+    },
+    {
+      "term": "Augenarzt",
+      "forbidden": [
+        "Netzhaut",
+        "Glaukom",
+        "Fehlsichtigkeit",
+        "Sinus",
+        "Laser",
+        "Klinik"
+      ]
+    },
+    {
+      "term": "Hebamme",
+      "forbidden": [
+        "Geburt",
+        "Kind",
+        "Woche",
+        "Klinik",
+        "Baby",
+        "Entbindung"
+      ]
+    },
+    {
+      "term": "Tierpfleger",
+      "forbidden": [
+        "Zoo",
+        "Füttern",
+        "Käfig",
+        "Stall",
+        "Vogel",
+        "Tier"
+      ]
+    },
+    {
+      "term": "Fahrzeuglackierer",
+      "forbidden": [
+        "Lack",
+        "Sprühpistole",
+        "Autolack",
+        "Karosse",
+        "Farbe",
+        "Polieren"
+      ]
+    },
+    {
+      "term": "Polsterer",
+      "forbidden": [
+        "Polster",
+        "Schaum",
+        "Sessel",
+        "Tischler",
+        "Nähen",
+        "bezug"
+      ]
+    },
+    {
+      "term": "Malerhelfer",
+      "forbidden": [
+        "Pinsel",
+        "Leim",
+        "Tapete",
+        "Eimer",
+        "abkleben",
+        "streichen"
+      ]
+    },
+    {
+      "term": "Orgelbauer",
+      "forbidden": [
+        "Pfeifen",
+        "Orgel",
+        "Klavier",
+        "Tasten",
+        "Werkstatt",
+        "Holz"
+      ]
+    },
+    {
+      "term": "Tischlerei",
+      "forbidden": [
+        "Schrank",
+        "Holz",
+        "Schublade",
+        "Regal",
+        "Scharnier"
+      ]
+    },
+    {
+      "term": "Tankwart",
+      "forbidden": [
+        "Schlauch",
+        "Zapfsäule",
+        "Kraftstoff",
+        "Tankstelle",
+        "Benzin",
+        "Diesel"
+      ]
+    },
+    {
+      "term": "Zahnstocher",
+      "forbidden": [
+        "Zahn",
+        "spitz",
+        "Mund",
+        "hygiëne",
+        "Papier",
+        "Kosmetik"
+      ]
+    },
+    {
+      "term": "Bibliothek",
+      "forbidden": [
+        "Bücher",
+        "Ausleihe",
+        "Stille",
+        "Regal",
+        "Leser",
+        "Verwaltung"
+      ]
+    },
+    {
+      "term": "Postamt",
+      "forbidden": [
+        "Paket",
+        "Briefmarke",
+        "Schalter",
+        "Kurier",
+        "zustellen",
+        "Transport"
+      ]
+    },
+    {
+      "term": "Bahnhof",
+      "forbidden": [
+        "Gleis",
+        "Zug",
+        "Anzeigetafel",
+        "Bahnsteig",
+        "Reise",
+        "Fahrplan"
+      ]
+    },
+    {
+      "term": "Flughafen",
+      "forbidden": [
+        "Flugzeug",
+        "Terminal",
+        "Gate",
+        "Passkontrolle",
+        "Abflug",
+        "Ankunft"
+      ]
+    },
+    {
+      "term": "Supermarkt",
+      "forbidden": [
+        "Regal",
+        "Einkaufswagen",
+        "Kasse",
+        "Obst",
+        "Preis",
+        "Korb"
+      ]
+    },
+    {
+      "term": "Bäckerei",
+      "forbidden": [
+        "Ofen",
+        "Teig",
+        "Brötchen",
+        "Mehl",
+        "Hefe",
+        "Backstube"
+      ]
+    },
+    {
+      "term": "Apotheke",
+      "forbidden": [
+        "Medikament",
+        "Rezept",
+        "Pharmazeut",
+        "Tablette",
+        "Krankenhaus",
+        "Hebel"
+      ]
+    },
+    {
+      "term": "Bank",
+      "forbidden": [
+        "Geld",
+        "Konto",
+        "Überweisung",
+        "Sparkasse",
+        "Safe",
+        "Maus"
+      ]
+    },
+    {
+      "term": "Rathaus",
+      "forbidden": [
+        "Beamter",
+        "Büro",
+        "Formular",
+        "Bürgermeister",
+        "Antrag",
+        "Verwaltung"
+      ]
+    },
+    {
+      "term": "Kino",
+      "forbidden": [
+        "Leinwand",
+        "Film",
+        "Kinosaal",
+        "Popcorn",
+        "Sitzplatz",
+        "Vorführung"
+      ]
+    },
+    {
+      "term": "Theater",
+      "forbidden": [
+        "Bühne",
+        "Schauspieler",
+        "Kostüm",
+        "Vorhang",
+        "Publikum",
+        "Szene"
+      ]
+    },
+    {
+      "term": "Museum",
+      "forbidden": [
+        "Ausstellung",
+        "Kunst",
+        "Antiquität",
+        "Führung",
+        "Vitrine",
+        "Eintritt"
+      ]
+    },
+    {
+      "term": "Schwimmbad",
+      "forbidden": [
+        "Pool",
+        "Wasser",
+        "Rutsche",
+        "Bahn",
+        "Kiefer",
+        "umziehen"
+      ]
+    },
+    {
+      "term": "Freizeitpark",
+      "forbidden": [
+        "Achterbahn",
+        "Karussell",
+        "Show",
+        "Hupe",
+        "Los",
+        "Eintritt"
+      ]
+    },
+    {
+      "term": "Krankenhaus",
+      "forbidden": [
+        "Bett",
+        "Station",
+        "OP",
+        "Pflege",
+        "Trage",
+        "Korridor"
+      ]
+    },
+    {
+      "term": "Restaurant",
+      "forbidden": [
+        "Tisch",
+        "bestellen",
+        "Speisekarte",
+        "Kellner",
+        "Trinkgeld",
+        "Stuhl"
+      ]
+    },
+    {
+      "term": "Café",
+      "forbidden": [
+        "Espresso",
+        "Milchschaum",
+        "Kuchen",
+        "Terrasse",
+        "Tasse",
+        "Barista"
+      ]
+    },
+    {
+      "term": "Bar",
+      "forbidden": [
+        "Theke",
+        "Hocker",
+        "Getränk",
+        "Wein",
+        "Cocktail",
+        "Abend"
+      ]
+    },
+    {
+      "term": "Fußpflegerin",
+      "forbidden": [
+        "Nagelfeile",
+        "Pedicure",
+        "Fußbad",
+        "Schuh",
+        "Druck",
+        "Massage"
+      ]
+    },
+    {
+      "term": "Kosmetikerin",
+      "forbidden": [
+        "Creme",
+        "Pinsel",
+        "Maske",
+        "Beauty",
+        "Haut",
+        "Schminke"
+      ]
+    },
+    {
+      "term": "Postbote",
+      "forbidden": [
+        "Brief",
+        "Paket",
+        "Tür Briefkasten",
+        "Rad",
+        "Wagen",
+        "zustellen"
+      ]
+    },
+    {
+      "term": "Kellnerin",
+      "forbidden": [
+        "Teller",
+        "Geschirr",
+        "Bestellung",
+        "Trinkgeld",
+        "Restaurant",
+        "Service"
+      ]
+    },
+    {
+      "term": "Fischer",
+      "forbidden": [
+        "Netz",
+        "Boot",
+        "Fisch",
+        "Angler",
+        "Hafen",
+        "Köder"
+      ]
+    },
+    {
+      "term": "Bauer",
+      "forbidden": [
+        "Traktor",
+        "Feld",
+        "ernten",
+        "Hof",
+        "Kuh",
+        "Gemüse"
+      ]
+    },
+    {
+      "term": "Winzer",
+      "forbidden": [
+        "Wein",
+        "Weinberg",
+        "trauben",
+        "Fass",
+        "Weinbau",
+        "rebsen"
+      ]
+    },
+    {
+      "term": "Fischereibesitzer",
+      "forbidden": [
+        "Kutter",
+        "Hafen",
+        "Fisch",
+        "Auktion",
+        "Netz",
+        "Fräse"
+      ]
+    },
+    {
+      "term": "Bootsbauer",
+      "forbidden": [
+        "Holz",
+        "Spant",
+        "Leinen",
+        "Mast",
+        "Rumpf",
+        "Terpentin"
+      ]
+    },
+    {
+      "term": "Steinmetz",
+      "forbidden": [
+        "Granit",
+        "Sockel",
+        "Grabstein",
+        "Meißel",
+        "Statue",
+        "Block"
+      ]
+    },
+    {
+      "term": "Zimmerei",
+      "forbidden": [
+        "Tisch",
+        "Schrank",
+        "Holz",
+        "Nagel",
+        "Hobel",
+        "Werkbank"
+      ]
+    },
+    {
+      "term": "Buchbinder",
+      "forbidden": [
+        "Ledern",
+        "Rücken",
+        "Heften",
+        "Faden",
+        "Buch",
+        "Werkstatt"
+      ]
+    },
+    {
+      "term": "Fahnenschneider",
+      "forbidden": [
+        "Seide",
+        "sticken",
+        "Stickerei",
+        "Muster",
+        "Faden",
+        "Rand"
+      ]
+    },
+    {
+      "term": "Konditor",
+      "forbidden": [
+        "Hefe",
+        "Teig",
+        "Torte",
+        "Sahne",
+        "Backform",
+        "Zucker"
+      ]
+    },
+    {
+      "term": "Eismacher",
+      "forbidden": [
+        "Sorbet",
+        "Frucht",
+        "Eisbecher",
+        "Tiefkühler",
+        "Fruchtbecher",
+        "Geschmack"
+      ]
+    },
+    {
+      "term": "Stadt",
+      "forbidden": [
+        "Straße",
+        "Häuser",
+        "Verkehr",
+        "Ampel",
+        "Menschen",
+        "Autos"
+      ]
+    },
+    {
+      "term": "Brücke",
+      "forbidden": [
+        "Fluss",
+        "Stein",
+        "Geländer",
+        "Bogen",
+        "überqueren"
+      ]
+    },
+    {
+      "term": "Kirche",
+      "forbidden": [
+        "Turm",
+        "Glocke",
+        "Pfarrer",
+        "Bank",
+        "Gebet",
+        "Orgel"
+      ]
+    },
+    {
+      "term": "Burg",
+      "forbidden": [
+        "Mauer",
+        "Turm",
+        "Schloss",
+        "Ritter",
+        "Festung",
+        "Kerker"
+      ]
+    },
+    {
+      "term": "Schloss",
+      "forbidden": [
+        "Hof",
+        "Garten",
+        "Orangerie",
+        "Brunnen",
+        "Kies",
+        "Park"
+      ]
+    },
+    {
+      "term": "Universität",
+      "forbidden": [
+        "Hörsaal",
+        "Bibliothek",
+        "Professor",
+        "Studium",
+        "Vorlesung",
+        "Seminar"
+      ]
+    },
+    {
+      "term": "Schule",
+      "forbidden": [
+        "Klassenzimmer",
+        "Tafel",
+        "Heft",
+        "Stuhl",
+        "Pause",
+        "Lehrer"
+      ]
+    },
+    {
+      "term": "Kindergarten",
+      "forbidden": [
+        "Spielzeug",
+        "Bunte",
+        "Sandkasten",
+        "Begleiter",
+        "Kissen",
+        "Malen"
+      ]
+    },
+    {
+      "term": "Gymnasium",
+      "forbidden": [
+        "Turnhalle",
+        "Mat",
+        "Bank",
+        "Sport",
+        "Sportlehrer",
+        "Umkleide"
+      ]
+    },
+    {
+      "term": "Tankstelle",
+      "forbidden": [
+        "Benzin",
+        "Zapfsäule",
+        "Luft",
+        "Reifen",
+        "Öl",
+        "Kasse"
+      ]
+    },
+    {
+      "term": "Postfiliale",
+      "forbidden": [
+        "Briefmarke",
+        "Paket",
+        "Postfach",
+        "Schalter",
+        "Formular",
+        "porto"
+      ]
+    },
+    {
+      "term": "Waschsalon",
+      "forbidden": [
+        "waschen",
+        "Maschine",
+        "Weichspüler",
+        "Trommel",
+        "Falbügler",
+        "Münzen"
+      ]
+    },
+    {
+      "term": "Schuhgeschäft",
+      "forbidden": [
+        "Schuhe",
+        "Size",
+        "Schuhregal",
+        "Sohle",
+        "Schnürsenkel",
+        "Stiefel"
+      ]
+    },
+    {
+      "term": "Buchhandlung",
+      "forbidden": [
+        "Regal",
+        "Neuerscheinung",
+        "Bestseller",
+        "Leseprobe",
+        "Verlag",
+        "Titel"
+      ]
+    },
+    {
+      "term": "Kiosk",
+      "forbidden": [
+        "Zeitung",
+        "Getränke",
+        "Snack",
+        "Lotterie",
+        "Zigaretten",
+        "Raucher"
+      ]
+    },
+    {
+      "term": "Fahrradladen",
+      "forbidden": [
+        "Fahrrad",
+        "Pedale",
+        "Kette",
+        "Luft",
+        "Reifen",
+        "Velocity"
+      ]
+    },
+    {
+      "term": "Fußball",
+      "forbidden": [
+        "Tor",
+        "Ball",
+        "Mannschaft",
+        "SPORT",
+        "Verein"
+      ]
+    },
+    {
+      "term": "Basketball",
+      "forbidden": [
+        "Korb",
+        "Ball",
+        "Mannschaft",
+        "Sprung",
+        "Sprint"
+      ]
+    },
+    {
+      "term": "Handball",
+      "forbidden": [
+        "Tor",
+        "Ball",
+        "Mannschaft",
+        "Sprung",
+        "werfen"
+      ]
+    },
+    {
+      "term": "Volleyball",
+      "forbidden": [
+        "Netz",
+        "Ball",
+        "Mannschaft",
+        "Aufschlag",
+        "Sand"
+      ]
+    },
+    {
+      "term": "Tennis",
+      "forbidden": [
+        "Schläger",
+        "Ball",
+        "Platz",
+        "Satz",
+        "Aufschlag"
+      ]
+    },
+    {
+      "term": "Tischtennis",
+      "forbidden": [
+        "Schläger",
+        "Ball",
+        "Netz",
+        "Tisch",
+        "Pingpong"
+      ]
+    },
+    {
+      "term": "Badminton",
+      "forbidden": [
+        "Feder",
+        "Schläger",
+        "Netz",
+        "Halle",
+        "Pingpong"
+      ]
+    },
+    {
+      "term": "Schwimmen",
+      "forbidden": [
+        "Wasser",
+        "Bahn",
+        "Lane",
+        "Brille",
+        "Startblock"
+      ]
+    },
+    {
+      "term": "Laufen",
+      "forbidden": [
+        "Sport",
+        "Schuhe",
+        "Strecke",
+        "Pace",
+        "Maraathon"
+      ]
+    },
+    {
+      "term": "Radfahren",
+      "forbidden": [
+        "Fahrrad",
+        "Helm",
+        "Radweg",
+        "Kette",
+        "Tour"
+      ]
+    },
+    {
+      "term": "Skifahren",
+      "forbidden": [
+        "ski",
+        "Piste",
+        "Schnee",
+        "Lift",
+        "Loipe"
+      ]
+    },
+    {
+      "term": "Eislaufen",
+      "forbidden": [
+        "Kufen",
+        "Gletscher",
+        "Eisbahn",
+        "Panzer",
+        "Schuh"
+      ]
+    },
+    {
+      "term": "Rudern",
+      "forbidden": [
+        "Riemen",
+        "Boot",
+        "Wasser",
+        "Wettkampf",
+        "Holz"
+      ]
+    },
+    {
+      "term": "Segeln",
+      "forbidden": [
+        "Segel",
+        "Boot",
+        "Wind",
+        "Hafen",
+        "Takelage"
+      ]
+    },
+    {
+      "term": "Klettern",
+      "forbidden": [
+        "Griff",
+        "wand",
+        "Seil",
+        "Klettergurt",
+        "Höhe"
+      ]
+    },
+    {
+      "term": "Boxen",
+      "forbidden": [
+        "Handschuh",
+        "Ring",
+        "Gard",
+        "runde",
+        "Punch"
+      ]
+    },
+    {
+      "term": "Judo",
+      "forbidden": [
+        "Gi",
+        "Kleidung",
+        "Matte",
+        "Wurf",
+        "Match"
+      ]
+    },
+    {
+      "term": "Karate",
+      "forbidden": [
+        "Gi",
+        "Kampf",
+        "Dojo",
+        "Sandale",
+        "Technik"
+      ]
+    },
+    {
+      "term": "Darts",
+      "forbidden": [
+        "Pfeil",
+        "Board",
+        "Scheibe",
+        "Check",
+        "werfen"
+      ]
+    },
+    {
+      "term": "Bowling",
+      "forbidden": [
+        "Kugel",
+        "Bahn",
+        "Strike",
+        "Pins",
+        "Strike"
+      ]
+    },
+    {
+      "term": "Minigolf",
+      "forbidden": [
+        "Ball",
+        "Bahn",
+        "Löcher",
+        "haken",
+        "Parcours"
+      ]
+    },
+    {
+      "term": "Billard",
+      "forbidden": [
+        "Kugel",
+        "Tisch",
+        "Tasche",
+        "Queue",
+        "Break"
+      ]
+    },
+    {
+      "term": "Krocket",
+      "forbidden": [
+        "Schläger",
+        "Ball",
+        "Tor",
+        "Pitch",
+        "Team"
+      ]
+    },
+    {
+      "term": "Tisch",
+      "forbidden": [
+        "Brett",
+        "Feld",
+        "Stuhl",
+        "Holz",
+        "Bein"
+      ]
+    },
+    {
+      "term": "Klavier",
+      "forbidden": [
+        "Tasten",
+        "Saiten",
+        "Hammerschlag",
+        "Noten",
+        "Pedal"
+      ]
+    },
+    {
+      "term": "Flöte",
+      "forbidden": [
+        "Löcher",
+        "Blase",
+        "Mund",
+        "Ton",
+        "Instrument"
+      ]
+    },
+    {
+      "term": "Trommel",
+      "forbidden": [
+        "Schlägel",
+        "Fell",
+        "Rhythmus",
+        "Trommelstock",
+        "Marsch"
+      ]
+    },
+    {
+      "term": "Piano",
+      "forbidden": [
+        "Tasten",
+        "Flügel",
+        "Nota",
+        "Hammer",
+        "Klavier"
+      ]
+    },
+    {
+      "term": "Violine",
+      "forbidden": [
+        "Bogen",
+        "Saiten",
+        "Saitenhalter",
+        "Instrument",
+        "Geige"
+      ]
+    },
+    {
+      "term": "Cello",
+      "forbidden": [
+        "Bogen",
+        "Saiten",
+        "Endpin",
+        "Instrument",
+        "Geige"
+      ]
+    },
+    {
+      "term": "Pfeife",
+      "forbidden": [
+        "Blase",
+        "Ton",
+        "Schiedsrichter",
+        "Mund",
+        "Signal"
+      ]
+    },
+    {
+      "term": "Trompete",
+      "forbidden": [
+        "Mundstück",
+        "Ventil",
+        "Tuba",
+        "Fanfare",
+        "Blas"
+      ]
+    },
+    {
+      "term": "Saxophon",
+      "forbidden": [
+        "Mundstück",
+        "Ton",
+        "Jazz",
+        "Tuba",
+        "Instrument"
+      ]
+    },
+    {
+      "term": "Schlagzeug",
+      "forbidden": [
+        "Schlägel",
+        "Fell",
+        "Trommel",
+        "Becken",
+        "Drums"
+      ]
+    },
+    {
+      "term": "Orgel",
+      "forbidden": [
+        "Pfeifen",
+        "Pedal",
+        "Kirche",
+        "Bank",
+        "Instrument"
+      ]
+    },
+    {
+      "term": "Ukulele",
+      "forbidden": [
+        "Holz",
+        "Saiten",
+        "Griff",
+        "Hawaii",
+        "Instrument"
+      ]
+    },
+    {
+      "term": "Laute",
+      "forbidden": [
+        "Baum",
+        "Saiten",
+        "Mittelalter",
+        "Instrument",
+        "Holz"
+      ]
+    },
+    {
+      "term": "Banjo",
+      "forbidden": [
+        "Haut",
+        "Saiten",
+        "Zupfen",
+        "Tradition",
+        "Instrument"
+      ]
+    },
+    {
+      "term": "Zither",
+      "forbidden": [
+        "Saiten",
+        "Brett",
+        "Zupfen",
+        "Instrument",
+        "Volk"
+      ]
+    },
+    {
+      "term": "Fernseher",
+      "forbidden": [
+        "Bildschirm",
+        "Programm",
+        "Sender",
+        "Kanäle",
+        "Fläche"
+      ]
+    },
+    {
+      "term": "Computer",
+      "forbidden": [
+        "Monitor",
+        "Tastatur",
+        "Software",
+        "Desktop",
+        "Rechner"
+      ]
+    },
+    {
+      "term": "Smartphone",
+      "forbidden": [
+        "Display",
+        "App",
+        "Telefon",
+        "Handy",
+        "Laden"
+      ]
+    },
+    {
+      "term": "Drucker",
+      "forbidden": [
+        "Papier",
+        "Tinte",
+        "Druck",
+        "Scanner",
+        "PC"
+      ]
+    },
+    {
+      "term": "Laptop",
+      "forbidden": [
+        "Akku",
+        "Tastatur",
+        "portabel",
+        "Schleppe",
+        "Notebook"
+      ]
+    },
+    {
+      "term": "Kamera",
+      "forbidden": [
+        "Objektiv",
+        "Blitz",
+        "Foto",
+        "Aufnahme",
+        "Linse"
+      ]
+    },
+    {
+      "term": "Spiegelkamera",
+      "forbidden": [
+        "Objektiv",
+        "Verschluss",
+        "Belichtung",
+        "Blitz",
+        "Foto"
+      ]
+    },
+    {
+      "term": "Heizung",
+      "forbidden": [
+        "Kamin",
+        "Heizkörper",
+        "Temperatur",
+        "Winter",
+        "Radiator"
+      ]
+    },
+    {
+      "term": "Klimaanlage",
+      "forbidden": [
+        "Kühlen",
+        "Sommer",
+        "Temperatur",
+        "Luft",
+        "Lüfter"
+      ]
+    },
+    {
+      "term": "Lüfter",
+      "forbidden": [
+        "Flügel",
+        "Luft",
+        "brummen",
+        "Kühlung",
+        "Ventilator"
+      ]
+    },
+    {
+      "term": "Mixer",
+      "forbidden": [
+        "Knopf",
+        "Saft",
+        "glatt",
+        "schlagen",
+        "Mixbecher"
+      ]
+    },
+    {
+      "term": "Waage",
+      "forbidden": [
+        "kg",
+        "wiegen",
+        "Zifferblatt",
+        "Küche",
+        "Gramm"
+      ]
+    },
+    {
+      "term": "Buch",
+      "forbidden": [
+        "Reiseführer",
+        "Seiten",
+        "Wörterbuch",
+        "Leser",
+        "Kapitel"
+      ]
+    },
+    {
+      "term": "Heft",
+      "forbidden": [
+        "Tafel",
+        "mitnehmen",
+        "Bleistift",
+        "Seiten",
+        "Umschlag"
+      ]
+    },
+    {
+      "term": "Stift",
+      "forbidden": [
+        "Bleistift",
+        "Kugelschreiber",
+        "Tinte",
+        "Schreiben",
+        "Farbe"
+      ]
+    },
+    {
+      "term": "Klebstift",
+      "forbidden": [
+        "kleben",
+        "Leim",
+        "heftet",
+        "Papier",
+        "streicht"
+      ]
+    },
+    {
+      "term": "Magnet",
+      "forbidden": [
+        "Magneten",
+        "anziehen",
+        "Eisen",
+        "Kühlschrank",
+        "Pin"
+      ]
+    },
+    {
+      "term": "Puzzle",
+      "forbidden": [
+        "Teile",
+        "legen",
+        "Fit",
+        "Verpackung",
+        "Bausatz"
+      ]
+    },
+    {
+      "term": "Baustein",
+      "forbidden": [
+        "Bauspiel",
+        "lego",
+        "Klotz",
+        "stapeln",
+        "Spielzeug"
+      ]
+    },
+    {
+      "term": "Teddybär",
+      "forbidden": [
+        "Plüsch",
+        "Kissen",
+        "Kind",
+        "Baer",
+        "Stofftier"
+      ]
+    },
+    {
+      "term": "Puppe",
+      "forbidden": [
+        "Kleidung",
+        "Puppenhaus",
+        "Röcke",
+        "Stoff",
+        "Kinder"
+      ]
+    },
+    {
+      "term": "Buchstabensuppe",
+      "forbidden": [
+        "Suppe",
+        "Buchstaben",
+        "Nudeln",
+        "Wort",
+        "Bowl"
+      ]
+    },
+    {
+      "term": "Ball",
+      "forbidden": [
+        "Ballspiel",
+        "rund",
+        "Aufprall",
+        "Sport",
+        "Gummi"
+      ]
+    },
+    {
+      "term": "Fahrradhelm",
+      "forbidden": [
+        "Helm",
+        "Schutz",
+        "Kinn",
+        "Strap",
+        "Velocity"
+      ]
+    },
+    {
+      "term": "Sprungtuch",
+      "forbidden": [
+        "Trampolin",
+        "Stoff",
+        "spannen",
+        "Turnen",
+        "Hochsprung"
+      ]
+    },
+    {
+      "term": "Schlauchball",
+      "forbidden": [
+        "aufpumpen",
+        "Gummi",
+        "Tor",
+        "Ballon",
+        "Hochwasser"
+      ]
+    },
+    {
+      "term": "Flaschenflasche",
+      "forbidden": [
+        "Wasser",
+        "Wurf",
+        "Flasche",
+        "Spritzer",
+        "Wasserball"
+      ]
+    },
+    {
+      "term": "Murmel",
+      "forbidden": [
+        "Kugel",
+        "glas",
+        "Rollen",
+        "Shooter",
+        "Marmor"
+      ]
+    },
+    {
+      "term": "Jojo",
+      "forbidden": [
+        "Aufdrehen",
+        "Drehen",
+        "Blech",
+        "Aufsatz",
+        "Spielzeug"
+      ]
+    },
+    {
+      "term": "Trampolin",
+      "forbidden": [
+        "Sprung",
+        "Tuch",
+        "Feuerwehr",
+        "Hochsprung",
+        "Stoff"
+      ]
+    },
+    {
+      "term": "Bausatz",
+      "forbidden": [
+        "Steine",
+        "s bauen",
+        "Haus",
+        "Figuren",
+        "Basteln"
+      ]
+    },
+    {
+      "term": "Brettspiel",
+      "forbidden": [
+        "Würfel",
+        "Brett",
+        "Figuren",
+        "Spielbrett",
+        "Spielfiguren"
+      ]
+    },
+    {
+      "term": "Kartenspiel",
+      "forbidden": [
+        "Karten",
+        "Stapel",
+        "Mischen",
+        "Routine",
+        "Poker"
+      ]
+    },
+    {
+      "term": "Rubbellos",
+      "forbidden": [
+        "Los",
+        "rascheln",
+        "Glück",
+        "Gewinn",
+        "Preis"
+      ]
+    },
+    {
+      "term": "Murkelspiel",
+      "forbidden": [
+        "Würfel",
+        "fallen",
+        "reißen",
+        "Stapel",
+        "Glück"
+      ]
+    },
+    {
+      "term": "Fangbecher",
+      "forbidden": [
+        "Werfen",
+        "fangen",
+        "Becher",
+        "Punkte",
+        "Wasser"
+      ]
+    },
+    {
+      "term": "Lutscher",
+      "forbidden": [
+        "Bonbon",
+        "Stiel",
+        "Lutschen",
+        "Süßes",
+        "Kinder"
+      ]
+    },
+    {
+      "term": "Schokohuffle",
+      "forbidden": [
+        "Weiß",
+        "schmieren",
+        "Backen",
+        "Teller",
+        "Nougat"
+      ]
+    },
+    {
+      "term": "Bonbon",
+      "forbidden": [
+        "Süßes",
+        "Zucker",
+        "Wrapper",
+        "Lutscher",
+        "Saft"
+      ]
+    },
+    {
+      "term": "Eis am Stiel",
+      "forbidden": [
+        "H Eis",
+        "Wasser",
+        "Frucht",
+        "Glüh",
+        "Lolli"
+      ]
+    },
+    {
+      "term": "Sandspielzeug",
+      "forbidden": [
+        "Form",
+        "Kasten",
+        "schaufeln",
+        "Feucht",
+        "Sand"
+      ]
+    },
+    {
+      "term": "Wasserschwert",
+      "forbidden": [
+        "Tropfen",
+        "Blas",
+        "Plastic",
+        "Luke",
+        "Schwimmbad"
+      ]
+    },
+    {
+      "term": "Haus",
+      "forbidden": [
+        "Tür",
+        "Dach",
+        "Fenster",
+        "Mauer",
+        "Wohnung",
+        "Gebäude"
+      ]
+    },
+    {
+      "term": "Tür",
+      "forbidden": [
+        "Klinke",
+        "Schloss",
+        "öffnen",
+        "Haus",
+        "Wohnung",
+        "Handle"
+      ]
+    },
+    {
+      "term": "Fenster",
+      "forbidden": [
+        "Glas",
+        "Rahmen",
+        "Aufreißen",
+        "Blick",
+        "Kissen",
+        "Vorhang"
+      ]
+    },
+    {
+      "term": "Dach",
+      "forbidden": [
+        "Ziegel",
+        "Regenrinnen",
+        "Schornstein",
+        "Giebel",
+        "Dachboden",
+        "Haube"
+      ]
+    },
+    {
+      "term": "Kamin",
+      "forbidden": [
+        "Feuer",
+        "Rauch",
+        "Ofen",
+        "Stein",
+        "Monster",
+        "Schornstein"
+      ]
+    },
+    {
+      "term": "Treppe",
+      "forbidden": [
+        "Stufe",
+        "Handlauf",
+        "geländer",
+        "Keller",
+        "Treppenhaus",
+        "Leiter"
+      ]
+    },
+    {
+      "term": "Keller",
+      "forbidden": [
+        "Lager",
+        "Flasche",
+        "Kiste",
+        "Erdreich",
+        "feucht",
+        "Gewölbe"
+      ]
+    },
+    {
+      "term": "Dachboden",
+      "forbidden": [
+        "Träppe",
+        "Spinnweben",
+        "Staub",
+        "Koffer",
+        "Kiste",
+        "Kleinzeug"
+      ]
+    },
+    {
+      "term": "Wohnung",
+      "forbidden": [
+        "Miete",
+        "Flur",
+        "Zimmer",
+        "Küche",
+        "Möbel",
+        "Balkon"
+      ]
+    },
+    {
+      "term": "Balkon",
+      "forbidden": [
+        "Boden",
+        "Pflanze",
+        "Stuhl",
+        "Außen",
+        "Markise",
+        "Rail"
+      ]
+    },
+    {
+      "term": "Garten",
+      "forbidden": [
+        "Beet",
+        "Rasen",
+        "Schubkarre",
+        "Hecke",
+        "Sonnen",
+        "Sommer"
+      ]
+    },
+    {
+      "term": "Garage",
+      "forbidden": [
+        "Tor",
+        "Wagen",
+        "Werkzeug",
+        "Heizung",
+        "Pfosten",
+        "Werkbank"
+      ]
+    },
+    {
+      "term": "Werkzeugkiste",
+      "forbidden": [
+        "Hammer",
+        "Schraube",
+        "Säge",
+        "Kiste",
+        "Metalle",
+        "Nägel"
+      ]
+    },
+    {
+      "term": "Waschbecken",
+      "forbidden": [
+        "Kran",
+        "Seife",
+        "Handtuch",
+        "Spiegel",
+        "Zahn",
+        "Bad"
+      ]
+    },
+    {
+      "term": "Badewanne",
+      "forbidden": [
+        "Wanne",
+        "Wasser",
+        "Dusche",
+        "Blase",
+        "Kachel",
+        "Badezimmer"
+      ]
+    },
+    {
+      "term": "Dusche",
+      "forbidden": [
+        "Kopf",
+        "Kräuseln",
+        "Wasser",
+        "Handbrause",
+        "glas",
+        "Fliesen"
+      ]
+    },
+    {
+      "term": "Toilette",
+      "forbidden": [
+        "Spülung",
+        "Klo",
+        "Papier",
+        "Sitz",
+        "Bidet",
+        "WC"
+      ]
+    },
+    {
+      "term": "Spiegel",
+      "forbidden": [
+        "Reflexion",
+        "Gesicht",
+        "glas",
+        "Bad",
+        "Kamm",
+        "selfie"
+      ]
+    },
+    {
+      "term": "Handtuch",
+      "forbidden": [
+        "Frottee",
+        "Bad",
+        "trocknen",
+        "weich",
+        "Badezimmer",
+        "Dusche"
+      ]
+    },
+    {
+      "term": "Bett",
+      "forbidden": [
+        "Matratze",
+        "Kissen",
+        "Decke",
+        "schlafen",
+        "Nacht",
+        "traum"
+      ]
+    },
+    {
+      "term": "Kissen",
+      "forbidden": [
+        "Sofa",
+        "Bett",
+        "weich",
+        "Polster",
+        "Baumwolle",
+        "Kopf"
+      ]
+    },
+    {
+      "term": "Decke",
+      "forbidden": [
+        "Wolle",
+        "Bett",
+        "warm",
+        "Plaid",
+        "Fläche",
+        "zudecken"
+      ]
+    },
+    {
+      "term": "Sofa",
+      "forbidden": [
+        "Sitz",
+        "Wohnzimmer",
+        "Polster",
+        "Kissen",
+        "Couch",
+        "LedER"
+      ]
+    },
+    {
+      "term": "Stuhl",
+      "forbidden": [
+        "Sitz",
+        "Beine",
+        "Hocker",
+        "Garten",
+        "Polster",
+        "lehne"
+      ]
+    },
+    {
+      "term": "Schrank",
+      "forbidden": [
+        "Kleidung",
+        "Türen",
+        "Schublade",
+        "Hängeschrank",
+        "Ordner",
+        "Kommode"
+      ]
+    },
+    {
+      "term": "Regal",
+      "forbidden": [
+        "Bücher",
+        "CDs",
+        "Ebene",
+        "Boden",
+        "Möbel",
+        "Ablage"
+      ]
+    },
+    {
+      "term": "Kommode",
+      "forbidden": [
+        "Schublade",
+        "Kleidung",
+        "Holz",
+        "Schmuck",
+        "Vase",
+        "Möbel"
+      ]
+    },
+    {
+      "term": "Vase",
+      "forbidden": [
+        "Blumen",
+        "Sträuß",
+        "Stein",
+        "Tisch",
+        "deko",
+        "Blüte"
+      ]
+    },
+    {
+      "term": "Blumenstrauß",
+      "forbidden": [
+        "Schnittblumen",
+        "Vase",
+        "Geschenk",
+        "Blüten",
+        "Floristik",
+        "duften"
+      ]
+    },
+    {
+      "term": "Geschenk",
+      "forbidden": [
+        "Paket",
+        "band",
+        "Schleife",
+        "Überraschung",
+        "Geburtstag",
+        "Gabe"
+      ]
+    },
+    {
+      "term": "Uhr",
+      "forbidden": [
+        "Zeit",
+        "zeiger",
+        "Stunde",
+        "Ticken",
+        "wand",
+        "Pendule"
+      ]
+    },
+    {
+      "term": "Armbanduhr",
+      "forbidden": [
+        "Band",
+        "Handgelenk",
+        "zeit",
+        "Glas",
+        "Edition",
+        "Sport"
+      ]
+    },
+    {
+      "term": "Thermometer",
+      "forbidden": [
+        "Temperatur",
+        "Grad",
+        "Skala",
+        "Fieber",
+        "Wetter",
+        "heiß"
+      ]
+    },
+    {
+      "term": "Kalenderblatt",
+      "forbidden": [
+        "Monat",
+        "Feiertag",
+        "Datum",
+        "wochentlich",
+        "Planung",
+        "Januar"
+      ]
+    },
+    {
+      "term": "Hausaufgaben",
+      "forbidden": [
+        "Heft",
+        "schule",
+        "Aufgabe",
+        "Schüler",
+        "leer machen",
+        "Abend"
+      ]
+    },
+    {
+      "term": "Zeugnis",
+      "forbidden": [
+        "Noten",
+        "schule",
+        "Lehrer",
+        "Bewertung",
+        "gut",
+        "Bericht"
+      ]
+    },
+    {
+      "term": "Klassenfahrt",
+      "forbidden": [
+        "Bus",
+        "Reise",
+        "Mehrbettzimmer",
+        "Gruppe",
+        "lehrer",
+        "Übernachtung"
+      ]
+    },
+    {
+      "term": "Schulranzen",
+      "forbidden": [
+        "Ranzen",
+        "Rucksack",
+        "Trinkflasche",
+        "Stifte",
+        "Tasche",
+        "Schultasche"
+      ]
+    },
+    {
+      "term": "Kreide",
+      "forbidden": [
+        "Tafel",
+        "Schule",
+        "Staub",
+        "schreiben",
+        "weiß",
+        "Blackboard"
+      ]
+    },
+    {
+      "term": "Klassenzimmer",
+      "forbidden": [
+        "Tafel",
+        "Stuhl",
+        "Heft",
+        "Pult",
+        "Lehrer",
+        "Fenster"
+      ]
+    },
+    {
+      "term": "Rechtschreibbuch",
+      "forbidden": [
+        "Wörterbuch",
+        "Regel",
+        "silbentrennen",
+        "Umlaut",
+        "Fehler",
+        "Diktat"
+      ]
+    },
+    {
+      "term": "Notizbuch",
+      "forbidden": [
+        "Heft",
+        "notieren",
+        "Stift",
+        "vermerke",
+        "Seite",
+        "College"
+      ]
+    },
+    {
+      "term": "Feder",
+      "forbidden": [
+        "halbe",
+        "vier",
+        "Strich",
+        "Tinte",
+        "Schreibfeder",
+        "Brief"
+      ]
+    },
+    {
+      "term": "Bleistiftspitzer",
+      "forbidden": [
+        "Spitzer",
+        "Graphit",
+        "Büro",
+        "Schreibtisch",
+        "Behälter",
+        "scharf"
+      ]
+    },
+    {
+      "term": "Füllfeder",
+      "forbidden": [
+        "Tinte",
+        "Feder",
+        "Schreiben",
+        "Edelstahl",
+        "halbe",
+        "vier"
+      ]
+    },
+    {
+      "term": "Dreieck",
+      "forbidden": [
+        "Geometrie",
+        "Winkel",
+        "Zeichen",
+        "Geodreieck",
+        "Mathematik",
+        "rechtwinklig"
+      ]
+    },
+    {
+      "term": "Zirkel",
+      "forbidden": [
+        "Kreise",
+        "zeichnen",
+        "Mathematik",
+        "Geometrie",
+        "Tinte",
+        "Maßstab"
+      ]
+    },
+    {
+      "term": "Paket",
+      "forbidden": [
+        "Post",
+        "karton",
+        "band",
+        "versenden",
+        "Gewicht",
+        "zustellung"
+      ]
+    },
+    {
+      "term": "Paketkiste",
+      "forbidden": [
+        "Holz",
+        "Karton",
+        "Pflanzen",
+        "versenden",
+        "Deckel",
+        "Garten"
+      ]
+    },
+    {
+      "term": "Flugticket",
+      "forbidden": [
+        "Flug",
+        "Sitzplatz",
+        "Gepäck",
+        "abheben",
+        "Einsteigen",
+        "Bordkarte"
+      ]
+    },
+    {
+      "term": "Koffer",
+      "forbidden": [
+        "packen",
+        "reise",
+        "Gepäck",
+        "Schloss",
+        "Handgriff",
+        "Garderobe"
+      ]
+    },
+    {
+      "term": "Reisepass",
+      "forbidden": [
+        "Personalausweis",
+        "Reise",
+        "Beamte",
+        "Visum",
+        "Stempel",
+        "Grenze"
+      ]
+    },
+    {
+      "term": "Seestern",
+      "forbidden": [
+        "Meer",
+        "Muschel",
+        "Wasser",
+        "orange",
+        "Strand",
+        "Weichtier"
+      ]
+    },
+    {
+      "term": "Krake",
+      "forbidden": [
+        "Tintenfisch",
+        "Meer",
+        "greifen",
+        "Arme",
+        "Wasser",
+        "Tentakel"
+      ]
+    },
+    {
+      "term": "Muschel",
+      "forbidden": [
+        "Meer",
+        "Perle",
+        "Strand",
+        "Shell",
+        "schließen",
+        "Bin"
+      ]
+    },
+    {
+      "term": "Seeigel",
+      "forbidden": [
+        "Stachel",
+        "Meer",
+        "Meerestern",
+        "Wasser",
+        "Braun"
+      ]
+    },
+    {
+      "term": "Fahrradkette",
+      "forbidden": [
+        "Zahnrad",
+        "Kette",
+        "Gang",
+        "wechseln",
+        "Radschaltung",
+        "Öl"
+      ]
+    },
+    {
+      "term": "Laufrad",
+      "forbidden": [
+        "Reifen",
+        "Speiche",
+        "Nabe",
+        "Luft",
+        "haltbar",
+        "Innen"
+      ]
+    },
+    {
+      "term": "Autoschlüssel",
+      "forbidden": [
+        "Zündschlüssel",
+        "Motor",
+        "Start",
+        "Hup",
+        "Remote",
+        "Fernbedienung"
+      ]
+    },
+    {
+      "term": "Autoreifen",
+      "forbidden": [
+        "Gummi",
+        "Rad",
+        "Profil",
+        "Luft",
+        "Schwamm",
+        "Flach"
+      ]
+    },
+    {
+      "term": "Sicherung",
+      "forbidden": [
+        "Geld",
+        "tresor",
+        "Schloss",
+        "Schlüssel",
+        "Safe",
+        "Bank"
+      ]
+    },
+    {
+      "term": "Brieftasche",
+      "forbidden": [
+        "Geld",
+        "Karten",
+        "Portemonnaie",
+        "Leder",
+        "Reißverschluss",
+        "Tasche"
+      ]
+    },
+    {
+      "term": "Fahrradschloss",
+      "forbidden": [
+        "abschließen",
+        "Kette",
+        "Schloss",
+        "Rahmen",
+        "diebstahl",
+        "Orbit"
+      ]
+    },
+    {
+      "term": "Werkzeugkoffer",
+      "forbidden": [
+        "Hammer",
+        "Zange",
+        "Schraubenzieher",
+        "Set",
+        "Koffer",
+        "Baustelle"
+      ]
+    },
+    {
+      "term": "Wasserpumpe",
+      "forbidden": [
+        "Brunnen",
+        "Pumpe",
+        "Tank",
+        "Garten",
+        "Wasser"
+      ]
+    },
+    {
+      "term": "Brunnen",
+      "forbidden": [
+        "Wasser",
+        "Quelle",
+        "Becken",
+        "Stein",
+        "Dorf",
+        "Wasserhahn"
+      ]
+    },
+    {
+      "term": "Mülltonne",
+      "forbidden": [
+        "Abfall",
+        "Restmüll",
+        "Papier",
+        "Boden",
+        "Deckel",
+        "Verwertung"
+      ]
+    },
+    {
+      "term": "Papiermüll",
+      "forbidden": [
+        "Abfall",
+        "Tonne",
+        "Papier",
+        "trennen",
+        "Verpackung",
+        "Recycling"
+      ]
+    },
+    {
+      "term": "Glastonne",
+      "forbidden": [
+        "Pfand",
+        "Fläsche",
+        "Müll",
+        "trennen",
+        "Recycling"
+      ]
+    },
+    {
+      "term": "Batterie",
+      "forbidden": [
+        "Energie",
+        "Strom",
+        "Akku",
+        "Power",
+        "Zelle",
+        "Licht"
+      ]
+    },
+    {
+      "term": "Mehrfachstecker",
+      "forbidden": [
+        "Stecker",
+        "Anschluss",
+        "reihe",
+        "Adapter",
+        "Strom",
+        "verlängern"
+      ]
+    },
+    {
+      "term": "Taschenrechner",
+      "forbidden": [
+        "Zahlen",
+        "display",
+        "Summieren",
+        "Taste",
+        "Rechner"
+      ]
+    },
+    {
+      "term": "Wörterbuch",
+      "forbidden": [
+        "verstehen",
+        "Bedeutung",
+        "Nachschlagen",
+        "Wort",
+        "Seite",
+        "Lexikon"
+      ]
+    },
+    {
+      "term": "Buchstabe",
+      "forbidden": [
+        "Alphabet",
+        "A B C",
+        "Schriftzeichen",
+        "schreiben",
+        "post",
+        "typografie"
+      ]
+    },
+    {
+      "term": "Punkt",
+      "forbidden": [
+        "Komma",
+        "Satzzeichen",
+        "Interpunktion",
+        "Ausrufezeichen",
+        "schreiben",
+        "Satz"
+      ]
+    },
+    {
+      "term": "Komma",
+      "forbidden": [
+        "Aufzählung",
+        "Satzzeichen",
+        "zwischen",
+        "Absatz",
+        "schreiben",
+        "Satz"
+      ]
+    },
+    {
+      "term": "Frage",
+      "forbidden": [
+        "W-Fragen",
+        "Satzzeichen",
+        "Interrogativ",
+        "warum",
+        "wer"
+      ]
+    },
+    {
+      "term": "Bindestrich",
+      "forbidden": [
+        "Strich",
+        "Trennung",
+        "gelb",
+        "Schreibweise",
+        "hyphen",
+        "knüpfen"
+      ]
+    },
+    {
+      "term": "Wort",
+      "forbidden": [
+        "Wörter",
+        "heft",
+        "Lexikon",
+        "Wortschatz",
+        "Ausdruck",
+        "Sprache"
+      ]
+    },
+    {
+      "term": "Hund",
+      "forbidden": [
+        "Kiefer",
+        "Leine",
+        "Wurf",
+        "Bellhaut",
+        "Kennel",
+        "Haustier"
+      ]
+    },
+    {
+      "term": "Katze",
+      "forbidden": [
+        "Maus",
+        "Miezer",
+        "Kratzbaum",
+        "Schnurrhaar",
+        "Fell",
+        "Mieze"
+      ]
+    },
+    {
+      "term": "Vogel",
+      "forbidden": [
+        "Feder",
+        "Käfig",
+        "Sang",
+        "Zwitsch",
+        "Flügel",
+        "Voliere"
+      ]
+    },
+    {
+      "term": "Hamster",
+      "forbidden": [
+        "Rad",
+        "Käfig",
+        "Körner",
+        "Nest",
+        "Schnurrhaar",
+        "Kleintier"
+      ]
+    },
+    {
+      "term": "Kaninchen",
+      "forbidden": [
+        "Hase",
+        "Hohes",
+        "Hopping",
+        "Stroh",
+        "Zahn",
+        "Käfig"
+      ]
+    },
+    {
+      "term": "Meerschweinchen",
+      "forbidden": [
+        "Nagetier",
+        "Heu",
+        "Käfig",
+        "Pfeifen",
+        "Fell",
+        "Nager"
+      ]
+    },
+    {
+      "term": "Wellensittich",
+      "forbidden": [
+        "Feder",
+        "Käfig",
+        "Sang",
+        "Körner",
+        "Papagei",
+        "Voliere"
+      ]
+    },
+    {
+      "term": "Schildkröte",
+      "forbidden": [
+        "Panzer",
+        "Spaziergang",
+        "Langsam",
+        "Schale",
+        "Reptil",
+        "Wüste"
+      ]
+    },
+    {
+      "term": "Marder",
+      "forbidden": [
+        "Nacht",
+        "Wald",
+        "Fell",
+        "Jagd",
+        "Schlauer",
+        "Nest"
+      ]
+    },
+    {
+      "term": "Eichhörnchen",
+      "forbidden": [
+        "Nuss",
+        "Tail",
+        "Wald",
+        "Springen",
+        "haselnuss",
+        "Rinde"
+      ]
+    },
+    {
+      "term": "Fledermaus",
+      "forbidden": [
+        "Flug",
+        "Nacht",
+        "Sonar",
+        "Flügel",
+        "Höhle",
+        "Echo"
+      ]
+    },
+    {
+      "term": "Grille",
+      "forbidden": [
+        "Zirpen",
+        "Sommer",
+        "Nacht",
+        "Insekt",
+        "Sang",
+        "Sprache"
+      ]
+    },
+    {
+      "term": "Zecke",
+      "forbidden": [
+        "Biss",
+        "Haut",
+        "Tier",
+        "Zange",
+        "Wald",
+        "Krankheit"
+      ]
+    },
+    {
+      "term": "Wespe",
+      "forbidden": [
+        "Stachel",
+        "Gift",
+        "Nest",
+        "Insekt",
+        "Staub",
+        "Wespennest"
+      ]
+    },
+    {
+      "term": "Käfer",
+      "forbidden": [
+        "Häutung",
+        "Insekt",
+        "Panzer",
+        "Flügel",
+        "Rüssel",
+        "Horn"
+      ]
+    },
+    {
+      "term": "Walross",
+      "forbidden": [
+        "Säugtier",
+        "Eis",
+        "Arktik",
+        "Schnurrhaar",
+        "Zähne",
+        "Masse"
+      ]
+    },
+    {
+      "term": "Tintenfisch",
+      "forbidden": [
+        "Tentakel",
+        "Tinte",
+        "Meer",
+        "Kraken",
+        "Saugnapf",
+        "Kopffüßer"
+      ]
+    },
+    {
+      "term": "Greifvogel",
+      "forbidden": [
+        "Jagd",
+        "Horizont",
+        "Kralle",
+        "Nest",
+        "Gefieder",
+        "Tier"
+      ]
+    },
+    {
+      "term": "Rabe",
+      "forbidden": [
+        "schwarz",
+        "krähen",
+        "Kiel",
+        "Nest",
+        "Gefieder",
+        "Tier"
+      ]
+    },
+    {
+      "term": "Spatz",
+      "forbidden": [
+        "Kleingeflügel",
+        "Flügel",
+        "Futter",
+        "Haus",
+        "nesten",
+        "Taube"
+      ]
+    },
+    {
+      "term": "Taube",
+      "forbidden": [
+        "Stadt",
+        "Futter",
+        "Nest",
+        "Flügel",
+        "gurren",
+        "Taubenhaus"
+      ]
+    },
+    {
+      "term": "Truthahn",
+      "forbidden": [
+        "Thanksgiving",
+        "Geflügel",
+        "Brust",
+        "Feder",
+        "Amerika",
+        "Weihnachten"
+      ]
+    },
+    {
+      "term": "Gecko",
+      "forbidden": [
+        "Zehen",
+        "Haftung",
+        "Wand",
+        "Tropen",
+        "Reptil",
+        "Eidechse"
+      ]
+    },
+    {
+      "term": "Chameleon",
+      "forbidden": [
+        "Zunge",
+        "Farbe",
+        "Auge",
+        "Klettern",
+        "Reptil",
+        "Afrika"
+      ]
+    },
+    {
+      "term": "Salamander",
+      "forbidden": [
+        "Feucht",
+        "Amphibie",
+        "Schwanz",
+        "Leben",
+        "rot",
+        "Teich"
+      ]
+    },
+    {
+      "term": "Pferdebremse",
+      "forbidden": [
+        "Insekt",
+        "Stech",
+        "Tier",
+        "Wiese",
+        "Blut",
+        "Blut"
+      ]
+    },
+    {
+      "term": "Stechmücke",
+      "forbidden": [
+        "Insekt",
+        "Summen",
+        "Blut",
+        "Nacht",
+        "Wasser",
+        "Stechen"
+      ]
+    },
+    {
+      "term": "Bienenkorb",
+      "forbidden": [
+        "Honig",
+        "Biene",
+        "Wachs",
+        "Stock",
+        "Imker",
+        "Hive"
+      ]
+    },
+    {
+      "term": "Wespennest",
+      "forbidden": [
+        "Papier",
+        "Wespe",
+        "Stachel",
+        "Hole",
+        "Garten",
+        "Insekt"
+      ]
+    },
+    {
+      "term": "Pferdestall",
+      "forbidden": [
+        "Heu",
+        "Sattel",
+        "Horde",
+        "Boxen",
+        "Hof",
+        "Pferd"
+      ]
+    },
+    {
+      "term": "Kuhstall",
+      "forbidden": [
+        "Milch",
+        "Heu",
+        "Horn",
+        "Kuh",
+        "Bauer",
+        "Hof"
+      ]
+    },
+    {
+      "term": "Schweine",
+      "forbidden": [
+        "Futter",
+        "Mau",
+        "Wurst",
+        "Hof",
+        "Schwein",
+        "Mist"
+      ]
+    },
+    {
+      "term": "Hühnerstall",
+      "forbidden": [
+        "Ei",
+        "Huhn",
+        "Nest",
+        "Futter",
+        "Hof",
+        "Heuhaufen"
+      ]
+    },
+    {
+      "term": "Feld",
+      "forbidden": [
+        "Wiese",
+        "Getreide",
+        "Acker",
+        "Boden",
+        "Halm",
+        "Ernte"
+      ]
+    },
+    {
+      "term": "Acker",
+      "forbidden": [
+        "Boden",
+        "Saat",
+        "Pflanze",
+        "Halm",
+        "Ernte",
+        "Traktor"
+      ]
+    },
+    {
+      "term": "Gartenbeet",
+      "forbidden": [
+        "Rasen",
+        "Pflanzen",
+        "Saat",
+        "Erde",
+        "Gemüse",
+        "Beet"
+      ]
+    },
+    {
+      "term": "Gemüsebeet",
+      "forbidden": [
+        "Salat",
+        "Karotte",
+        "Erde",
+        "Gemüse",
+        "Pflanzen",
+        "Saat"
+      ]
+    },
+    {
+      "term": "Obstgarten",
+      "forbidden": [
+        "Apfelbaum",
+        "Ernte",
+        "Kirsche",
+        "Obst",
+        "Garten",
+        "Blüte"
+      ]
+    },
+    {
+      "term": "Streuobstwiese",
+      "forbidden": [
+        "Wiese",
+        "Ernte",
+        "Obst",
+        "Baum",
+        "Landwirtschaft",
+        "Heu"
+      ]
+    },
+    {
+      "term": "Weinberg",
+      "forbidden": [
+        "Wein",
+        "Trauben",
+        "Weinstock",
+        "Weinbau",
+        "Hang",
+        "Rebe"
+      ]
+    },
+    {
+      "term": "Feldrand",
+      "forbidden": [
+        "Hecke",
+        "Weg",
+        "Rasen",
+        "Grenze",
+        "Wild",
+        "Flur"
+      ]
+    },
+    {
+      "term": "Dorf",
+      "forbidden": [
+        "Landhaus",
+        "Kirche",
+        "Wirtshaus",
+        "Bewohner",
+        "Stube",
+        "Kreis"
+      ]
+    },
+    {
+      "term": "Vorstadt",
+      "forbidden": [
+        "suburb",
+        "reihenhaus",
+        "Garten",
+        "settle",
+        "bus",
+        "kleiner"
+      ]
+    },
+    {
+      "term": "Altstadt",
+      "forbidden": [
+        "Gasse",
+        "Pflaster",
+        "Brunnen",
+        "Fassade",
+        "Türme",
+        "historisch"
+      ]
+    },
+    {
+      "term": "Fussgängerzone",
+      "forbidden": [
+        "Laden",
+        "Schaufenster",
+        "Bank",
+        "Baum",
+        "shoppen",
+        "Stadt"
+      ]
+    },
+    {
+      "term": "Marktplatz",
+      "forbidden": [
+        "Stand",
+        "Verkäufer",
+        "Gemüse",
+        "brüllen",
+        "Dienstag",
+        "Feier"
+      ]
+    },
+    {
+      "term": "Fähre",
+      "forbidden": [
+        "Boot",
+        "Wasser",
+        "Überfahrt",
+        "Kapitan",
+        "Hafen",
+        "Gegenseite"
+      ]
+    },
+    {
+      "term": "Brückenkopf",
+      "forbidden": [
+        "Fluss",
+        "Brücke",
+        "Übergang",
+        "Anker",
+        "Straße",
+        "Festung"
+      ]
+    },
+    {
+      "term": "Leuchtturm",
+      "forbidden": [
+        "Licht",
+        "Meer",
+        "Küste",
+        "Turm",
+        "Strand",
+        "Bake"
+      ]
+    },
+    {
+      "term": "Binnenhafen",
+      "forbidden": [
+        "Container",
+        "Kran",
+        "Schiff",
+        "Hafen",
+        "Logistik",
+        "Kai"
+      ]
+    },
+    {
+      "term": "Stadion",
+      "forbidden": [
+        "Spielfeld",
+        "Publikum",
+        "Ränge",
+        "Tribüne",
+        "Banner",
+        "Fans"
+      ]
+    },
+    {
+      "term": "Spielfeld",
+      "forbidden": [
+        "Rasen",
+        "Tor",
+        "Mitte",
+        "Linien",
+        "Fläche",
+        "Ball"
+      ]
+    },
+    {
+      "term": "Tribüne",
+      "forbidden": [
+        "Publikum",
+        "Reihe",
+        "Banner",
+        "Ränge",
+        "Zuschauer",
+        "Block"
+      ]
+    },
+    {
+      "term": "Badestrand",
+      "forbidden": [
+        "Sand",
+        "Strand",
+        "Tuch",
+        "Handtuch",
+        "Sonnenschirm",
+        "Urlaub"
+      ]
+    },
+    {
+      "term": "Campingplatz",
+      "forbidden": [
+        "Zelt",
+        "Wasser",
+        "Feuer",
+        "Strom",
+        "Wald",
+        "Hecke"
+      ]
+    },
+    {
+      "term": "Ferienhaus",
+      "forbidden": [
+        "Urlaub",
+        "Terrasse",
+        "Meer",
+        "Strand",
+        "Schlüssel",
+        "Garten"
+      ]
+    },
+    {
+      "term": "Wandern",
+      "forbidden": [
+        "Rucksack",
+        "Schuh",
+        "Pfad",
+        "Stock",
+        "Wald",
+        "Berg"
+      ]
+    },
+    {
+      "term": "Treppenhaus",
+      "forbidden": [
+        "fliehen",
+        "Stockwerk",
+        "Treppe",
+        "Geländer",
+        "Gebäude",
+        "Engpass"
+      ]
+    },
+    {
+      "term": "Aufzug",
+      "forbidden": [
+        "Knopf",
+        "fahren",
+        "Geschoss",
+        "Stahl",
+        "Kabine",
+        "Gebäude"
+      ]
+    },
+    {
+      "term": "Kellertreppe",
+      "forbidden": [
+        "Keller",
+        "abwärts",
+        "Engpass",
+        "Stufe",
+        "Heizung"
+      ]
+    },
+    {
+      "term": "Gepäck",
+      "forbidden": [
+        "Tasche",
+        "Koffer",
+        "Rucksack",
+        "Handgriff",
+        "Klammer"
+      ]
+    },
+    {
+      "term": "Reisekoffer",
+      "forbidden": [
+        "Rad",
+        "Schloss",
+        "Handgriff",
+        "verstaauen",
+        "Reise",
+        "Koffergriff"
+      ]
+    },
+    {
+      "term": "Sonnencreme",
+      "forbidden": [
+        "UV",
+        "Licht",
+        "Sommer",
+        "Haut",
+        "Brust",
+        "Sonnenschutz"
+      ]
+    },
+    {
+      "term": "Badeanzug",
+      "forbidden": [
+        "Strand",
+        "gepoolt",
+        "Anzug",
+        "Beine",
+        "Bikini",
+        "Wasser"
+      ]
+    },
+    {
+      "term": "Flipflops",
+      "forbidden": [
+        "Schuhe",
+        "Sand",
+        "Sole",
+        "Strand",
+        "Sandalen",
+        "Fuß"
+      ]
+    },
+    {
+      "term": "Strandhandtuch",
+      "forbidden": [
+        "Sand",
+        "Dusche",
+        "Tuch",
+        "rot",
+        "weiß",
+        "Frottee"
+      ]
+    },
+    {
+      "term": "Strandkorb",
+      "forbidden": [
+        "Korb",
+        "Strand",
+        "Sitz",
+        "Sonnen",
+        "weiß",
+        "Windschutz"
+      ]
+    },
+    {
+      "term": "Badehaus",
+      "forbidden": [
+        "Dusche",
+        "Strand",
+        "Umkleide",
+        "Kabinett",
+        "Schwimmen",
+        "WC"
+      ]
+    },
+    {
+      "term": "Pfosten",
+      "forbidden": [
+        "Stange",
+        "Strand",
+        "Spiegel",
+        "Posten",
+        "Bretter",
+        "Boje"
+      ]
+    },
+    {
+      "term": "Boje",
+      "forbidden": [
+        "Wasser",
+        "Welle",
+        "Anker",
+        "Seil",
+        "gelb",
+        "Schiff",
+        "Markierung"
+      ]
     }
   ]
 }

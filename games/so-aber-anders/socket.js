@@ -413,6 +413,11 @@ function sendNextWord(code, io) {
   if (!session) return;
   const listName = session.settings.wordlist || "standard";
   const allWords = (wordlists[listName] || wordlists.standard).words;
+
+  // usedWords enthaelt die Woerter der AKTUELLEN Runde: innerhalb einer
+  // Runde bekommt kein Spieler zweimal dasselbe Wort zu erklaeren.
+  // Beim Rundenwechsel wird die Liste zurueckgesetzt (siehe
+  // advanceToNextPlayer), dann sind die Woerter wieder frei.
   let list = allWords.filter(w => !session.usedWords.includes(w.term));
 
   // Alle Woerter sind schon gespielt worden. Das ist KEIN Spielende -
@@ -426,6 +431,7 @@ function sendNextWord(code, io) {
     });
   }
 
+  // Zufallige Auswahl - der Begriff wird nicht der Reihe nach vergeben.
   const word = list[Math.floor(Math.random() * list.length)];
   session.usedWords.push(word.term);
   const tabooCount = session.settings.tabooCount || 3;
@@ -496,6 +502,9 @@ function advanceToNextPlayer(code, io) {
   const finishedRound = session.currentRound;
   session.currentRound += 1;
   session.currentPlayerIndex = 0;
+  // Wortliste fuer die neue Runde freigeben: in der neuen Runde darf
+  // jedes Wort erneut vergeben werden - innerhalb einer Runde nicht.
+  session.usedWords = [];
   io.to(code).emit("roundEnd", {
     round: finishedRound,
     players: session.players
