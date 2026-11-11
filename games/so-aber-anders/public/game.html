@@ -31,22 +31,21 @@
       <div id="letter-helper" style="display:none">
         <p class="hint">
           Jedes Wort deiner Beschreibung muss mit <strong id="letter-helper-letter">B</strong> beginnen.
-          Schreib deinen Satz unten – ungueltige Woerter werden markiert.
+          Sprich deinen Satz einfach aus – alle Woerter muessen mit diesem Buchstaben beginnen.
         </p>
-        <input id="phrase-input" type="text" placeholder="Dein Satz, z.B. man lebt darin" maxlength="200"/>
-        <div id="phrase-preview"></div>
       </div>
       <div id="skip-hint" class="hint"></div>
-      <p class="hint">Der Kontrolleur entscheidet, ob das Wort richtig erraten wurde.</p>
+      <p class="hint">Die anderen Spieler entscheiden, ob das Wort richtig erraten wurde.</p>
       <button class="btn btn-skip" id="btn-skip" style="display:none" onclick="wordSkip()">
         ⏭️ Passen
       </button>
     </div>
 
     <div id="screen-controller" style="display:none">
-      <h2>👁️ Du kontrollierst!</h2>
+      <h2>👁️ Wort bewerten</h2>
       <div id="controller-forbidden"></div>
       <div id="controller-letter"></div>
+      <p class="hint">War das Wort richtig erklaert?</p>
       <button class="btn" onclick="wordResult(true)">✅ Richtig erraten</button>
       <button class="btn btn-wrong" onclick="wordResult(false)">❌ Falsch / nicht erraten</button>
       <button class="btn btn-violation" onclick="reportViolation()">🚨 Regelverstoss!</button>

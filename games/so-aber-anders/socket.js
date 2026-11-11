@@ -147,16 +147,33 @@ module.exports = function(io) {
     socket.on("wordResult", ({ code, correct }) => {
       const session = sessions[code];
       if (!session) return;
-      // Nur der Kontrolleur (gegnerisches Team) bestätigt richtig / falsch
-      if (!isController(session, socket.id)) return;
-      const player = session.players[session.currentPlayerIndex];
-      if (!player) return;
+      // Nur Nicht-Erklärer (gegnerisches Team / andere Spieler) duerfen voten
+      if (isExplainer(session, socket.id)) return;
+      if (session.wordVotes.correct.includes(socket.id) || session.wordVotes.wrong.includes(socket.id)) return;
+
       if (correct) {
-        player.score += 1;
+        session.wordVotes.correct.push(socket.id);
+      } else {
+        session.wordVotes.wrong.push(socket.id);
       }
-      countWord(session);
-      io.to(code).emit("scoreUpdate", session.players);
-      checkTurnEnd(code, io);
+
+      const explainer = session.players[session.currentPlayerIndex];
+      const nonExplainers = session.players.filter(p => p.id !== explainer.id);
+      const voted = session.wordVotes.correct.length + session.wordVotes.wrong.length;
+
+      // Fortschritt an alle
+      io.to(code).emit("voteProgress", { done: voted, total: nonExplainers.length });
+
+      // Wenn alle Nicht-Erklaerer gevotet haben -> Mehrheit entscheidet (Gleichstand = falsch)
+      if (voted >= nonExplainers.length) {
+        const result = session.wordVotes.correct.length >= session.wordVotes.wrong.length;
+        if (result) {
+          if (explainer) explainer.score += 1;
+        }
+        countWord(session);
+        io.to(code).emit("scoreUpdate", session.players);
+        checkTurnEnd(code, io);
+      }
     });
 
     socket.on("wordSkip", ({ code }) => {
@@ -403,6 +420,8 @@ function sendWordToRoles(code, io, session) {
 function sendNextWord(code, io) {
   const session = sessions[code];
   if (!session) return;
+  // Votes fuer das neue Wort zuruecksetzen
+  session.wordVotes = { correct: [], wrong: [] };
   const listName = session.settings.wordlist || "standard";
   const allWords = allSharedWords;
 

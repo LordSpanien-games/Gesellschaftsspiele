@@ -34,13 +34,10 @@ socket.on("newTurn", (data) => {
           ? "Wird das Wort nicht erraten, kannst du passen – das kostet 1 Punkt."
           : "Wird das Wort nicht erraten, kannst du passen – das kostet keine Punkte.")
       : "Passen ist in diesem Spiel nicht erlaubt – jedes Wort muss erraten werden.";
-  } else if (data.controller === playerName) {
+  } else {
+    // Alle Nicht-Erklaerer (gegnerisches Team / andere Spieler) bewerten das Wort
     showScreen("screen-controller");
     document.getElementById("controller-forbidden").innerHTML = "";
-  } else {
-    showScreen("screen-waiting");
-    document.getElementById("current-explainer").textContent =
-      "🗣️ " + data.explainer + " erklaert gerade...";
   }
   updateScoreBoard(data.players);
 });
@@ -101,6 +98,19 @@ socket.on("forbiddenWords", (data) => {
       span.textContent = w + " ";
       ctrlForbidden.appendChild(span);
     });
+  }
+});
+
+// Vote-Fortschritt (Richtig/Falsch)
+socket.on("voteProgress", ({ done, total }) => {
+  const status = document.getElementById("status-msg");
+  if (status) {
+    status.textContent = "✅ " + done + " von " + total + " haben bewertet";
+    status.classList.add("visible");
+    setTimeout(() => {
+      status.classList.remove("visible");
+      status.textContent = "";
+    }, 2000);
   }
 });
 
@@ -256,62 +266,6 @@ function showLetter(letter) {
   if (ctrl) ctrl.innerHTML = "<p>🔤 Buchstabe: <strong>" + letter + "</strong></p>";
 }
 
-// Prueft einen Satz und markiert Woerter, die nicht mit dem Buchstaben beginnen.
-function checkPhrase() {
-  const input = document.getElementById("phrase-input");
-  const preview = document.getElementById("phrase-preview");
-  if (!input || !preview) return;
-
-  const phrase = input.value.trim();
-  if (!phrase || !currentLetter) {
-    preview.innerHTML = "";
-    return;
-  }
-
-  const letter = currentLetter.toUpperCase();
-  const words = phrase.split(/\s+/).filter(Boolean);
-  let invalidCount = 0;
-
-  const parts = words.map((word, index) => {
-    // Fuehrende Satzzeichen und Anfuehrungszeichen ignorieren
-    const match = word.match(/^([^\p{L}]*)(\p{L})(.*)$/u);
-    if (!match) return word;
-    const prefix = match[1];
-    const first = match[2];
-    const rest = match[3];
-    const ok = first.toUpperCase() === letter;
-    if (!ok) invalidCount++;
-    // Der erste Buchstabe wird durch den geforderten Buchstaben ersetzt.
-    // Das erste Wort des Satzes beginnt gross, bei allen weiteren bleibt die
-    // Schreibweise des Originals erhalten (gross -> gross, klein -> klein).
-    const replacement = index === 0
-      ? letter
-      : (first === first.toUpperCase() ? letter : letter.toLowerCase());
-    const rewritten = prefix + replacement + rest;
-    const span = document.createElement("span");
-    span.className = ok ? "phrase-word" : "phrase-word phrase-invalid";
-    span.textContent = rewritten;
-    if (!ok) span.title = "Beginnt nicht mit " + letter;
-    return span;
-  });
-
-  preview.innerHTML = "";
-  const label = document.createElement("div");
-  label.className = "hint";
-  label.textContent = invalidCount === 0
-    ? "✅ Alle Wörter beginnen mit " + letter + " – so kannst du es sagen:"
-    : "⚠️ " + invalidCount + " Wörter beginnen nicht mit " + letter + ":";
-  preview.appendChild(label);
-
-  const sentence = document.createElement("div");
-  sentence.className = "phrase-sentence";
-  parts.forEach((span, i) => {
-    sentence.appendChild(span);
-    if (i < parts.length - 1) sentence.appendChild(document.createTextNode(" "));
-  });
-  preview.appendChild(sentence);
-}
-
 // Startet die Anzeige eines servergesteuerten Countdown.
 // Der Server liefert den absoluten Endzeitpunkt - so zeigen alle Spieler
 // dieselbe Restzeit, unabhaengig von lokalen Uhr- oder Latenzabweichungen.
@@ -376,9 +330,3 @@ function showError(msg) {
   document.getElementById("error-msg").textContent = msg;
   setTimeout(() => document.getElementById("error-msg").textContent = "", 3000);
 }
-
-// Live-Pruefung des Satzes im Erklärer-Screen
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("phrase-input");
-  if (input) input.addEventListener("input", checkPhrase);
-});

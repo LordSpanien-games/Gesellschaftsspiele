@@ -62,11 +62,30 @@ io.on("connection", (socket) => {
   socket.on("wordResult", ({ code, correct }) => {
     const session = sessions[code];
     if (!session) return;
+    // Nur Nicht-Erklärer (gegnerisches Team / andere Spieler) duerfen voten
+    const explainer = session.players[session.currentPlayerIndex];
+    if (socket.id === explainer.id) return;
+    if (session.wordVotes.correct.includes(socket.id) || session.wordVotes.wrong.includes(socket.id)) return;
+
     if (correct) {
-      session.players[session.currentPlayerIndex].score += 1;
+      session.wordVotes.correct.push(socket.id);
+    } else {
+      session.wordVotes.wrong.push(socket.id);
     }
-    io.to(code).emit("scoreUpdate", session.players);
-    nextWord(code);
+
+    const nonExplainers = session.players.filter(p => p.id !== explainer.id);
+    const voted = session.wordVotes.correct.length + session.wordVotes.wrong.length;
+
+    io.to(code).emit("voteProgress", { done: voted, total: nonExplainers.length });
+
+    if (voted >= nonExplainers.length) {
+      const result = session.wordVotes.correct.length >= session.wordVotes.wrong.length;
+      if (result) {
+        explainer.score += 1;
+      }
+      io.to(code).emit("scoreUpdate", session.players);
+      nextWord(code);
+    }
   });
 
   socket.on("wordSkip", ({ code }) => {
@@ -129,6 +148,8 @@ io.on("connection", (socket) => {
 
 function nextWord(code) {
   const session = sessions[code];
+  // Votes fuer das neue Wort zuruecksetzen
+  session.wordVotes = { correct: [], wrong: [] };
   const listName = session.settings.wordlist || "standard";
   const list = allSharedWords.filter(
     w => !session.usedWords.includes(w.term)
