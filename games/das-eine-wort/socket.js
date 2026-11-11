@@ -1,8 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const wordsPath = path.join(__dirname, "data", "words.json");
-let wordList = JSON.parse(fs.readFileSync(wordsPath, "utf8"));
+const wordsPath = path.join(__dirname, "..", "shared", "data", "wordlist.json");
+const shared = JSON.parse(fs.readFileSync(wordsPath, "utf8"));
+let wordList = shared.words.map(w => w.term);
 
 const sessions = {};
 
@@ -77,6 +78,7 @@ module.exports = (io) => {
       session.hintsDone = [];
       session.readyForReview = [];
       session.readyForGuess = [];
+      session.votes = { correct: [], wrong: [] };
 
       const guesserIndex = session.currentGuesser % session.players.length;
       const guesser = session.players[guesserIndex];
@@ -196,19 +198,38 @@ module.exports = (io) => {
     socket.on("voteResult", ({ correct }) => {
       const code = socket.roomCode;
       const session = sessions[code];
-      if (!session || socket.id !== session.host) return;
+      if (!session) return;
+      // Nur Nicht-Rater (die "Kontrolleure" der Begriffe) dürfen voten, jeder einmal
+      if (socket.id === session.guesserSocketId) return;
+      if (session.votes.correct.includes(socket.id) || session.votes.wrong.includes(socket.id)) return;
       if (correct) {
-        const guesser = session.players.find(p => p.id === session.guesserSocketId);
-        if (guesser) guesser.score += 1;
+        session.votes.correct.push(socket.id);
+      } else {
+        session.votes.wrong.push(socket.id);
       }
-      session.results.push({
-        round: session.round + 1,
-        word: session.currentWord,
-        correct
-      });
-      session.round++;
-      session.currentGuesser++;
-      startRound(code);
+
+      const nonGuessers = session.players.filter(p => p.id !== session.guesserSocketId);
+      const voted = session.votes.correct.length + session.votes.wrong.length;
+
+      // Fortschritt an alle
+      io.to(code).emit("voteProgress", { done: voted, total: nonGuessers.length });
+
+      // Wenn alle Nicht-Rater gevotet haben -> Mehrheit entscheidet (Gleichstand = falsch)
+      if (voted >= nonGuessers.length) {
+        const result = session.votes.correct.length >= session.votes.wrong.length;
+        if (result) {
+          const guesser = session.players.find(p => p.id === session.guesserSocketId);
+          if (guesser) guesser.score += 1;
+        }
+        session.results.push({
+          round: session.round + 1,
+          word: session.currentWord,
+          correct: result
+        });
+        session.round++;
+        session.currentGuesser++;
+        startRound(code);
+      }
     });
 
     function endGame(code) {

@@ -3,20 +3,10 @@ const path = require("path");
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-function loadWordlists() {
-  const dir = path.join(__dirname, "data", "wordlists");
-  const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
-  const lists = {};
-  files.forEach(file => {
-    const name = file.replace(".json", "");
-    const raw = fs.readFileSync(path.join(dir, file), "utf8")
-      .replace(/^\uFEFF/, "");
-    lists[name] = JSON.parse(raw);
-  });
-  return lists;
-}
+const sharedPath = path.join(__dirname, "..", "shared", "data", "wordlist.json");
+const shared = JSON.parse(fs.readFileSync(sharedPath, "utf8"));
+const allSharedWords = shared.words;
 
-const wordlists = loadWordlists();
 const sessions = {};
 // Timeout-Handles des Timers. Sie stehen bewusst getrennt von den
 // Session-Objekten: diese werden an Clients serialisiert, und ein
@@ -154,14 +144,16 @@ module.exports = function(io) {
       io.to(code).emit("backToLobby", session);
     });
 
-    socket.on("wordCorrect", ({ code }) => {
+    socket.on("wordResult", ({ code, correct }) => {
       const session = sessions[code];
       if (!session) return;
-      // Nur der Erklärer darf das Ergebnis melden
-      if (!isExplainer(session, socket.id)) return;
+      // Nur der Kontrolleur (gegnerisches Team) bestätigt richtig / falsch
+      if (!isController(session, socket.id)) return;
       const player = session.players[session.currentPlayerIndex];
       if (!player) return;
-      player.score += 1;
+      if (correct) {
+        player.score += 1;
+      }
       countWord(session);
       io.to(code).emit("scoreUpdate", session.players);
       checkTurnEnd(code, io);
@@ -412,7 +404,7 @@ function sendNextWord(code, io) {
   const session = sessions[code];
   if (!session) return;
   const listName = session.settings.wordlist || "standard";
-  const allWords = (wordlists[listName] || wordlists.standard).words;
+  const allWords = allSharedWords;
 
   // usedWords enthaelt die Woerter der AKTUELLEN Runde: innerhalb einer
   // Runde bekommt kein Spieler zweimal dasselbe Wort zu erklaeren.

@@ -189,6 +189,11 @@ socket.on("losProgress", ({ done, total }) => {
   document.getElementById("los-progress").textContent = "✅ " + done + " von " + total + " bereit";
 });
 
+// Vote-Fortschritt (Richtig/Falsch)
+socket.on("voteProgress", ({ done, total }) => {
+  document.getElementById("los-progress").textContent = "✅ " + done + " von " + total + " haben bewertet";
+});
+
 socket.on("showHintsToGuess", ({ hints }) => {
   const container = document.getElementById("hints-for-guesser");
   container.innerHTML = "<h3>Deine Hinweise:</h3>" +
@@ -213,9 +218,9 @@ socket.on("guessSubmitted", ({ guess, word }) => {
   document.getElementById("guess-display").textContent = guess;
   document.getElementById("word-reveal").textContent = word;
   document.getElementById("vote-area").style.display = "block";
-  // Nur Host sieht Bewertungs-Buttons
+  // Alle außer dem Ratenden sehen die Bewertungs-Buttons
   const buttons = document.querySelectorAll("#vote-area button");
-  buttons.forEach(b => b.style.display = isHost ? "block" : "none");
+  buttons.forEach(b => b.style.display = !isGuesser ? "block" : "none");
 });
 
 socket.on("gameOver", ({ won, correct, total, scoreboard, results }) => {

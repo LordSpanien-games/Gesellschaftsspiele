@@ -37,7 +37,7 @@
         <div id="phrase-preview"></div>
       </div>
       <div id="skip-hint" class="hint"></div>
-      <button class="btn" onclick="wordCorrect()">✅ Richtig erraten</button>
+      <p class="hint">Der Kontrolleur entscheidet, ob das Wort richtig erraten wurde.</p>
       <button class="btn btn-skip" id="btn-skip" style="display:none" onclick="wordSkip()">
         ⏭️ Passen
       </button>
@@ -47,7 +47,9 @@
       <h2>👁️ Du kontrollierst!</h2>
       <div id="controller-forbidden"></div>
       <div id="controller-letter"></div>
-      <button class="btn" onclick="reportViolation()">🚨 Regelverstoss!</button>
+      <button class="btn" onclick="wordResult(true)">✅ Richtig erraten</button>
+      <button class="btn btn-wrong" onclick="wordResult(false)">❌ Falsch / nicht erraten</button>
+      <button class="btn btn-violation" onclick="reportViolation()">🚨 Regelverstoss!</button>
     </div>
 
     <div id="screen-letter" style="display:none">

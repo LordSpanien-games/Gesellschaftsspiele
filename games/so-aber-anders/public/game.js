@@ -205,8 +205,9 @@ socket.on("error", (msg) => showError(msg));
 // Bei "Timer pro Runde" laeuft die Uhr weiter, auch wenn ein Wort erraten
 // oder uebersprungen wird. Deshalb wird der Timer hier NICHT gestoppt -
 // das entscheidet allein der Server ueber "timerState".
-function wordCorrect() {
-  socket.emit("wordCorrect", { code: sessionCode });
+// Der Kontrolleur (gegnerisches Team) bestätigt richtig / falsch.
+function wordResult(correct) {
+  socket.emit("wordResult", { code: sessionCode, correct: correct });
 }
 
 function wordSkip() {

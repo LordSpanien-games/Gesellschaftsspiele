@@ -4,26 +4,16 @@ const { Server } = require("socket.io");
 const fs = require("fs");
 const path = require("path");
 
+const sharedPath = path.join(__dirname, "..", "shared", "data", "wordlist.json");
+const shared = JSON.parse(fs.readFileSync(sharedPath, "utf8"));
+const allSharedWords = shared.words;
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.static("public"));
 
-function loadWordlists() {
-  const dir = path.join(__dirname, "data", "wordlists");
-  const files = fs.readdirSync(dir).filter(f => f.endsWith(".json"));
-  const lists = {};
-  files.forEach(file => {
-    const name = file.replace(".json", "");
-    const raw = fs.readFileSync(path.join(dir, file), "utf8")
-      .replace(/^\uFEFF/, "");
-    lists[name] = JSON.parse(raw);
-  });
-  return lists;
-}
-
-const wordlists = loadWordlists();
 const sessions = {};
 
 function generateCode() {
@@ -69,10 +59,12 @@ io.on("connection", (socket) => {
     nextTurn(code);
   });
 
-  socket.on("wordCorrect", ({ code }) => {
+  socket.on("wordResult", ({ code, correct }) => {
     const session = sessions[code];
     if (!session) return;
-    session.players[session.currentPlayerIndex].score += 1;
+    if (correct) {
+      session.players[session.currentPlayerIndex].score += 1;
+    }
     io.to(code).emit("scoreUpdate", session.players);
     nextWord(code);
   });
@@ -138,7 +130,7 @@ io.on("connection", (socket) => {
 function nextWord(code) {
   const session = sessions[code];
   const listName = session.settings.wordlist || "standard";
-  const list = wordlists[listName].words.filter(
+  const list = allSharedWords.filter(
     w => !session.usedWords.includes(w.term)
   );
   if (list.length === 0) {
