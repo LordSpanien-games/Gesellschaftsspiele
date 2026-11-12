@@ -64,8 +64,46 @@ module.exports = (io) => {
       session.state = "playing";
       session.round = 0;
       session.currentGuesser = 0;
-      startRound(code);
+      prepareRound(code);
     });
+
+    // Vorbereitungs-Pause vor einer neuen Runde: alle Spieler sehen einen
+    // rollenspezifischen "mach dich bereit"-Bildschirm. Nach 5 Sekunden geht
+    // es mit startRound weiter.
+    function prepareRound(code) {
+      const session = sessions[code];
+      if (!session) return;
+
+      const guesserIndex = session.currentGuesser % session.players.length;
+      const guesser = session.players[guesserIndex];
+      const word = session.words[session.round];
+
+      session.players.forEach(p => {
+        if (p.id === guesser.id) {
+          io.to(p.id).emit("roundPrepare", {
+            role: "guesser",
+            round: session.round + 1,
+            totalRounds: session.config.rounds,
+            message: "Du rätst jetzt – mach dich bereit!"
+          });
+        } else {
+          io.to(p.id).emit("roundPrepare", {
+            role: "hintGiver",
+            round: session.round + 1,
+            totalRounds: session.config.rounds,
+            word: word,
+            message: "Du gibst Hinweise – mach dich bereit!"
+          });
+        }
+      });
+
+      // Nach 5 Sekunden automatisch weiter zur Runde
+      setTimeout(() => {
+        const current = sessions[code];
+        if (!current) return;
+        startRound(code);
+      }, 5000);
+    }
 
     function startRound(code) {
       const session = sessions[code];
@@ -228,7 +266,7 @@ module.exports = (io) => {
         });
         session.round++;
         session.currentGuesser++;
-        startRound(code);
+        prepareRound(code);
       }
     });
 

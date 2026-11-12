@@ -52,6 +52,20 @@
   </div>
 </div>
 
+<!-- Vorbereitungs-Pause vor jeder Runde -->
+<div id="screen-prepare" class="screen">
+  <div class="card">
+    <h2 id="prepare-title">🔄 Runde vorbereiten</h2>
+    <p id="prepare-message"></p>
+    <div id="prepare-word" style="display:none;margin-top:20px;">
+      <h3>Das Wort ist:</h3>
+      <div id="prepare-term" class="big-word"></div>
+    </div>
+    <p id="prepare-timer" style="margin-top:20px;color:#aaa;"></p>
+    <button id="btn-prepare-continue" onclick="continueGame()">Weiter →</button>
+  </div>
+</div>
+
 <!-- RUNDE -->
 <div id="screen-round" class="screen">
   <div class="card">

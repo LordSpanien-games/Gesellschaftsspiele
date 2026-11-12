@@ -42,6 +42,66 @@ socket.on("newTurn", (data) => {
   updateScoreBoard(data.players);
 });
 
+// Vorbereitungs-Pause: rollenspezifischer "mach dich bereit"-Bildschirm
+socket.on("turnPrepare", (data) => {
+  document.getElementById("prepare-title").textContent = "🔄 Zug vorbereiten";
+  document.getElementById("prepare-message").textContent = data.message;
+
+  // Wort und Tabuwörter nur für Erklärer und Kontrolleur anzeigen
+  const wordDiv = document.getElementById("prepare-word");
+  const forbiddenDiv = document.getElementById("prepare-forbidden");
+  const letterDiv = document.getElementById("prepare-letter");
+
+  if (data.role === "explainer" || data.role === "controller") {
+    wordDiv.style.display = "block";
+    document.getElementById("prepare-term").textContent = data.term;
+
+    forbiddenDiv.style.display = "block";
+    const list = document.getElementById("prepare-forbidden-list");
+    list.innerHTML = "";
+    if (data.forbidden && data.forbidden.length > 0) {
+      data.forbidden.forEach(w => {
+        const span = document.createElement("span");
+        span.className = "forbidden-word";
+        span.textContent = w + " ";
+        list.appendChild(span);
+      });
+    }
+
+    if (data.letter) {
+      letterDiv.style.display = "block";
+      document.getElementById("prepare-letter-display").textContent = data.letter;
+    }
+  } else {
+    wordDiv.style.display = "none";
+    forbiddenDiv.style.display = "none";
+    letterDiv.style.display = "none";
+  }
+
+  showScreen("screen-prepare");
+
+  // Countdown auf dem Prepare-Screen
+  let seconds = 5;
+  const timerEl = document.getElementById("prepare-timer");
+  timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
+  const timer = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
+    } else {
+      clearInterval(timer);
+      timerEl.textContent = "";
+      continueGame();
+    }
+  }, 1000);
+});
+
+// Manuell weiter zum Spiel (wenn alle bereit sind)
+function continueGame() {
+  document.getElementById("screen-prepare").style.display = "none";
+  // Der Server schickt in Kürze "newTurn", der dann den echten Spielbildschirm zeigt.
+}
+
 socket.on("newWord", (data) => {
   document.getElementById("term-display").textContent = data.term;
   const forbiddenList = document.getElementById("forbidden-list");
@@ -291,7 +351,7 @@ function stopTimer() {
 }
 
 function showScreen(id) {
-  ["screen-waiting","screen-explainer","screen-controller","screen-gameover","screen-letter"]
+  ["screen-waiting","screen-explainer","screen-controller","screen-gameover","screen-letter","screen-prepare"]
     .forEach(s => document.getElementById(s).style.display = "none");
   document.getElementById(id).style.display = "block";
 }

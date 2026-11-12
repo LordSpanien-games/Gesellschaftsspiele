@@ -114,6 +114,43 @@ socket.on("lobbyUpdate", (players) => {
   list.innerHTML = players.map(p => "<li>👤 " + p.name + "</li>").join("");
 });
 
+// Vorbereitungs-Pause: rollenspezifischer "mach dich bereit"-Bildschirm
+socket.on("roundPrepare", (data) => {
+  document.getElementById("prepare-title").textContent = "🔄 Runde vorbereiten";
+  document.getElementById("prepare-message").textContent = data.message;
+
+  // Nur Nicht-Rater sehen das zu ratende Wort
+  if (data.role === "hintGiver" && data.word) {
+    document.getElementById("prepare-word").style.display = "block";
+    document.getElementById("prepare-term").textContent = data.word;
+  } else {
+    document.getElementById("prepare-word").style.display = "none";
+  }
+
+  showScreen("screen-prepare");
+
+  // Countdown auf dem Prepare-Screen
+  let seconds = 5;
+  const timerEl = document.getElementById("prepare-timer");
+  timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
+  const timer = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
+    } else {
+      clearInterval(timer);
+      timerEl.textContent = "";
+      continueGame();
+    }
+  }, 1000);
+});
+
+// Manuell weiter zur Runde (wenn alle bereit sind)
+function continueGame() {
+  document.getElementById("screen-prepare").style.display = "none";
+  // Der Server schickt in Kürze "roundStart", der dann den echten Rundenbildschirm zeigt.
+}
+
 socket.on("roundStart", ({ round, totalRounds, isGuesser: ig, word, guesserName, timerSeconds }) => {
   isGuesser = ig;
   clearInterval(timerInterval);

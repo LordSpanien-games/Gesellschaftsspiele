@@ -355,7 +355,8 @@ function startTurn(code, io) {
     io.to(code).emit("letterChosen", { letter: session.currentLetter });
   }
 
-  beginTurn(code, io);
+  // Vorbereitungs-Pause vor dem Zug: alle Spieler sehen einen bereiten Bildschirm
+  prepareTurn(code, io);
 }
 
 // Turn wird angekuendigt und der Begriff verteilt.
@@ -378,7 +379,11 @@ function beginTurn(code, io) {
   if ((session.settings.timerScope || "turn") === "turn") {
     startTurnTimer(code, io, session);
   }
-  setTimeout(() => sendNextWord(code, io), 300);
+  // Das Wort wurde bereits in prepareTurn vorbereitet. Nur wenn kein
+  // Wort gesetzt ist (z.B. direkter Aufruf ohne Pause), hier nachholen.
+  if (!session.currentTerm) {
+    setTimeout(() => sendNextWord(code, io), 300);
+  }
 }
 
 // Aus den Vorschlaegen der Gruppe wird einer per Zufall gewaehlt.
@@ -394,7 +399,71 @@ function resolveLetter(code, io) {
   session.letterSubmissions = {};
   session.phase = "playing";
   io.to(code).emit("letterChosen", { letter: session.currentLetter });
-  beginTurn(code, io);
+  prepareTurn(code, io);
+}
+
+// Vorbereitungs-Pause vor einem neuen Zug. Alle Spieler bekommen einen
+// rollenspezifischen Bildschirm ("mach dich bereit"), der Erklärer und
+// Kontrolleur sehen zudem das Wort und die Tabuwörter. Nach 5 Sekunden
+// geht es mit beginTurn weiter.
+function prepareTurn(code, io) {
+  const session = sessions[code];
+  if (!session) return;
+
+  // Wort und Tabuwörter auswählen (wie sendNextWord, aber ohne Senden)
+  const listName = session.settings.wordlist || "standard";
+  const allWords = allSharedWords;
+
+  let list = allWords.filter(w => !session.usedWords.includes(w.term));
+  if (list.length === 0) {
+    session.usedWords = [];
+    list = allWords;
+  }
+  const word = list[Math.floor(Math.random() * list.length)];
+  session.usedWords.push(word.term);
+  const tabooCount = session.settings.tabooCount || 3;
+  const forbidden = word.forbidden
+    .slice()
+    .sort(() => Math.random() - 0.5)
+    .slice(0, tabooCount);
+
+  session.currentTerm = word.term;
+  session.currentForbidden = forbidden;
+
+  const explainer = session.players[session.currentPlayerIndex];
+  const controller = session.players.find(p => p.id === session.controllerId);
+
+  session.players.forEach(p => {
+    if (p.id === explainer.id) {
+      io.to(p.id).emit("turnPrepare", {
+        role: "explainer",
+        term: session.currentTerm,
+        forbidden: session.currentForbidden,
+        letter: session.currentLetter,
+        message: "Du erklärst jetzt – mach dich bereit!"
+      });
+    } else if (controller && p.id === controller.id) {
+      io.to(p.id).emit("turnPrepare", {
+        role: "controller",
+        term: session.currentTerm,
+        forbidden: session.currentForbidden,
+        letter: session.currentLetter,
+        message: "Du kontrollierst jetzt – mach dich bereit!"
+      });
+    } else {
+      io.to(p.id).emit("turnPrepare", {
+        role: "guesser",
+        message: "Du rätst jetzt – mach dich bereit!"
+      });
+    }
+  });
+
+  // Nach 5 Sekunden automatisch weiter zum eigentlichen Zug
+  setTimeout(() => {
+    const current = sessions[code];
+    if (!current) return;
+    beginTurn(code, io);
+  }, 5000);
 }
 
 // Der Begriff geht nur an den Erklaerer, die Tabuwörter an Erklaerer und
@@ -422,37 +491,43 @@ function sendNextWord(code, io) {
   if (!session) return;
   // Votes fuer das neue Wort zuruecksetzen
   session.wordVotes = { correct: [], wrong: [] };
-  const listName = session.settings.wordlist || "standard";
-  const allWords = allSharedWords;
 
-  // usedWords enthaelt die Woerter der AKTUELLEN Runde: innerhalb einer
-  // Runde bekommt kein Spieler zweimal dasselbe Wort zu erklaeren.
-  // Beim Rundenwechsel wird die Liste zurueckgesetzt (siehe
-  // advanceToNextPlayer), dann sind die Woerter wieder frei.
-  let list = allWords.filter(w => !session.usedWords.includes(w.term));
+  // Wenn bereits ein Wort vorbereitet wurde (von prepareTurn), dieses
+  // verwenden statt ein neues auszuwaehlen.
+  if (!session.currentTerm) {
+    const listName = session.settings.wordlist || "standard";
+    const allWords = allSharedWords;
 
-  // Alle Woerter sind schon gespielt worden. Das ist KEIN Spielende -
-  // das Spielende legt allein die Einstellung "Spielende per" fest.
-  // Stattdessen wird die Wortliste neu gemischt, damit es weitergeht.
-  if (list.length === 0) {
-    session.usedWords = [];
-    list = allWords;
-    io.to(code).emit("wordListRefreshed", {
-      total: allWords.length
-    });
+    // usedWords enthaelt die Woerter der AKTUELLEN Runde: innerhalb einer
+    // Runde bekommt kein Spieler zweimal dasselbe Wort zu erklaeren.
+    // Beim Rundenwechsel wird die Liste zurueckgesetzt (siehe
+    // advanceToNextPlayer), dann sind die Woerter wieder frei.
+    let list = allWords.filter(w => !session.usedWords.includes(w.term));
+
+    // Alle Woerter sind schon gespielt worden. Das ist KEIN Spielende -
+    // das Spielende legt allein die Einstellung "Spielende per" fest.
+    // Stattdessen wird die Wortliste neu gemischt, damit es weitergeht.
+    if (list.length === 0) {
+      session.usedWords = [];
+      list = allWords;
+      io.to(code).emit("wordListRefreshed", {
+        total: allWords.length
+      });
+    }
+
+    // Zufallige Auswahl - der Begriff wird nicht der Reihe nach vergeben.
+    const word = list[Math.floor(Math.random() * list.length)];
+    session.usedWords.push(word.term);
+    const tabooCount = session.settings.tabooCount || 3;
+    const forbidden = word.forbidden
+      .slice()
+      .sort(() => Math.random() - 0.5)
+      .slice(0, tabooCount);
+
+    session.currentTerm = word.term;
+    session.currentForbidden = forbidden;
   }
 
-  // Zufallige Auswahl - der Begriff wird nicht der Reihe nach vergeben.
-  const word = list[Math.floor(Math.random() * list.length)];
-  session.usedWords.push(word.term);
-  const tabooCount = session.settings.tabooCount || 3;
-  const forbidden = word.forbidden
-    .slice()
-    .sort(() => Math.random() - 0.5)
-    .slice(0, tabooCount);
-
-  session.currentTerm = word.term;
-  session.currentForbidden = forbidden;
   sendWordToRoles(code, io, session);
 
   // Bei timerScope "word" startet die Uhr fuer jedes Wort neu.

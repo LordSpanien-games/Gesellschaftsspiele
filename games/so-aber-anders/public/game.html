@@ -21,6 +21,26 @@
       <div class="score-board" id="score-board"></div>
     </div>
 
+    <!-- Vorbereitungs-Pause vor jedem Zug -->
+    <div id="screen-prepare" style="display:none">
+      <h2 id="prepare-title">🔄 Zug vorbereiten</h2>
+      <p id="prepare-message"></p>
+      <div id="prepare-word" style="display:none;margin-top:16px;">
+        <h3>Begriff:</h3>
+        <div id="prepare-term" style="font-size:1.5rem;font-weight:bold;color:#f0c040;"></div>
+      </div>
+      <div id="prepare-forbidden" style="display:none;margin-top:12px;">
+        <h3>🚫 Tabuwörter:</h3>
+        <div id="prepare-forbidden-list"></div>
+      </div>
+      <div id="prepare-letter" style="display:none;margin-top:12px;">
+        <h3>🔤 Buchstabe:</h3>
+        <div id="prepare-letter-display" style="font-size:1.5rem;font-weight:bold;color:#f0c040;"></div>
+      </div>
+      <p id="prepare-timer" style="margin-top:16px;color:#aaa;"></p>
+      <button class="btn" onclick="continueGame()">Weiter →</button>
+    </div>
+
     <div id="screen-explainer" style="display:none">
       <h2>🗣️ Du erklaerst!</h2>
       <div id="word-card">
