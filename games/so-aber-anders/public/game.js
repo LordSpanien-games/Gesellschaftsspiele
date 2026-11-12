@@ -80,27 +80,29 @@ socket.on("turnPrepare", (data) => {
 
   showScreen("screen-prepare");
 
-  // Countdown auf dem Prepare-Screen
-  let seconds = 5;
+  // Erklärer: LOS-Button zum manuellen Start. Alle anderen: Warte-Anzeige.
   const timerEl = document.getElementById("prepare-timer");
-  timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
-  const timer = setInterval(() => {
-    seconds--;
-    if (seconds > 0) {
-      timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
-    } else {
-      clearInterval(timer);
-      timerEl.textContent = "";
-      continueGame();
-    }
-  }, 1000);
-});
+  const btnContainer = document.getElementById("btn-prepare-container");
+  if (!btnContainer) {
+    // Einmaliger Button-Container erstellen
+    const container = document.createElement("div");
+    container.id = "btn-prepare-container";
+    container.style.marginTop = "20px";
+    document.getElementById("screen-prepare").querySelector(".card").appendChild(container);
+  }
+  document.getElementById("btn-prepare-container").innerHTML = "";
 
-// Manuell weiter zum Spiel (wenn alle bereit sind)
-function continueGame() {
-  document.getElementById("screen-prepare").style.display = "none";
-  // Der Server schickt in Kürze "newTurn", der dann den echten Spielbildschirm zeigt.
-}
+  if (data.role === "explainer") {
+    timerEl.textContent = "";
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "🚀 LOS – Runde starten";
+    btn.onclick = () => socket.emit("turnReady", { code: sessionCode });
+    document.getElementById("btn-prepare-container").appendChild(btn);
+  } else {
+    timerEl.textContent = "Warte auf den Erklärer, bis die Runde startet...";
+  }
+});
 
 socket.on("newWord", (data) => {
   document.getElementById("term-display").textContent = data.term;

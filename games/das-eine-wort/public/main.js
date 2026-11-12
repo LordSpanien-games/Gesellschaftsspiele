@@ -129,20 +129,27 @@ socket.on("roundPrepare", (data) => {
 
   showScreen("screen-prepare");
 
-  // Countdown auf dem Prepare-Screen
-  let seconds = 5;
+  // Rater: LOS-Button zum manuellen Start. Alle anderen: Warte-Anzeige.
   const timerEl = document.getElementById("prepare-timer");
-  timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
-  const timer = setInterval(() => {
-    seconds--;
-    if (seconds > 0) {
-      timerEl.textContent = "Automatisch weiter in " + seconds + " Sekunden...";
-    } else {
-      clearInterval(timer);
-      timerEl.textContent = "";
-      continueGame();
-    }
-  }, 1000);
+  const btnContainer = document.getElementById("btn-prepare-container");
+  if (!btnContainer) {
+    const container = document.createElement("div");
+    container.id = "btn-prepare-container";
+    container.style.marginTop = "20px";
+    document.getElementById("screen-prepare").querySelector(".card").appendChild(container);
+  }
+  document.getElementById("btn-prepare-container").innerHTML = "";
+
+  if (data.role === "guesser") {
+    timerEl.textContent = "";
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "🚀 LOS – Runde starten";
+    btn.onclick = () => socket.emit("roundReady");
+    document.getElementById("btn-prepare-container").appendChild(btn);
+  } else {
+    timerEl.textContent = "Warte auf den Ratenden, bis die Runde startet...";
+  }
 });
 
 // Manuell weiter zur Runde (wenn alle bereit sind)

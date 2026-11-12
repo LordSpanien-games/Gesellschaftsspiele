@@ -68,8 +68,8 @@ module.exports = (io) => {
     });
 
     // Vorbereitungs-Pause vor einer neuen Runde: alle Spieler sehen einen
-    // rollenspezifischen "mach dich bereit"-Bildschirm. Nach 5 Sekunden geht
-    // es mit startRound weiter.
+    // rollenspezifischen "mach dich bereit"-Bildschirm. Der Rater löst den
+    // Start selbst per "roundReady" aus (kein automatischer Countdown).
     function prepareRound(code) {
       const session = sessions[code];
       if (!session) return;
@@ -96,14 +96,18 @@ module.exports = (io) => {
           });
         }
       });
-
-      // Nach 5 Sekunden automatisch weiter zur Runde
-      setTimeout(() => {
-        const current = sessions[code];
-        if (!current) return;
-        startRound(code);
-      }, 5000);
     }
+
+    // Rater löst den Start der Runde selbst aus.
+    socket.on("roundReady", () => {
+      const code = socket.roomCode;
+      const session = sessions[code];
+      if (!session) return;
+      const guesserIndex = session.currentGuesser % session.players.length;
+      const guesser = session.players[guesserIndex];
+      if (!guesser || socket.id !== guesser.id) return;
+      startRound(code);
+    });
 
     function startRound(code) {
       const session = sessions[code];

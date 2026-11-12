@@ -404,8 +404,8 @@ function resolveLetter(code, io) {
 
 // Vorbereitungs-Pause vor einem neuen Zug. Alle Spieler bekommen einen
 // rollenspezifischen Bildschirm ("mach dich bereit"), der Erklärer und
-// Kontrolleur sehen zudem das Wort und die Tabuwörter. Nach 5 Sekunden
-// geht es mit beginTurn weiter.
+// Kontrolleur sehen zudem das Wort und die Tabuwörter. Der Erklärer löst
+// den Start selbst per "turnReady" aus (kein automatischer Countdown).
 function prepareTurn(code, io) {
   const session = sessions[code];
   if (!session) return;
@@ -457,14 +457,16 @@ function prepareTurn(code, io) {
       });
     }
   });
-
-  // Nach 5 Sekunden automatisch weiter zum eigentlichen Zug
-  setTimeout(() => {
-    const current = sessions[code];
-    if (!current) return;
-    beginTurn(code, io);
-  }, 5000);
 }
+
+// Erklärer löst den Start der Zug-Runde selbst aus.
+socket.on("turnReady", ({ code }) => {
+  const session = sessions[code];
+  if (!session) return;
+  const explainer = session.players[session.currentPlayerIndex];
+  if (!explainer || socket.id !== explainer.id) return;
+  beginTurn(code, io);
+});
 
 // Der Begriff geht nur an den Erklaerer, die Tabuwörter an Erklaerer und
 // Kontrolleur. So sieht niemand sonst den Begriff.
