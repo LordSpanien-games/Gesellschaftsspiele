@@ -235,6 +235,15 @@ module.exports = function(io) {
       if (submitted === total) resolveLetter(code, io);
     });
 
+// Erklärer löst den Start der Zug-Runde selbst aus.
+socket.on("turnReady", ({ code }) => {
+  const session = sessions[code];
+  if (!session) return;
+  const explainer = session.players[session.currentPlayerIndex];
+  if (!explainer || socket.id !== explainer.id) return;
+  beginTurn(code, io);
+});
+
     socket.on("rejoinSession", ({ code, name }) => {
       const session = sessions[code];
       if (!session) {
@@ -459,17 +468,7 @@ function prepareTurn(code, io) {
   });
 }
 
-// Erklärer löst den Start der Zug-Runde selbst aus.
-socket.on("turnReady", ({ code }) => {
-  const session = sessions[code];
-  if (!session) return;
-  const explainer = session.players[session.currentPlayerIndex];
-  if (!explainer || socket.id !== explainer.id) return;
-  beginTurn(code, io);
-});
-
 // Der Begriff geht nur an den Erklaerer, die Tabuwörter an Erklaerer und
-// Kontrolleur. So sieht niemand sonst den Begriff.
 function sendWordToRoles(code, io, session) {
   if (!session.currentTerm) return;
   const explainer = session.players[session.currentPlayerIndex];
