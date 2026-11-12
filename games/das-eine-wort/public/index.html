@@ -24,11 +24,8 @@
         <option value="schwer">Schwer (70%)</option>
       </select>
     </label>
-      <label>Anzahl Teams</label>
-      <input id="cfg-team-count" type="number" value="2" min="2" max="10"/>
-
-      <label>Debug-Modus (Einzelspieler-Test):</label>
-      <input id="cfg-debug-mode" type="checkbox"/>
+    <label>Debug-Modus (Einzelspieler-Test):</label>
+    <input id="cfg-debug-mode" type="checkbox"/>
     </label>
     <button onclick="createRoom()">Raum erstellen</button>
     <hr/>
@@ -46,8 +43,7 @@
   <div class="card">
     <h2>Raumcode: <span id="display-code"></span></h2>
     <p id="waiting-info"></p>
-    <ul id="team-list"></ul>
-    <div id="no-team-players"></div>
+    <ul id="player-list"></ul>
     <button id="btn-start" style="display:none" onclick="startGame()">Spiel starten</button>
   </div>
 </div>

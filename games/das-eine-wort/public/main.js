@@ -17,7 +17,6 @@ function createRoom() {
     wordsPerRound: parseInt(document.getElementById("cfg-words").value),
     timer: parseInt(document.getElementById("cfg-timer").value),
     difficulty: document.getElementById("cfg-difficulty").value,
-    teamCount: parseInt(document.getElementById("cfg-team-count").value),
     debugMode: document.getElementById("cfg-debug-mode").checked
   };
   socket.emit("createRoom", { name, config });
@@ -110,87 +109,9 @@ socket.on("joinedRoom", ({ code, config }) => {
   showScreen("screen-waiting");
 });
 
-socket.on("lobbyUpdate", (session) => {
-  roomCode = session.code;
-  document.getElementById("display-code").textContent = session.code;
-
-  // Teams anzeigen
-  const teamContainer = document.getElementById("team-list");
-  teamContainer.innerHTML = "";
-
-  const teamIds = Object.keys(session.teams || {});
-
-  teamIds.forEach(teamId => {
-    const team = session.teams[teamId];
-    const members = session.players.filter(p => p.teamId === teamId);
-    const isCreator = team.creator === socket.id;
-
-    const card = document.createElement("div");
-    card.className = "team-card";
-    card.innerHTML =
-      "<div class=\"team-header\">" +
-      "<input type=\"text\" class=\"team-name-input\" value=\"" + team.name + "\" " +
-      (isCreator ? "" : "disabled") + " placeholder=\"Teamname\">" +
-      (isCreator ? "<button class=\"btn\" onclick=\"setTeamName('" + teamId + "', this.parentElement.querySelector('.team-name-input').value)\">✏️</button>" : "") +
-      "</div>" +
-      "<div class=\"team-members\">" +
-      members.map(m => "<span class=\"member\">" + m.name + "</span>").join("") +
-      "</div>";
-    teamContainer.appendChild(card);
-  });
-
-  // Spieler ohne Team: Auswahl anzeigen
-  const withoutTeam = session.players.filter(p => !p.teamId);
-  const noTeamContainer = document.getElementById("no-team-players");
-  noTeamContainer.innerHTML = "<h3>👥 Ohne Team</h3>";
-  withoutTeam.forEach(p => {
-    const isMe = p.id === socket.id;
-    const select = document.createElement("select");
-    select.innerHTML = "<option value=\"\">Team wählen...</option>" +
-      teamIds.map(tid => "<option value=\"" + tid + "\">" + (session.teams[tid] && session.teams[tid].name) + "</option>").join("") +
-      "<option value=\"new\">➕ Neues Team erstellen</option>";
-    if (!isMe) select.disabled = true;
-
-    const nameInput = document.createElement("input");
-    nameInput.type = "text";
-    nameInput.placeholder = "Teamname (optional)";
-    nameInput.style.display = "none";
-
-    select.onchange = function() {
-      nameInput.style.display = select.value === "new" ? "inline-block" : "none";
-    };
-
-    const btn = document.createElement("button");
-    btn.className = "btn";
-    btn.textContent = isMe ? "👤 Team wählen" : "";
-    btn.style.display = isMe ? "inline-block" : "none";
-    btn.onclick = () => {
-      const tid = select.value;
-      const tname = tid === "new" ? nameInput.value : null;
-      socket.emit("selectTeam", { code: roomCode, teamId: tid, teamName: tname });
-    };
-
-    const div = document.createElement("div");
-    div.className = "player-team-select";
-    div.textContent = p.name + ": ";
-    div.appendChild(select);
-    div.appendChild(nameInput);
-    div.appendChild(btn);
-    noTeamContainer.appendChild(div);
-  });
-
-  // Start-Button
-  const startBtn = document.getElementById("btn-start");
-  if (isHost) {
-    startBtn.style.display = "block";
-    const allHaveTeam = session.players.every(p => p.teamId);
-    const enoughTeams = session.config.debugMode || Object.keys(session.teams || {}).length >= 2;
-    startBtn.disabled = !(allHaveTeam && enoughTeams);
-  } else {
-    startBtn.style.display = "none";
-  }
-
-  showScreen("screen-waiting");
+socket.on("lobbyUpdate", (players) => {
+  const list = document.getElementById("player-list");
+  list.innerHTML = players.map(p => "<li>👤 " + p.name + "</li>").join("");
 });
 
 // Vorbereitungs-Pause: rollenspezifischer "mach dich bereit"-Bildschirm
@@ -198,7 +119,7 @@ socket.on("roundPrepare", (data) => {
   document.getElementById("prepare-title").textContent = "🔄 Runde vorbereiten";
   document.getElementById("prepare-message").textContent = data.message;
 
-  // Alle Nicht-Raeter (gegnerisches Team) sehen das zu ratende Wort
+  // Alle Nicht-Raeter sehen das zu ratende Wort (sie sind die Hinweisgeber)
   if (data.role === "hintGiver" && data.word) {
     document.getElementById("prepare-word").style.display = "block";
     document.getElementById("prepare-term").textContent = data.word;
@@ -208,7 +129,7 @@ socket.on("roundPrepare", (data) => {
 
   showScreen("screen-prepare");
 
-  // Buttons je nach Rolle
+  // Rater: LOS-Button zum manuellen Start. Alle anderen: Warte-Anzeige.
   const timerEl = document.getElementById("prepare-timer");
   const btnContainer = document.getElementById("btn-prepare-container");
   if (!btnContainer) {
@@ -220,37 +141,16 @@ socket.on("roundPrepare", (data) => {
   document.getElementById("btn-prepare-container").innerHTML = "";
 
   if (data.role === "guesser") {
-    timerEl.textContent = "Warte auf den Kontrolleur, bis er die Runde bestätigt...";
-    const btn = document.createElement("button");
-    btn.className = "btn";
-    btn.textContent = "🚀 LOS – Runde starten";
-    btn.disabled = true;
-    btn.id = "btn-los";
-    btn.onclick = () => socket.emit("roundReady");
-    document.getElementById("btn-prepare-container").appendChild(btn);
-  } else if (data.role === "hintGiver") {
     timerEl.textContent = "";
     const btn = document.createElement("button");
     btn.className = "btn";
-    btn.textContent = "✅ Als Kontrolleur bestätigen";
-    btn.onclick = () => socket.emit("controllerConfirm");
+    btn.textContent = "🚀 LOS – Runde starten";
+    btn.id = "btn-los";
+    btn.onclick = () => socket.emit("roundReady");
     document.getElementById("btn-prepare-container").appendChild(btn);
   } else {
-    timerEl.textContent = "Warte auf den Kontrolleur, bis die Runde startet...";
+    timerEl.textContent = "Warte auf den Ratenden, bis die Runde startet...";
   }
-});
-
-// Kontrolleur hat sich bestätigt – LOS-Button fuer Raeter aktivieren
-socket.on("controllerConfirmed", (data) => {
-  document.getElementById("prepare-message").textContent =
-    "Kontrolleur " + data.controllerName + " hat bestätigt. Raeter kann starten.";
-  const btn = document.getElementById("btn-los");
-  if (btn) {
-    btn.disabled = false;
-    btn.textContent = "🚀 LOS – Runde starten";
-  }
-  const timerEl = document.getElementById("prepare-timer");
-  if (timerEl) timerEl.textContent = "";
 });
 
 socket.on("roundStart", ({ round, totalRounds, isGuesser: ig, word, guesserName, timerSeconds }) => {
@@ -380,11 +280,3 @@ socket.on("error", (msg) => alert("Fehler: " + msg));
 socket.on("playerDisconnected", ({ name }) => {
   console.log(name + " hat die Verbindung verloren.");
 });
-
-function selectTeam(teamId, teamName) {
-  socket.emit("selectTeam", { code: roomCode, teamId: teamId, teamName: teamName });
-}
-
-function setTeamName(teamId, name) {
-  socket.emit("setTeamName", { code: roomCode, teamId: teamId, name: name });
-}

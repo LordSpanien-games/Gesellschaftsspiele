@@ -21,15 +21,12 @@ module.exports = (io) => {
 
     socket.on("createRoom", ({ name, config }) => {
       const code = generateCode();
-      // Nur noch Team-Modus. Debug-Modus erlaubt Einzelspieler-Test.
-      config.mode = "team";
+      // "Das eine Wort": alle spielen gegen das Spiel selbst, keine Teams.
+      config.mode = "coop";
       sessions[code] = {
         host: socket.id,
         config,
-        players: [{ id: socket.id, name, score: 0, teamId: "team-1" }],
-        teams: {
-          "team-1": { name: "Team A", members: ["team-1-host-marker"] }
-        },
+        players: [{ id: socket.id, name, score: 0 }],
         state: "lobby",
         round: 0,
         words: [],
@@ -39,166 +36,53 @@ module.exports = (io) => {
         hintsDone: [],
         readyForReview: [],
         readyForGuess: [],
-        results: [],
-        confirmedControllerId: null,
+        votes: { correct: [], wrong: [] },
+        results: []
       };
       socket.join(code);
       socket.roomCode = code;
       socket.playerName = name;
       socket.emit("roomCreated", { code, config });
-      io.to(code).emit("lobbyUpdate", session);
+      io.to(code).emit("lobbyUpdate", sessions[code].players);
     });
 
     socket.on("joinRoom", ({ code, name }) => {
       const session = sessions[code];
       if (!session) return socket.emit("error", "Raum nicht gefunden.");
       if (session.state !== "lobby") return socket.emit("error", "Spiel laeuft bereits.");
-      // Spieler kommt erst ohne Team - er waehlt selbst in der Lobby
-      session.players.push({ id: socket.id, name, score: 0, teamId: null });
+      session.players.push({ id: socket.id, name, score: 0 });
       socket.join(code);
       socket.roomCode = code;
       socket.playerName = name;
       socket.emit("joinedRoom", { code, config: session.config });
-      io.to(code).emit("lobbyUpdate", session);
+      io.to(code).emit("lobbyUpdate", session.players);
     });
 
     socket.on("startGame", () => {
       const code = socket.roomCode;
       const session = sessions[code];
       if (!session || session.host !== socket.id) return;
-      // Mindestens 4 Spieler fuer Team-Modus, Debug-Modus erlaubt Einzelspieler
-      if (!session.config.debugMode && session.players.length < 4) {
-        socket.emit("error", "Mindestestens 4 Spieler fuer Team-Spiel erforderlich.");
-        return;
-      }
-      // Alle Spieler muessen einem Team zugeordnet sein (außer Debug-Modus)
-      if (!session.config.debugMode) {
-        const withoutTeam = session.players.filter(p => !p.teamId);
-        if (withoutTeam.length > 0) {
-          socket.emit("error", "Alle Spieler muessen einem Team zugeordnet sein.");
-          return;
-        }
-        const teamCount = Object.keys(session.teams).length;
-        const desiredCount = session.config.teamCount || 2;
-        if (teamCount < desiredCount) {
-          socket.emit("error", "Es muessen mindestens " + desiredCount + " Teams existieren.");
-          return;
-        }
-      } else {
-        const player = session.players[0];
-        if (!player.teamId) {
-          if (!session.teams["team-1"]) {
-            session.teams["team-1"] = { name: "Team A", members: [], creator: player.id };
-          }
-          session.teams["team-1"].members.push(player.id);
-          player.teamId = "team-1";
-        }
-      }
       const totalWords = session.config.rounds * session.config.wordsPerRound;
       session.words = getWords(totalWords);
       session.state = "playing";
       session.round = 0;
       session.currentGuesser = 0;
-      session.confirmedControllerId = null;
-      session.guessedIds = [];
       prepareRound(code);
     });
 
-    // Spieler waehlt ein Team oder erstellt ein neues
-    socket.on("selectTeam", ({ code, teamId, teamName }) => {
-      const session = sessions[code];
-      if (!session) return;
-      const player = session.players.find(p => p.id === socket.id);
-      if (!player) return;
 
-      // Aus altem Team entfernen
-      if (player.teamId && session.teams[player.teamId]) {
-        const oldTeam = session.teams[player.teamId];
-        oldTeam.members = oldTeam.members.filter(m => m !== socket.id);
-        if (oldTeam.members.length === 0 && Object.keys(session.teams).length > 1) {
-          delete session.teams[player.teamId];
-        }
-      }
-
-      if (teamId === "new" || !session.teams[teamId]) {
-        const newId = "team-" + (Object.keys(session.teams).length + 1);
-        const defaultName = "Team " + String.fromCharCode(64 + Object.keys(session.teams).length + 1);
-        session.teams[newId] = {
-          name: teamName || defaultName,
-          members: [socket.id],
-          creator: socket.id
-        };
-        player.teamId = newId;
-      } else {
-        session.teams[teamId].members.push(socket.id);
-        player.teamId = teamId;
-      }
-
-      io.to(code).emit("lobbyUpdate", session);
-    });
-
-    // Team-Namen setzen (nur der Ersteller des Teams darf es aendern)
-    socket.on("setTeamName", ({ code, teamId, name }) => {
-      const session = sessions[code];
-      if (!session || !session.teams[teamId]) return;
-      const team = session.teams[teamId];
-      if (team.creator !== socket.id) return;
-      if (!name || name.trim() === "") return;
-      team.name = name.trim();
-      io.to(code).emit("lobbyUpdate", session);
-    });
-
-    // Vorbereitungs-Pause vor einer neuen Runde: alle Spieler sehen einen
-    // rollenspezifischen "mach dich bereit"-Bildschirm. Der Rater löst den
-    // Start selbst per "roundReady" aus (kein automatischer Countdown).
-    // Team-Rotation: abwechselnd raten Spieler aus verschiedenen Teams.
+    // Vorbereitungs-Pause vor einer neuen Runde: Rater wartet, Hinweisgeber sehen das Wort.
+    // Vorbereitungs-Pause vor einer neuen Runde: Rater wartet, Hinweisgeber sehen das Wort.
     function prepareRound(code) {
       const session = sessions[code];
       if (!session) return;
 
-      const currentGuesser = session.currentGuesser ? session.players[session.currentGuesser] : null;
-      if (currentGuesser) {
-        if (!session.guessedIds) session.guessedIds = [];
-        session.guessedIds.push(currentGuesser.id);
-      }
-
-      // Naechster Rater muss aus einem ANDEREN Team kommen
-      // und darf noch nicht geraten haben (bis alle aus seinem Team dran waren)
-      const guessed = session.guessedIds || [];
-      const currentTeamId = currentGuesser ? currentGuesser.teamId : null;
-      const otherTeamPlayers = session.players.filter(p =>
-        currentTeamId && p.teamId !== currentTeamId &&
-        !guessed.includes(p.id)
-      );
-
-      let nextGuesser = null;
-      if (otherTeamPlayers.length > 0) {
-        nextGuesser = otherTeamPlayers[0];
-      } else {
-        // Alle aus dem anderen Team haben geraten – zuruecksetzen
-        const allGuessed = session.players.every(p => guessed.includes(p.id));
-        if (allGuessed) {
-          session.guessedIds = [];
-          const resetOthers = session.players.filter(p =>
-            currentTeamId && p.teamId !== currentTeamId
-          );
-          if (resetOthers.length > 0) {
-            nextGuesser = resetOthers[0];
-          } else {
-            nextGuesser = session.players[0];
-          }
-        } else {
-          nextGuesser = session.players.find(p => p.id !== (currentGuesser ? currentGuesser.id : null)) || session.players[0];
-        }
-      }
-
-      if (!nextGuesser) nextGuesser = session.players[0];
-      session.currentGuesser = session.players.indexOf(nextGuesser);
-
-      const guesser = nextGuesser;
+      const guesserIndex = session.currentGuesser % session.players.length;
+      const guesser = session.players[guesserIndex];
       const word = session.words[session.round];
 
-      session.confirmedControllerId = null;
+      // Votes zuruecksetzen fuer neue Runde
+      session.votes = { correct: [], wrong: [] };
 
       session.players.forEach(p => {
         if (p.id === guesser.id) {
@@ -206,9 +90,10 @@ module.exports = (io) => {
             role: "guesser",
             round: session.round + 1,
             totalRounds: session.config.rounds,
-            message: "Du rätst jetzt – warte auf den Kontrolleur!"
+            message: "Du rätst jetzt – mach dich bereit!"
           });
         } else {
+          // Alle anderen sehen das Wort (sie sind die Hinweisgeber)
           io.to(p.id).emit("roundPrepare", {
             role: "hintGiver",
             round: session.round + 1,
@@ -220,30 +105,7 @@ module.exports = (io) => {
       });
     }
 
-    // Ein Nicht-Raeter bestaetigt sich als Kontrolleur fuer diese Runde.
-    socket.on("controllerConfirm", () => {
-      const code = socket.roomCode;
-      const session = sessions[code];
-      if (!session) return;
-      const guesserIndex = session.currentGuesser % session.players.length;
-      const guesser = session.players[guesserIndex];
-      if (!guesser) return;
-      const player = session.players.find(p => p.id === socket.id);
-      if (!player) return;
-      // Nur Nicht-Raeter duerfen sich als Kontrolleur bestaetigen
-      if (socket.id === guesser.id) return;
-      // Kontrolleur muss aus gegnerischem Team kommen (außer Debug-Modus)
-      if (!session.config.debugMode && player.teamId === guesser.teamId) return;
-      if (session.confirmedControllerId === socket.id) return;
-      session.confirmedControllerId = socket.id;
-      const controller = session.players.find(p => p.id === socket.id);
-      io.to(code).emit("controllerConfirmed", {
-        controllerId: socket.id,
-        controllerName: controller ? controller.name : "Kontrolleur"
-      });
-    });
-
-    // Rater löst den Start der Runde selbst aus – nur nach Kontrolleur-Bestaetigung.
+    // Rater löst den Start der Runde selbst aus.
     socket.on("roundReady", () => {
       const code = socket.roomCode;
       const session = sessions[code];
@@ -251,7 +113,6 @@ module.exports = (io) => {
       const guesserIndex = session.currentGuesser % session.players.length;
       const guesser = session.players[guesserIndex];
       if (!guesser || socket.id !== guesser.id) return;
-      if (!session.confirmedControllerId) return; // Kein Kontrolleur bestätigt
       startRound(code);
     });
 
@@ -383,24 +244,40 @@ module.exports = (io) => {
     });
 
     // Nur der bestaetigte Kontrolleur duerfen bewerten (keine Mehrheit mehr)
+    // Alle Nicht-Rater duerfen bewerten (Mehrheit entscheidet, Gleichstand = falsch)
     socket.on("voteResult", ({ correct }) => {
       const code = socket.roomCode;
       const session = sessions[code];
       if (!session) return;
-      // Nur der bestaetigte Kontrolleur duerfen bewerten
-      if (session.confirmedControllerId !== socket.id) return;
-      const guesser = session.players[session.currentGuesser];
-      if (!guesser) return;
+      // Nur Nicht-Rater duerfen voten, jeder einmal
+      if (socket.id === session.guesserSocketId) return;
+      if (session.votes.correct.includes(socket.id) || session.votes.wrong.includes(socket.id)) return;
       if (correct) {
-        guesser.score += 1;
+        session.votes.correct.push(socket.id);
+      } else {
+        session.votes.wrong.push(socket.id);
       }
-      session.results.push({
-        round: session.round + 1,
-        word: session.currentWord,
-        correct: correct
-      });
-      session.round++;
-      prepareRound(code);
+
+      const nonGuessers = session.players.filter(p => p.id !== session.guesserSocketId);
+      const voted = session.votes.correct.length + session.votes.wrong.length;
+
+      io.to(code).emit("voteProgress", { done: voted, total: nonGuessers.length });
+
+      if (voted >= nonGuessers.length) {
+        const result = session.votes.correct.length >= session.votes.wrong.length;
+        if (result) {
+          const guesser = session.players.find(p => p.id === session.guesserSocketId);
+          if (guesser) guesser.score += 1;
+        }
+        session.results.push({
+          round: session.round + 1,
+          word: session.currentWord,
+          correct: result
+        });
+        session.round++;
+        session.currentGuesser++;
+        prepareRound(code);
+      }
     });
 
     function endGame(code) {
@@ -443,16 +320,6 @@ module.exports = (io) => {
       if (!code || !sessions[code]) return;
       const session = sessions[code];
       session.players = session.players.filter(p => p.id !== socket.id);
-
-      // Spieler aus allen Teams entfernen
-      for (const teamId in session.teams) {
-        const team = session.teams[teamId];
-        team.members = team.members.filter(m => m !== socket.id);
-        if (team.members.length === 0 && Object.keys(session.teams).length > 1) {
-          delete session.teams[teamId];
-        }
-      }
-
       io.to(code).emit("playerDisconnected", { name: socket.playerName });
     });
 
