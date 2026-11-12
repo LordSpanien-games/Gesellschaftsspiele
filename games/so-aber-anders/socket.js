@@ -87,13 +87,19 @@ module.exports = function(io) {
       const code = generateCode();
       // Einzelspieler-Modus entfernt: nur noch Teams. Debug-Modus erlaubt Einzelspieler-Test.
       settings.mode = "team";
+      const teamCount = Math.max(2, settings.teamCount || 2);
+      const teams = {};
+      for (let i = 0; i < teamCount; i++) {
+        const teamId = "team-" + (i + 1);
+        const teamName = "Team " + String.fromCharCode(65 + i);
+        teams[teamId] = { name: teamName, members: [], creator: socket.id };
+      }
+      teams["team-1"].members.push(socket.id);
       sessions[code] = {
         code,
         host: socket.id,
         players: [{ id: socket.id, name, score: 0, teamId: "team-1" }],
-        teams: {
-          "team-1": { name: "Team A", members: ["team-1-host-marker"] }
-        },
+        teams,
         settings,
         usedWords: [],
         state: "lobby",
@@ -124,44 +130,33 @@ module.exports = function(io) {
         socket.emit("error", "Session nicht gefunden oder laeuft bereits");
         return;
       }
-      // Spieler kommt erst ohne Team - er waehlt selbst in der Lobby
-      session.players.push({ id: socket.id, name, score: 0, teamId: null });
+      // Spieler wird abwechselnd einem bestehenden Team zugeordnet (A, B, C, A, B, ...)
+      const teamIds = Object.keys(session.teams);
+      const teamIdx = session.players.length % teamIds.length;
+      const assignedTeamId = teamIds[teamIdx];
+      session.players.push({ id: socket.id, name, score: 0, teamId: assignedTeamId });
+      session.teams[assignedTeamId].members.push(socket.id);
       socket.join(code);
       io.to(code).emit("updateLobby", session);
     });
 
-    // Spieler waehlt ein Team oder erstellt ein neues
-    socket.on("selectTeam", ({ code, teamId, teamName }) => {
+    // Spieler waehhlt ein bestehendes Team (keine neuen Teams erstellbar)
+    socket.on("selectTeam", ({ code, teamId }) => {
       const session = sessions[code];
       if (!session) return;
       const player = session.players.find(p => p.id === socket.id);
       if (!player) return;
+      if (!session.teams[teamId]) return; // Nur bestehende Teams waehlbar
 
       // Aus altem Team entfernen
       if (player.teamId && session.teams[player.teamId]) {
         const oldTeam = session.teams[player.teamId];
         oldTeam.members = oldTeam.members.filter(m => m !== socket.id);
-        // Leeres Team loeschen (ausser es ist das einzige)
-        if (oldTeam.members.length === 0 && Object.keys(session.teams).length > 1) {
-          delete session.teams[player.teamId];
-        }
       }
 
-      if (teamId === "new" || !session.teams[teamId]) {
-        // Neues Team erstellen
-        const newId = "team-" + (Object.keys(session.teams).length + 1);
-        const defaultName = "Team " + String.fromCharCode(64 + Object.keys(session.teams).length + 1);
-        session.teams[newId] = {
-          name: teamName || defaultName,
-          members: [socket.id],
-          creator: socket.id
-        };
-        player.teamId = newId;
-      } else {
-        // Existierendem Team beitreten
-        session.teams[teamId].members.push(socket.id);
-        player.teamId = teamId;
-      }
+      // In neues Team eintreten
+      session.teams[teamId].members.push(socket.id);
+      player.teamId = teamId;
 
       io.to(code).emit("updateLobby", session);
     });

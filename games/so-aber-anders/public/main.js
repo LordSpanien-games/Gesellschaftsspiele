@@ -82,7 +82,7 @@ socket.on("updateLobby", (session) => {
   const teamContainer = document.getElementById("team-list");
   teamContainer.innerHTML = "";
 
-  // Alle Team-IDs sammeln (auch leere für Anzeige)
+  // Alle Team-IDs sammeln
   const teamIds = Object.keys(session.teams);
 
   teamIds.forEach(teamId => {
@@ -104,60 +104,35 @@ socket.on("updateLobby", (session) => {
     teamContainer.appendChild(card);
   });
 
-  // Spieler ohne Team: Auswahl anzeigen
-  const withoutTeam = session.players.filter(p => !p.teamId);
+  // Eigener Spieler: Team waehlen (nur bestehende Teams, kein "neu erstellen")
+  const ownPlayer = session.players.find(p => p.id === socket.id);
   const noTeamContainer = document.getElementById("no-team-players");
-  noTeamContainer.innerHTML = "<h3>👥 Ohne Team</h3>";
-  withoutTeam.forEach(p => {
-    const isMe = p.id === socket.id;
+  noTeamContainer.innerHTML = "<h3>👥 Dein Team</h3>";
+  if (ownPlayer) {
     const select = document.createElement("select");
-    select.id = "team-select-" + p.id;
-    select.innerHTML = "<option value=\"\">Team wählen...</option>" +
-      teamIds.map(tid => "<option value=\"" + tid + "\">" + session.teams[tid].name + "</option>").join("") +
-      "<option value=\"new\">➕ Neues Team erstellen</option>";
-    if (!isMe) select.disabled = true;
-
-    const nameInput = document.createElement("input");
-    nameInput.type = "text";
-    nameInput.placeholder = "Teamname (optional)";
-    nameInput.style.display = "none";
-    nameInput.id = "team-name-input-" + p.id;
-
-    select.onchange = function() {
-      if (select.value === "new") {
-        nameInput.style.display = "inline-block";
-      } else {
-        nameInput.style.display = "none";
-      }
-    };
+    select.innerHTML = teamIds.map(tid => "<option value=\"" + tid + "\" " + (ownPlayer.teamId === tid ? "selected" : "") + ">" + session.teams[tid].name + "</option>").join("");
 
     const btn = document.createElement("button");
     btn.className = "btn";
-    btn.textContent = isMe ? "👤 Team wählen" : "";
-    btn.style.display = isMe ? "inline-block" : "none";
+    btn.textContent = "👤 Team wechseln";
     btn.onclick = () => {
-      const tid = select.value;
-      const tname = tid === "new" ? nameInput.value : null;
-      socket.emit("selectTeam", { code: sessionCode, teamId: tid, teamName: tname });
+      socket.emit("selectTeam", { code: sessionCode, teamId: select.value });
     };
 
     const div = document.createElement("div");
     div.className = "player-team-select";
-    div.textContent = p.name + (p.id === session.host ? " 👑" : "") + ": ";
+    div.textContent = ownPlayer.name + (ownPlayer.id === session.host ? " 👑" : "") + ": ";
     div.appendChild(select);
-    div.appendChild(nameInput);
     div.appendChild(btn);
     noTeamContainer.appendChild(div);
-  });
+  }
 
-  // Start-Button: nur Host, und nur wenn alle Teams gesetzt (oder Debug-Modus)
+  // Start-Button: nur Host
   const startBtn = document.getElementById("btn-start");
   if (isHost) {
     startBtn.style.display = "block";
-    const allHaveTeam = session.players.every(p => p.teamId);
     const enoughTeams = session.settings.debugMode || Object.keys(session.teams).length >= 2;
-    startBtn.disabled = !(allHaveTeam && enoughTeams);
-    if (!allHaveTeam) startBtn.title = "Alle Spieler müssen einem Team zugeordnet sein.";
+    startBtn.disabled = !enoughTeams;
     if (!enoughTeams && !session.settings.debugMode) startBtn.title = "Es müssen mindestens 2 Teams existieren.";
   } else {
     startBtn.style.display = "none";
@@ -188,8 +163,8 @@ function showError(msg) {
   setTimeout(() => document.getElementById("error-msg").textContent = "", 3000);
 }
 
-function selectTeam(teamId, teamName) {
-  socket.emit("selectTeam", { code: sessionCode, teamId: teamId, teamName: teamName });
+function selectTeam(teamId) {
+  socket.emit("selectTeam", { code: sessionCode, teamId: teamId });
 }
 
 function setTeamName(teamId, name) {
