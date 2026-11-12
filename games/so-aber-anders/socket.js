@@ -90,7 +90,10 @@ module.exports = function(io) {
       sessions[code] = {
         code,
         host: socket.id,
-        players: [{ id: socket.id, name, score: 0, team: "A" }],
+        players: [{ id: socket.id, name, score: 0, teamId: "team-1" }],
+        teams: {
+          "team-1": { name: "Team A", members: ["team-1-host-marker"] }
+        },
         settings,
         usedWords: [],
         state: "lobby",
@@ -121,10 +124,56 @@ module.exports = function(io) {
         socket.emit("error", "Session nicht gefunden oder laeuft bereits");
         return;
       }
-      // Team zuweisen: abwechselnd A, B, A, B ...
-      const team = session.players.length % 2 === 0 ? "A" : "B";
-      session.players.push({ id: socket.id, name, score: 0, team: team });
+      // Spieler kommt erst ohne Team - er waehlt selbst in der Lobby
+      session.players.push({ id: socket.id, name, score: 0, teamId: null });
       socket.join(code);
+      io.to(code).emit("updateLobby", session);
+    });
+
+    // Spieler waehlt ein Team oder erstellt ein neues
+    socket.on("selectTeam", ({ code, teamId, teamName }) => {
+      const session = sessions[code];
+      if (!session) return;
+      const player = session.players.find(p => p.id === socket.id);
+      if (!player) return;
+
+      // Aus altem Team entfernen
+      if (player.teamId && session.teams[player.teamId]) {
+        const oldTeam = session.teams[player.teamId];
+        oldTeam.members = oldTeam.members.filter(m => m !== socket.id);
+        // Leeres Team loeschen (ausser es ist das einzige)
+        if (oldTeam.members.length === 0 && Object.keys(session.teams).length > 1) {
+          delete session.teams[player.teamId];
+        }
+      }
+
+      if (teamId === "new" || !session.teams[teamId]) {
+        // Neues Team erstellen
+        const newId = "team-" + (Object.keys(session.teams).length + 1);
+        const defaultName = "Team " + String.fromCharCode(64 + Object.keys(session.teams).length + 1);
+        session.teams[newId] = {
+          name: teamName || defaultName,
+          members: [socket.id],
+          creator: socket.id
+        };
+        player.teamId = newId;
+      } else {
+        // Existierendem Team beitreten
+        session.teams[teamId].members.push(socket.id);
+        player.teamId = teamId;
+      }
+
+      io.to(code).emit("updateLobby", session);
+    });
+
+    // Team-Namen setzen (nur der Ersteller des Teams darf es aendern)
+    socket.on("setTeamName", ({ code, teamId, name }) => {
+      const session = sessions[code];
+      if (!session || !session.teams[teamId]) return;
+      const team = session.teams[teamId];
+      if (team.creator !== socket.id) return;
+      if (!name || name.trim() === "") return;
+      team.name = name.trim();
       io.to(code).emit("updateLobby", session);
     });
 
@@ -135,6 +184,29 @@ module.exports = function(io) {
       if (!session.settings.debugMode && session.players.length < 4) {
         socket.emit("error", "Mindestestens 4 Spieler fuer Team-Spiel erforderlich.");
         return;
+      }
+      // Alle Spieler muessen einem Team zugeordnet sein (außer Debug-Modus)
+      if (!session.settings.debugMode) {
+        const withoutTeam = session.players.filter(p => !p.teamId);
+        if (withoutTeam.length > 0) {
+          socket.emit("error", "Alle Spieler muessen einem Team zugeordnet sein.");
+          return;
+        }
+        const teamCount = Object.keys(session.teams).length;
+        if (teamCount < 2) {
+          socket.emit("error", "Es muessen mindestens 2 Teams existieren.");
+          return;
+        }
+      } else {
+        // Debug-Modus: Einzelspieler bekommt Team A zugewiesen
+        const player = session.players[0];
+        if (!player.teamId) {
+          if (!session.teams["team-1"]) {
+            session.teams["team-1"] = { name: "Team A", members: [], creator: player.id };
+          }
+          session.teams["team-1"].members.push(player.id);
+          player.teamId = "team-1";
+        }
       }
       resetSession(session);
       session.state = "running";
@@ -309,6 +381,16 @@ module.exports = function(io) {
         session.players = session.players.filter(p => p.id !== socket.id);
         delete session.letterSubmissions[socket.id];
 
+        // Spieler aus allen Teams entfernen
+        for (const teamId in session.teams) {
+          const team = session.teams[teamId];
+          team.members = team.members.filter(m => m !== socket.id);
+          // Leeres Team loeschen (ausser es ist das einzige)
+          if (team.members.length === 0 && Object.keys(session.teams).length > 1) {
+            delete session.teams[teamId];
+          }
+        }
+
         if (session.players.length === 0) {
           // Timer laeuft nicht mehr weiter, wenn niemand mehr da ist
           if (timerHandles[code]) {
@@ -355,7 +437,12 @@ function resetSession(session) {
     clearTimeout(timerHandles[session.code]);
     delete timerHandles[session.code];
   }
-  session.players.forEach(p => p.score = 0);
+  // Teams zuruecksetzen: Spieler waehlen neu in der Lobby
+  session.players.forEach(p => {
+    p.score = 0;
+    p.teamId = null;
+  });
+  session.teams = {};
 }
 
 // Startet den Zug. Im Moeser-Mamster-Modus wird zuerst der Buchstabe
@@ -365,9 +452,25 @@ function startTurn(code, io) {
   if (!session) return;
   session.wordsThisTurn = 0;
   const explainerIndex = session.currentPlayerIndex;
-  const controllerIndex = (explainerIndex + 1) % session.players.length;
-  session.controller = session.players[controllerIndex].name;
-  session.controllerId = session.players[controllerIndex].id;
+  const explainer = session.players[explainerIndex];
+
+  // Kontrolleur muss aus dem GEGNERISCHEN Team kommen (nicht dasselbe Team wie Erklärer)
+  let controller = null;
+  const otherTeamPlayers = session.players.filter(
+    p => p.id !== explainer.id && p.teamId !== explainer.teamId
+  );
+  if (otherTeamPlayers.length > 0) {
+    controller = otherTeamPlayers[Math.floor(Math.random() * otherTeamPlayers.length)];
+  } else {
+    // Fallback: beliebiger anderer Spieler (z.B. nur 1 Team oder Debug-Modus)
+    const others = session.players.filter(p => p.id !== explainer.id);
+    if (others.length > 0) {
+      controller = others[Math.floor(Math.random() * others.length)];
+    }
+  }
+
+  session.controller = controller ? controller.name : null;
+  session.controllerId = controller ? controller.id : null;
 
   if (session.settings.moeserMamster) {
     if (session.settings.letterMode === "group") {

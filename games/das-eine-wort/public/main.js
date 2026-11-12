@@ -110,9 +110,87 @@ socket.on("joinedRoom", ({ code, config }) => {
   showScreen("screen-waiting");
 });
 
-socket.on("lobbyUpdate", (players) => {
-  const list = document.getElementById("player-list");
-  list.innerHTML = players.map(p => "<li>👤 " + p.name + "</li>").join("");
+socket.on("lobbyUpdate", (session) => {
+  roomCode = session.code;
+  document.getElementById("display-code").textContent = session.code;
+
+  // Teams anzeigen
+  const teamContainer = document.getElementById("team-list");
+  teamContainer.innerHTML = "";
+
+  const teamIds = Object.keys(session.teams || {});
+
+  teamIds.forEach(teamId => {
+    const team = session.teams[teamId];
+    const members = session.players.filter(p => p.teamId === teamId);
+    const isCreator = team.creator === socket.id;
+
+    const card = document.createElement("div");
+    card.className = "team-card";
+    card.innerHTML =
+      "<div class=\"team-header\">" +
+      "<input type=\"text\" class=\"team-name-input\" value=\"" + team.name + "\" " +
+      (isCreator ? "" : "disabled") + " placeholder=\"Teamname\">" +
+      (isCreator ? "<button class=\"btn\" onclick=\"setTeamName('" + teamId + "', this.parentElement.querySelector('.team-name-input').value)\">✏️</button>" : "") +
+      "</div>" +
+      "<div class=\"team-members\">" +
+      members.map(m => "<span class=\"member\">" + m.name + "</span>").join("") +
+      "</div>";
+    teamContainer.appendChild(card);
+  });
+
+  // Spieler ohne Team: Auswahl anzeigen
+  const withoutTeam = session.players.filter(p => !p.teamId);
+  const noTeamContainer = document.getElementById("no-team-players");
+  noTeamContainer.innerHTML = "<h3>👥 Ohne Team</h3>";
+  withoutTeam.forEach(p => {
+    const isMe = p.id === socket.id;
+    const select = document.createElement("select");
+    select.innerHTML = "<option value=\"\">Team wählen...</option>" +
+      teamIds.map(tid => "<option value=\"" + tid + "\">" + (session.teams[tid] && session.teams[tid].name) + "</option>").join("") +
+      "<option value=\"new\">➕ Neues Team erstellen</option>";
+    if (!isMe) select.disabled = true;
+
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.placeholder = "Teamname (optional)";
+    nameInput.style.display = "none";
+
+    select.onchange = function() {
+      nameInput.style.display = select.value === "new" ? "inline-block" : "none";
+    };
+
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = isMe ? "👤 Team wählen" : "";
+    btn.style.display = isMe ? "inline-block" : "none";
+    btn.onclick = () => {
+      const tid = select.value;
+      const tname = tid === "new" ? nameInput.value : null;
+      socket.emit("selectTeam", { code: roomCode, teamId: tid, teamName: tname });
+    };
+
+    const div = document.createElement("div");
+    div.className = "player-team-select";
+    div.textContent = p.name + ": ";
+    div.appendChild(select);
+    div.appendChild(nameInput);
+    div.appendChild(btn);
+    noTeamContainer.appendChild(div);
+  });
+
+  // Start-Button
+  const startBtn = document.getElementById("btn-start");
+  if (isHost) {
+    startBtn.style.display = "block";
+    const allHaveTeam = session.players.every(p => p.teamId);
+    const enoughTeams = session.config.debugMode || Object.keys(session.teams || {}).length >= 2;
+    startBtn.disabled = !(allHaveTeam && enoughTeams);
+  } else {
+    startBtn.style.display = "none";
+  }
+
+  showScreen("screen-waiting");
 });
 
 // Vorbereitungs-Pause: rollenspezifischer "mach dich bereit"-Bildschirm
@@ -302,3 +380,11 @@ socket.on("error", (msg) => alert("Fehler: " + msg));
 socket.on("playerDisconnected", ({ name }) => {
   console.log(name + " hat die Verbindung verloren.");
 });
+
+function selectTeam(teamId, teamName) {
+  socket.emit("selectTeam", { code: roomCode, teamId: teamId, teamName: teamName });
+}
+
+function setTeamName(teamId, name) {
+  socket.emit("setTeamName", { code: roomCode, teamId: teamId, name: name });
+}

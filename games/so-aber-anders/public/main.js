@@ -79,16 +79,92 @@ socket.on("sessionCreated", (data) => {
 socket.on("updateLobby", (session) => {
   sessionCode = session.code;
   document.getElementById("session-code-display").textContent = session.code;
-  const list = document.getElementById("player-list");
-  list.innerHTML = "<h2>👥 Spieler</h2>";
-  session.players.forEach(p => {
-    const div = document.createElement("div");
-    div.textContent = p.name + (p.id === session.host ? " 👑" : "");
-    list.appendChild(div);
+
+  // Teams anzeigen
+  const teamContainer = document.getElementById("team-list");
+  teamContainer.innerHTML = "";
+
+  // Alle Team-IDs sammeln (auch leere für Anzeige)
+  const teamIds = Object.keys(session.teams);
+
+  teamIds.forEach(teamId => {
+    const team = session.teams[teamId];
+    const members = session.players.filter(p => p.teamId === teamId);
+    const isCreator = team.creator === socket.id;
+
+    const card = document.createElement("div");
+    card.className = "team-card";
+    card.innerHTML =
+      "<div class=\"team-header\">" +
+      "<input type=\"text\" class=\"team-name-input\" value=\"" + team.name + "\" " +
+      (isCreator ? "" : "disabled") + " placeholder=\"Teamname\">" +
+      (isCreator ? "<button class=\"btn-small\" onclick=\"setTeamName('" + teamId + "', this.parentElement.querySelector('.team-name-input').value)\">✏️</button>" : "") +
+      "</div>" +
+      "<div class=\"team-members\">" +
+      members.map(m => "<span class=\"member\">" + m.name + (m.id === session.host ? " 👑" : "") + "</span>").join("") +
+      "</div>";
+    teamContainer.appendChild(card);
   });
+
+  // Spieler ohne Team: Auswahl anzeigen
+  const withoutTeam = session.players.filter(p => !p.teamId);
+  const noTeamContainer = document.getElementById("no-team-players");
+  noTeamContainer.innerHTML = "<h3>👥 Ohne Team</h3>";
+  withoutTeam.forEach(p => {
+    const isMe = p.id === socket.id;
+    const select = document.createElement("select");
+    select.id = "team-select-" + p.id;
+    select.innerHTML = "<option value=\"\">Team wählen...</option>" +
+      teamIds.map(tid => "<option value=\"" + tid + "\">" + session.teams[tid].name + "</option>").join("") +
+      "<option value=\"new\">➕ Neues Team erstellen</option>";
+    if (!isMe) select.disabled = true;
+
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.placeholder = "Teamname (optional)";
+    nameInput.style.display = "none";
+    nameInput.id = "team-name-input-" + p.id;
+
+    select.onchange = function() {
+      if (select.value === "new") {
+        nameInput.style.display = "inline-block";
+      } else {
+        nameInput.style.display = "none";
+      }
+    };
+
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = isMe ? "👤 Team wählen" : "";
+    btn.style.display = isMe ? "inline-block" : "none";
+    btn.onclick = () => {
+      const tid = select.value;
+      const tname = tid === "new" ? nameInput.value : null;
+      socket.emit("selectTeam", { code: sessionCode, teamId: tid, teamName: tname });
+    };
+
+    const div = document.createElement("div");
+    div.className = "player-team-select";
+    div.textContent = p.name + (p.id === session.host ? " 👑" : "") + ": ";
+    div.appendChild(select);
+    div.appendChild(nameInput);
+    div.appendChild(btn);
+    noTeamContainer.appendChild(div);
+  });
+
+  // Start-Button: nur Host, und nur wenn alle Teams gesetzt (oder Debug-Modus)
+  const startBtn = document.getElementById("btn-start");
   if (isHost) {
-    document.getElementById("btn-start").style.display = "block";
+    startBtn.style.display = "block";
+    const allHaveTeam = session.players.every(p => p.teamId);
+    const enoughTeams = session.settings.debugMode || Object.keys(session.teams).length >= 2;
+    startBtn.disabled = !(allHaveTeam && enoughTeams);
+    if (!allHaveTeam) startBtn.title = "Alle Spieler müssen einem Team zugeordnet sein.";
+    if (!enoughTeams && !session.settings.debugMode) startBtn.title = "Es müssen mindestens 2 Teams existieren.";
+  } else {
+    startBtn.style.display = "none";
   }
+
   hide(["screen-start", "screen-create", "screen-join"]);
   show("screen-lobby");
 });
@@ -112,4 +188,12 @@ function hide(ids) {
 function showError(msg) {
   document.getElementById("error-msg").textContent = msg;
   setTimeout(() => document.getElementById("error-msg").textContent = "", 3000);
+}
+
+function selectTeam(teamId, teamName) {
+  socket.emit("selectTeam", { code: sessionCode, teamId: teamId, teamName: teamName });
+}
+
+function setTeamName(teamId, name) {
+  socket.emit("setTeamName", { code: sessionCode, teamId: teamId, name: name });
 }

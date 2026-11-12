@@ -26,7 +26,10 @@ module.exports = (io) => {
       sessions[code] = {
         host: socket.id,
         config,
-        players: [{ id: socket.id, name, score: 0, team: "A" }],
+        players: [{ id: socket.id, name, score: 0, teamId: "team-1" }],
+        teams: {
+          "team-1": { name: "Team A", members: ["team-1-host-marker"] }
+        },
         state: "lobby",
         round: 0,
         words: [],
@@ -37,27 +40,26 @@ module.exports = (io) => {
         readyForReview: [],
         readyForGuess: [],
         results: [],
-        confirmedControllerId: null, // Wer sich als Kontrolleur fuer die aktuelle Runde bestaetigt hat
+        confirmedControllerId: null,
       };
       socket.join(code);
       socket.roomCode = code;
       socket.playerName = name;
       socket.emit("roomCreated", { code, config });
-      io.to(code).emit("lobbyUpdate", sessions[code].players);
+      io.to(code).emit("lobbyUpdate", session);
     });
 
     socket.on("joinRoom", ({ code, name }) => {
       const session = sessions[code];
       if (!session) return socket.emit("error", "Raum nicht gefunden.");
       if (session.state !== "lobby") return socket.emit("error", "Spiel laeuft bereits.");
-      // Team zuweisen: abwechselnd A, B, A, B ...
-      const team = session.players.length % 2 === 0 ? "A" : "B";
-      session.players.push({ id: socket.id, name, score: 0, team: team });
+      // Spieler kommt erst ohne Team - er waehlt selbst in der Lobby
+      session.players.push({ id: socket.id, name, score: 0, teamId: null });
       socket.join(code);
       socket.roomCode = code;
       socket.playerName = name;
       socket.emit("joinedRoom", { code, config: session.config });
-      io.to(code).emit("lobbyUpdate", session.players);
+      io.to(code).emit("lobbyUpdate", session);
     });
 
     socket.on("startGame", () => {
@@ -69,6 +71,28 @@ module.exports = (io) => {
         socket.emit("error", "Mindestestens 4 Spieler fuer Team-Spiel erforderlich.");
         return;
       }
+      // Alle Spieler muessen einem Team zugeordnet sein (außer Debug-Modus)
+      if (!session.config.debugMode) {
+        const withoutTeam = session.players.filter(p => !p.teamId);
+        if (withoutTeam.length > 0) {
+          socket.emit("error", "Alle Spieler muessen einem Team zugeordnet sein.");
+          return;
+        }
+        const teamCount = Object.keys(session.teams).length;
+        if (teamCount < 2) {
+          socket.emit("error", "Es muessen mindestens 2 Teams existieren.");
+          return;
+        }
+      } else {
+        const player = session.players[0];
+        if (!player.teamId) {
+          if (!session.teams["team-1"]) {
+            session.teams["team-1"] = { name: "Team A", members: [], creator: player.id };
+          }
+          session.teams["team-1"].members.push(player.id);
+          player.teamId = "team-1";
+        }
+      }
       const totalWords = session.config.rounds * session.config.wordsPerRound;
       session.words = getWords(totalWords);
       session.state = "playing";
@@ -76,6 +100,50 @@ module.exports = (io) => {
       session.currentGuesser = 0;
       session.confirmedControllerId = null;
       prepareRound(code);
+    });
+
+    // Spieler waehlt ein Team oder erstellt ein neues
+    socket.on("selectTeam", ({ code, teamId, teamName }) => {
+      const session = sessions[code];
+      if (!session) return;
+      const player = session.players.find(p => p.id === socket.id);
+      if (!player) return;
+
+      // Aus altem Team entfernen
+      if (player.teamId && session.teams[player.teamId]) {
+        const oldTeam = session.teams[player.teamId];
+        oldTeam.members = oldTeam.members.filter(m => m !== socket.id);
+        if (oldTeam.members.length === 0 && Object.keys(session.teams).length > 1) {
+          delete session.teams[player.teamId];
+        }
+      }
+
+      if (teamId === "new" || !session.teams[teamId]) {
+        const newId = "team-" + (Object.keys(session.teams).length + 1);
+        const defaultName = "Team " + String.fromCharCode(64 + Object.keys(session.teams).length + 1);
+        session.teams[newId] = {
+          name: teamName || defaultName,
+          members: [socket.id],
+          creator: socket.id
+        };
+        player.teamId = newId;
+      } else {
+        session.teams[teamId].members.push(socket.id);
+        player.teamId = teamId;
+      }
+
+      io.to(code).emit("lobbyUpdate", session);
+    });
+
+    // Team-Namen setzen (nur der Ersteller des Teams darf es aendern)
+    socket.on("setTeamName", ({ code, teamId, name }) => {
+      const session = sessions[code];
+      if (!session || !session.teams[teamId]) return;
+      const team = session.teams[teamId];
+      if (team.creator !== socket.id) return;
+      if (!name || name.trim() === "") return;
+      team.name = name.trim();
+      io.to(code).emit("lobbyUpdate", session);
     });
 
     // Vorbereitungs-Pause vor einer neuen Runde: alle Spieler sehen einen
@@ -119,7 +187,12 @@ module.exports = (io) => {
       const guesserIndex = session.currentGuesser % session.players.length;
       const guesser = session.players[guesserIndex];
       if (!guesser) return;
+      const player = session.players.find(p => p.id === socket.id);
+      if (!player) return;
+      // Nur Nicht-Raeter duerfen sich als Kontrolleur bestaetigen
       if (socket.id === guesser.id) return;
+      // Kontrolleur muss aus gegnerischem Team kommen (außer Debug-Modus)
+      if (!session.config.debugMode && player.teamId === guesser.teamId) return;
       if (session.confirmedControllerId === socket.id) return;
       session.confirmedControllerId = socket.id;
       const controller = session.players.find(p => p.id === socket.id);
@@ -329,6 +402,18 @@ module.exports = (io) => {
     socket.on("disconnect", () => {
       const code = socket.roomCode;
       if (!code || !sessions[code]) return;
+      const session = sessions[code];
+      session.players = session.players.filter(p => p.id !== socket.id);
+
+      // Spieler aus allen Teams entfernen
+      for (const teamId in session.teams) {
+        const team = session.teams[teamId];
+        team.members = team.members.filter(m => m !== socket.id);
+        if (team.members.length === 0 && Object.keys(session.teams).length > 1) {
+          delete session.teams[teamId];
+        }
+      }
+
       io.to(code).emit("playerDisconnected", { name: socket.playerName });
     });
 
