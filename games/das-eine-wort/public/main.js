@@ -17,8 +17,8 @@ function createRoom() {
     wordsPerRound: parseInt(document.getElementById("cfg-words").value),
     timer: parseInt(document.getElementById("cfg-timer").value),
     difficulty: document.getElementById("cfg-difficulty").value,
-    mode: document.getElementById("cfg-mode").value,
-    debugMode: document.getElementById("cfg-debug-mode") ? document.getElementById("cfg-debug-mode").value === "on" : false
+    teamCount: parseInt(document.getElementById("cfg-team-count").value),
+    debugMode: document.getElementById("cfg-debug-mode").checked
   };
   socket.emit("createRoom", { name, config });
 }

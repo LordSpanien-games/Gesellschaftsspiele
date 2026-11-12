@@ -33,25 +33,23 @@ function showJoin() {
 
 function createSession() {
   const settings = {
-    mode:             document.getElementById("setting-mode").value,
-    rotation:         document.getElementById("setting-rotation").value,
-    timer:            document.getElementById("setting-timer").value === "on",
-    timerDuration:    parseInt(document.getElementById("setting-timer-duration").value),
-    timerScope:       document.getElementById("setting-timer-scope").value,
-    taboo:            document.getElementById("setting-taboo").value === "on",
-    tabooCount:       parseInt(document.getElementById("setting-taboo-count").value),
-    skipAllowed:      document.getElementById("setting-skip").value === "on",
-    minusOnSkip:      document.getElementById("setting-minus-skip").value === "on",
+    teamCount:     parseInt(document.getElementById("setting-team-count").value),
+    debugMode:     document.getElementById("setting-debug-mode").checked,
+    timer:         document.getElementById("setting-timer").value === "on",
+    timerDuration: parseInt(document.getElementById("setting-timer-duration").value),
+    taboo:         document.getElementById("setting-taboo").value === "on",
+    tabooCount:    parseInt(document.getElementById("setting-taboo-count").value),
+    skipAllowed:   document.getElementById("setting-skip").value === "on",
+    minusOnSkip:   document.getElementById("setting-minus-skip").value === "on",
     minusOnViolation: document.getElementById("setting-minus-violation").value === "on",
-    endMode:          document.getElementById("setting-endmode").value,
-    rounds:           parseInt(document.getElementById("setting-rounds").value),
-    targetScore:      parseInt(document.getElementById("setting-target-score").value),
-    wordsPerRound:    parseInt(document.getElementById("setting-words-per-round").value),
-    wordlist:         document.getElementById("setting-wordlist").value,
+    endMode:       document.getElementById("setting-endmode").value,
+    rounds:        parseInt(document.getElementById("setting-rounds").value),
+    targetScore:   parseInt(document.getElementById("setting-target-score").value),
+    wordsPerRound: parseInt(document.getElementById("setting-words-per-round").value),
+    wordlist:      document.getElementById("setting-wordlist").value,
     // Moeser Mamster
-    moeserMamster:    document.getElementById("setting-moeser-mamster").value === "on",
-    letterMode:       document.getElementById("setting-letter-mode").value,
-    debugMode:        document.getElementById("setting-debug-mode").value === "on"
+    moeserMamster: document.getElementById("setting-moeser-mamster").value === "on",
+    letterMode:    document.getElementById("setting-letter-mode").value
   };
   socket.emit("createSession", { name: playerName, settings });
 }

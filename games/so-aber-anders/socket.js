@@ -193,8 +193,9 @@ module.exports = function(io) {
           return;
         }
         const teamCount = Object.keys(session.teams).length;
-        if (teamCount < 2) {
-          socket.emit("error", "Es muessen mindestens 2 Teams existieren.");
+        const desiredCount = session.settings.teamCount || 2;
+        if (teamCount < desiredCount) {
+          socket.emit("error", "Es muessen mindestens " + desiredCount + " Teams existieren.");
           return;
         }
       } else {
@@ -212,6 +213,7 @@ module.exports = function(io) {
       session.state = "running";
       session.phase = "playing";
       session.confirmedControllerId = null;
+      session.explainedIds = [];
       io.to(code).emit("gameStarted", session);
       setTimeout(() => startTurn(code, io), 500);
     });
@@ -696,15 +698,54 @@ function advanceToNextPlayer(code, io) {
   clearTurnTimer(code, io, session);
   // Kontrolleur-Bestaetigung fuer neuen Zug zuruecksetzen
   session.confirmedControllerId = null;
-  const nextIndex = session.currentPlayerIndex + 1;
 
-  if (nextIndex < session.players.length) {
-    session.currentPlayerIndex = nextIndex;
+  const currentExplainer = session.players[session.currentPlayerIndex];
+  if (currentExplainer) {
+    if (!session.explainedIds) session.explainedIds = [];
+    session.explainedIds.push(currentExplainer.id);
+  }
+
+  // Naechster Erklärer muss aus einem ANDEREN Team kommen
+  // und darf noch nicht erklärt haben (bis alle aus seinem Team dran waren)
+  const explained = session.explainedIds || [];
+  const otherTeamPlayers = session.players.filter(p =>
+    p.teamId !== currentExplainer.teamId &&
+    !explained.includes(p.id)
+  );
+
+  let nextPlayer = null;
+  if (otherTeamPlayers.length > 0) {
+    // Nächster Spieler aus dem anderen Team, der noch nicht erklärt hat
+    nextPlayer = otherTeamPlayers[0];
+  } else {
+    // Alle aus dem anderen Team haben erklärt – prüfe ob alle erklärt haben
+    const allExplained = session.players.every(p => explained.includes(p.id));
+    if (allExplained) {
+      // Alle haben erklärt – zurücksetzen und von vorne beginnen
+      session.explainedIds = [];
+      // Nächster Spieler aus einem anderen Team als der (jetzt zurückgesetzte) aktuelle
+      const resetOthers = session.players.filter(p =>
+        p.teamId !== currentExplainer.teamId
+      );
+      if (resetOthers.length > 0) {
+        nextPlayer = resetOthers[0];
+      } else {
+        nextPlayer = session.players[0];
+      }
+    } else {
+      // Einige im anderen Team haben noch nicht erklärt, aber der gefilterte
+      // Zugriff war leer – sollte nicht passieren, aber Fallback:
+      nextPlayer = session.players.find(p => p.id !== currentExplainer.id) || currentExplainer;
+    }
+  }
+
+  if (nextPlayer) {
+    session.currentPlayerIndex = session.players.indexOf(nextPlayer);
     startTurn(code, io);
     return;
   }
 
-  // Alle Spieler dran gewesen - Spielende pruefen
+  // Fallback: Spielende prüfen
   if (checkGameEnd(session)) {
     io.to(code).emit("gameOver", session.players);
     return;
@@ -714,8 +755,6 @@ function advanceToNextPlayer(code, io) {
   const finishedRound = session.currentRound;
   session.currentRound += 1;
   session.currentPlayerIndex = 0;
-  // Wortliste fuer die neue Runde freigeben: in der neuen Runde darf
-  // jedes Wort erneut vergeben werden - innerhalb einer Runde nicht.
   session.usedWords = [];
   io.to(code).emit("roundEnd", {
     round: finishedRound,

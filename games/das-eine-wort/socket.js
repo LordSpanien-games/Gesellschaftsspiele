@@ -79,8 +79,9 @@ module.exports = (io) => {
           return;
         }
         const teamCount = Object.keys(session.teams).length;
-        if (teamCount < 2) {
-          socket.emit("error", "Es muessen mindestens 2 Teams existieren.");
+        const desiredCount = session.config.teamCount || 2;
+        if (teamCount < desiredCount) {
+          socket.emit("error", "Es muessen mindestens " + desiredCount + " Teams existieren.");
           return;
         }
       } else {
@@ -99,6 +100,7 @@ module.exports = (io) => {
       session.round = 0;
       session.currentGuesser = 0;
       session.confirmedControllerId = null;
+      session.guessedIds = [];
       prepareRound(code);
     });
 
@@ -149,12 +151,51 @@ module.exports = (io) => {
     // Vorbereitungs-Pause vor einer neuen Runde: alle Spieler sehen einen
     // rollenspezifischen "mach dich bereit"-Bildschirm. Der Rater löst den
     // Start selbst per "roundReady" aus (kein automatischer Countdown).
+    // Team-Rotation: abwechselnd raten Spieler aus verschiedenen Teams.
     function prepareRound(code) {
       const session = sessions[code];
       if (!session) return;
 
-      const guesserIndex = session.currentGuesser % session.players.length;
-      const guesser = session.players[guesserIndex];
+      const currentGuesser = session.currentGuesser ? session.players[session.currentGuesser] : null;
+      if (currentGuesser) {
+        if (!session.guessedIds) session.guessedIds = [];
+        session.guessedIds.push(currentGuesser.id);
+      }
+
+      // Naechster Rater muss aus einem ANDEREN Team kommen
+      // und darf noch nicht geraten haben (bis alle aus seinem Team dran waren)
+      const guessed = session.guessedIds || [];
+      const currentTeamId = currentGuesser ? currentGuesser.teamId : null;
+      const otherTeamPlayers = session.players.filter(p =>
+        currentTeamId && p.teamId !== currentTeamId &&
+        !guessed.includes(p.id)
+      );
+
+      let nextGuesser = null;
+      if (otherTeamPlayers.length > 0) {
+        nextGuesser = otherTeamPlayers[0];
+      } else {
+        // Alle aus dem anderen Team haben geraten – zuruecksetzen
+        const allGuessed = session.players.every(p => guessed.includes(p.id));
+        if (allGuessed) {
+          session.guessedIds = [];
+          const resetOthers = session.players.filter(p =>
+            currentTeamId && p.teamId !== currentTeamId
+          );
+          if (resetOthers.length > 0) {
+            nextGuesser = resetOthers[0];
+          } else {
+            nextGuesser = session.players[0];
+          }
+        } else {
+          nextGuesser = session.players.find(p => p.id !== (currentGuesser ? currentGuesser.id : null)) || session.players[0];
+        }
+      }
+
+      if (!nextGuesser) nextGuesser = session.players[0];
+      session.currentGuesser = session.players.indexOf(nextGuesser);
+
+      const guesser = nextGuesser;
       const word = session.words[session.round];
 
       session.confirmedControllerId = null;
@@ -348,8 +389,7 @@ module.exports = (io) => {
       if (!session) return;
       // Nur der bestaetigte Kontrolleur duerfen bewerten
       if (session.confirmedControllerId !== socket.id) return;
-      const guesserIndex = session.currentGuesser % session.players.length;
-      const guesser = session.players[guesserIndex];
+      const guesser = session.players[session.currentGuesser];
       if (!guesser) return;
       if (correct) {
         guesser.score += 1;
@@ -360,7 +400,6 @@ module.exports = (io) => {
         correct: correct
       });
       session.round++;
-      session.currentGuesser++;
       prepareRound(code);
     });
 
