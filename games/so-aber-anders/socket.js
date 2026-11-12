@@ -85,26 +85,29 @@ module.exports = function(io) {
 
     socket.on("createSession", ({ name, settings }) => {
       const code = generateCode();
+      // Einzelspieler-Modus entfernt: nur noch Teams. Debug-Modus erlaubt Einzelspieler-Test.
+      settings.mode = "team";
       sessions[code] = {
         code,
         host: socket.id,
-        players: [{ id: socket.id, name, score: 0 }],
+        players: [{ id: socket.id, name, score: 0, team: "A" }],
         settings,
         usedWords: [],
-        state: "lobby",   // lobby | running
-        phase: "playing", // playing | letter
+        state: "lobby",
+        phase: "playing",
         currentPlayerIndex: 0,
         currentRound: 1,
         wordsThisTurn: 0,
         controller: null,
         controllerId: null,
+        confirmedControllerId: null, // Wer sich als Kontrolleur fuer den aktuellen Zug bestaetigt hat
         // Moeser Mamster
         currentLetter: null,
         letterSubmissions: {},
-        // Aktueller Begriff inkl. Tabuwörtern (nur an die Rollen verteilt)
+        // Aktueller Begriff inkl. Tabuwörtern
         currentTerm: null,
         currentForbidden: [],
-        // Timer-Endzeitpunkt (serverautoritativ, wird serialisiert)
+        // Timer-Endzeitpunkt
         timerEndsAt: null
       };
       socket.join(code);
@@ -118,7 +121,9 @@ module.exports = function(io) {
         socket.emit("error", "Session nicht gefunden oder laeuft bereits");
         return;
       }
-      session.players.push({ id: socket.id, name, score: 0 });
+      // Team zuweisen: abwechselnd A, B, A, B ...
+      const team = session.players.length % 2 === 0 ? "A" : "B";
+      session.players.push({ id: socket.id, name, score: 0, team: team });
       socket.join(code);
       io.to(code).emit("updateLobby", session);
     });
@@ -126,9 +131,15 @@ module.exports = function(io) {
     socket.on("startGame", ({ code }) => {
       const session = sessions[code];
       if (!session || session.host !== socket.id) return;
+      // Mindestens 4 Spieler fuer Team-Modus, Debug-Modus erlaubt Einzelspieler
+      if (!session.settings.debugMode && session.players.length < 4) {
+        socket.emit("error", "Mindestestens 4 Spieler fuer Team-Spiel erforderlich.");
+        return;
+      }
       resetSession(session);
       session.state = "running";
       session.phase = "playing";
+      session.confirmedControllerId = null;
       io.to(code).emit("gameStarted", session);
       setTimeout(() => startTurn(code, io), 500);
     });
@@ -144,36 +155,38 @@ module.exports = function(io) {
       io.to(code).emit("backToLobby", session);
     });
 
+    socket.on("controllerConfirm", ({ code }) => {
+      const session = sessions[code];
+      if (!session) return;
+      const explainer = session.players[session.currentPlayerIndex];
+      if (!explainer) return;
+      // Im Debug-Modus darf sich der Erklärer selbst als Kontrolleur bestaetigen
+      if (!session.settings.debugMode && socket.id === explainer.id) return;
+      // Bereits bestaetigt?
+      if (session.confirmedControllerId === socket.id) return;
+      session.confirmedControllerId = socket.id;
+      session.controllerId = socket.id;
+      const controller = session.players.find(p => p.id === socket.id);
+      session.controller = controller ? controller.name : "Kontrolleur";
+      io.to(code).emit("controllerConfirmed", {
+        controllerId: socket.id,
+        controllerName: session.controller
+      });
+    });
+
     socket.on("wordResult", ({ code, correct }) => {
       const session = sessions[code];
       if (!session) return;
-      // Nur Nicht-Erklärer (gegnerisches Team / andere Spieler) duerfen voten
-      if (isExplainer(session, socket.id)) return;
-      if (session.wordVotes.correct.includes(socket.id) || session.wordVotes.wrong.includes(socket.id)) return;
-
-      if (correct) {
-        session.wordVotes.correct.push(socket.id);
-      } else {
-        session.wordVotes.wrong.push(socket.id);
-      }
-
+      // Nur der bestaetigte Kontrolleur duerfen bewerten
+      if (session.confirmedControllerId !== socket.id) return;
       const explainer = session.players[session.currentPlayerIndex];
-      const nonExplainers = session.players.filter(p => p.id !== explainer.id);
-      const voted = session.wordVotes.correct.length + session.wordVotes.wrong.length;
-
-      // Fortschritt an alle
-      io.to(code).emit("voteProgress", { done: voted, total: nonExplainers.length });
-
-      // Wenn alle Nicht-Erklaerer gevotet haben -> Mehrheit entscheidet (Gleichstand = falsch)
-      if (voted >= nonExplainers.length) {
-        const result = session.wordVotes.correct.length >= session.wordVotes.wrong.length;
-        if (result) {
-          if (explainer) explainer.score += 1;
-        }
-        countWord(session);
-        io.to(code).emit("scoreUpdate", session.players);
-        checkTurnEnd(code, io);
+      if (!explainer) return;
+      if (correct) {
+        explainer.score += 1;
       }
+      countWord(session);
+      io.to(code).emit("scoreUpdate", session.players);
+      checkTurnEnd(code, io);
     });
 
     socket.on("wordSkip", ({ code }) => {
@@ -235,14 +248,15 @@ module.exports = function(io) {
       if (submitted === total) resolveLetter(code, io);
     });
 
-// Erklärer löst den Start der Zug-Runde selbst aus.
-socket.on("turnReady", ({ code }) => {
-  const session = sessions[code];
-  if (!session) return;
-  const explainer = session.players[session.currentPlayerIndex];
-  if (!explainer || socket.id !== explainer.id) return;
-  beginTurn(code, io);
-});
+    // Erklärer löst den Start der Zug-Runde selbst aus – nur wenn ein Kontrolleur bestätigt wurde.
+    socket.on("turnReady", ({ code }) => {
+      const session = sessions[code];
+      if (!session) return;
+      const explainer = session.players[session.currentPlayerIndex];
+      if (!explainer || socket.id !== explainer.id) return;
+      if (!session.confirmedControllerId) return; // Kein Kontrolleur bestätigt
+      beginTurn(code, io);
+    });
 
     socket.on("rejoinSession", ({ code, name }) => {
       const session = sessions[code];
@@ -330,6 +344,8 @@ function resetSession(session) {
   session.currentRound = 1;
   session.wordsThisTurn = 0;
   session.controller = null;
+  session.controllerId = null;
+  session.confirmedControllerId = null;
   session.currentLetter = null;
   session.letterSubmissions = {};
   session.currentTerm = null;
@@ -412,15 +428,14 @@ function resolveLetter(code, io) {
 }
 
 // Vorbereitungs-Pause vor einem neuen Zug. Alle Spieler bekommen einen
-// rollenspezifischen Bildschirm ("mach dich bereit"), der Erklärer und
-// Kontrolleur sehen zudem das Wort und die Tabuwörter. Der Erklärer löst
-// den Start selbst per "turnReady" aus (kein automatischer Countdown).
+// rollenspezifischen Bildschirm ("mach dich bereit"). Erklärer und der
+// bestaetigte Kontrolleur sehen zudem das Wort und die Tabuwörter.
+// Der Erklärer löst den Start selbst per "turnReady" aus (kein automatischer Countdown).
 function prepareTurn(code, io) {
   const session = sessions[code];
   if (!session) return;
 
   // Wort und Tabuwörter auswählen (wie sendNextWord, aber ohne Senden)
-  const listName = session.settings.wordlist || "standard";
   const allWords = allSharedWords;
 
   let list = allWords.filter(w => !session.usedWords.includes(w.term));
@@ -440,7 +455,9 @@ function prepareTurn(code, io) {
   session.currentForbidden = forbidden;
 
   const explainer = session.players[session.currentPlayerIndex];
-  const controller = session.players.find(p => p.id === session.controllerId);
+  const controller = session.confirmedControllerId
+    ? session.players.find(p => p.id === session.confirmedControllerId)
+    : null;
 
   session.players.forEach(p => {
     if (p.id === explainer.id) {
@@ -462,17 +479,20 @@ function prepareTurn(code, io) {
     } else {
       io.to(p.id).emit("turnPrepare", {
         role: "guesser",
-        message: "Du rätst jetzt – mach dich bereit!"
+        message: "Du rätst jetzt – warte auf den Kontrolleur!"
       });
     }
   });
 }
 
 // Der Begriff geht nur an den Erklaerer, die Tabuwörter an Erklaerer und
+// den bestaetigten Kontrolleur. So sieht niemand sonst den Begriff.
 function sendWordToRoles(code, io, session) {
   if (!session.currentTerm) return;
   const explainer = session.players[session.currentPlayerIndex];
-  const controller = session.players.find(p => p.id === session.controllerId);
+  const controller = session.confirmedControllerId
+    ? session.players.find(p => p.id === session.confirmedControllerId)
+    : null;
   const forbidden = session.currentForbidden || [];
 
   if (explainer) {
@@ -571,6 +591,8 @@ function advanceToNextPlayer(code, io) {
   if (!session) return;
   // Timer des bisherigen Zugs beenden, bevor der naechste startet
   clearTurnTimer(code, io, session);
+  // Kontrolleur-Bestaetigung fuer neuen Zug zuruecksetzen
+  session.confirmedControllerId = null;
   const nextIndex = session.currentPlayerIndex + 1;
 
   if (nextIndex < session.players.length) {

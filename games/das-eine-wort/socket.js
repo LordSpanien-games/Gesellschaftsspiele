@@ -21,10 +21,12 @@ module.exports = (io) => {
 
     socket.on("createRoom", ({ name, config }) => {
       const code = generateCode();
+      // Nur noch Team-Modus. Debug-Modus erlaubt Einzelspieler-Test.
+      config.mode = "team";
       sessions[code] = {
         host: socket.id,
         config,
-        players: [{ id: socket.id, name, score: 0 }],
+        players: [{ id: socket.id, name, score: 0, team: "A" }],
         state: "lobby",
         round: 0,
         words: [],
@@ -34,7 +36,8 @@ module.exports = (io) => {
         hintsDone: [],
         readyForReview: [],
         readyForGuess: [],
-        results: []
+        results: [],
+        confirmedControllerId: null, // Wer sich als Kontrolleur fuer die aktuelle Runde bestaetigt hat
       };
       socket.join(code);
       socket.roomCode = code;
@@ -47,7 +50,9 @@ module.exports = (io) => {
       const session = sessions[code];
       if (!session) return socket.emit("error", "Raum nicht gefunden.");
       if (session.state !== "lobby") return socket.emit("error", "Spiel laeuft bereits.");
-      session.players.push({ id: socket.id, name, score: 0 });
+      // Team zuweisen: abwechselnd A, B, A, B ...
+      const team = session.players.length % 2 === 0 ? "A" : "B";
+      session.players.push({ id: socket.id, name, score: 0, team: team });
       socket.join(code);
       socket.roomCode = code;
       socket.playerName = name;
@@ -59,11 +64,17 @@ module.exports = (io) => {
       const code = socket.roomCode;
       const session = sessions[code];
       if (!session || session.host !== socket.id) return;
+      // Mindestens 4 Spieler fuer Team-Modus, Debug-Modus erlaubt Einzelspieler
+      if (!session.config.debugMode && session.players.length < 4) {
+        socket.emit("error", "Mindestestens 4 Spieler fuer Team-Spiel erforderlich.");
+        return;
+      }
       const totalWords = session.config.rounds * session.config.wordsPerRound;
       session.words = getWords(totalWords);
       session.state = "playing";
       session.round = 0;
       session.currentGuesser = 0;
+      session.confirmedControllerId = null;
       prepareRound(code);
     });
 
@@ -78,13 +89,15 @@ module.exports = (io) => {
       const guesser = session.players[guesserIndex];
       const word = session.words[session.round];
 
+      session.confirmedControllerId = null;
+
       session.players.forEach(p => {
         if (p.id === guesser.id) {
           io.to(p.id).emit("roundPrepare", {
             role: "guesser",
             round: session.round + 1,
             totalRounds: session.config.rounds,
-            message: "Du rätst jetzt – mach dich bereit!"
+            message: "Du rätst jetzt – warte auf den Kontrolleur!"
           });
         } else {
           io.to(p.id).emit("roundPrepare", {
@@ -98,7 +111,25 @@ module.exports = (io) => {
       });
     }
 
-    // Rater löst den Start der Runde selbst aus.
+    // Ein Nicht-Raeter bestaetigt sich als Kontrolleur fuer diese Runde.
+    socket.on("controllerConfirm", () => {
+      const code = socket.roomCode;
+      const session = sessions[code];
+      if (!session) return;
+      const guesserIndex = session.currentGuesser % session.players.length;
+      const guesser = session.players[guesserIndex];
+      if (!guesser) return;
+      if (socket.id === guesser.id) return;
+      if (session.confirmedControllerId === socket.id) return;
+      session.confirmedControllerId = socket.id;
+      const controller = session.players.find(p => p.id === socket.id);
+      io.to(code).emit("controllerConfirmed", {
+        controllerId: socket.id,
+        controllerName: controller ? controller.name : "Kontrolleur"
+      });
+    });
+
+    // Rater löst den Start der Runde selbst aus – nur nach Kontrolleur-Bestaetigung.
     socket.on("roundReady", () => {
       const code = socket.roomCode;
       const session = sessions[code];
@@ -106,6 +137,7 @@ module.exports = (io) => {
       const guesserIndex = session.currentGuesser % session.players.length;
       const guesser = session.players[guesserIndex];
       if (!guesser || socket.id !== guesser.id) return;
+      if (!session.confirmedControllerId) return; // Kein Kontrolleur bestätigt
       startRound(code);
     });
 
@@ -120,7 +152,6 @@ module.exports = (io) => {
       session.hintsDone = [];
       session.readyForReview = [];
       session.readyForGuess = [];
-      session.votes = { correct: [], wrong: [] };
 
       const guesserIndex = session.currentGuesser % session.players.length;
       const guesser = session.players[guesserIndex];
@@ -237,41 +268,27 @@ module.exports = (io) => {
       io.to(code).emit("guessSubmitted", { guess, word: session.currentWord });
     });
 
+    // Nur der bestaetigte Kontrolleur duerfen bewerten (keine Mehrheit mehr)
     socket.on("voteResult", ({ correct }) => {
       const code = socket.roomCode;
       const session = sessions[code];
       if (!session) return;
-      // Nur Nicht-Rater (die "Kontrolleure" der Begriffe) dürfen voten, jeder einmal
-      if (socket.id === session.guesserSocketId) return;
-      if (session.votes.correct.includes(socket.id) || session.votes.wrong.includes(socket.id)) return;
+      // Nur der bestaetigte Kontrolleur duerfen bewerten
+      if (session.confirmedControllerId !== socket.id) return;
+      const guesserIndex = session.currentGuesser % session.players.length;
+      const guesser = session.players[guesserIndex];
+      if (!guesser) return;
       if (correct) {
-        session.votes.correct.push(socket.id);
-      } else {
-        session.votes.wrong.push(socket.id);
+        guesser.score += 1;
       }
-
-      const nonGuessers = session.players.filter(p => p.id !== session.guesserSocketId);
-      const voted = session.votes.correct.length + session.votes.wrong.length;
-
-      // Fortschritt an alle
-      io.to(code).emit("voteProgress", { done: voted, total: nonGuessers.length });
-
-      // Wenn alle Nicht-Rater gevotet haben -> Mehrheit entscheidet (Gleichstand = falsch)
-      if (voted >= nonGuessers.length) {
-        const result = session.votes.correct.length >= session.votes.wrong.length;
-        if (result) {
-          const guesser = session.players.find(p => p.id === session.guesserSocketId);
-          if (guesser) guesser.score += 1;
-        }
-        session.results.push({
-          round: session.round + 1,
-          word: session.currentWord,
-          correct: result
-        });
-        session.round++;
-        session.currentGuesser++;
-        prepareRound(code);
-      }
+      session.results.push({
+        round: session.round + 1,
+        word: session.currentWord,
+        correct: correct
+      });
+      session.round++;
+      session.currentGuesser++;
+      prepareRound(code);
     });
 
     function endGame(code) {

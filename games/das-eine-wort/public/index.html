@@ -24,11 +24,15 @@
         <option value="schwer">Schwer (70%)</option>
       </select>
     </label>
-    <label>Spielmodus:
+    <label>Spielmodus:</p>
       <select id="cfg-mode">
-        <option value="klassisch">Klassisch</option>
-        <option value="emote">Emote-Edition</option>
-        <option value="redewendung">Redewendungen und Filmtitel</option>
+        <option value="team">Teams (nur Modus)</option>
+      </select>
+    </label>
+    <label>Debug-Modus (Einzelspieler-Test):</p>
+      <select id="cfg-debug-mode">
+        <option value="off">Aus</option>
+        <option value="on">An – mit 1 Spieler spielbar</option>
       </select>
     </label>
     <button onclick="createRoom()">Raum erstellen</button>

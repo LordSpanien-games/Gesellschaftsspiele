@@ -50,7 +50,8 @@ function createSession() {
     wordlist:         document.getElementById("setting-wordlist").value,
     // Moeser Mamster
     moeserMamster:    document.getElementById("setting-moeser-mamster").value === "on",
-    letterMode:       document.getElementById("setting-letter-mode").value
+    letterMode:       document.getElementById("setting-letter-mode").value,
+    debugMode:        document.getElementById("setting-debug-mode").value === "on"
   };
   socket.emit("createSession", { name: playerName, settings });
 }

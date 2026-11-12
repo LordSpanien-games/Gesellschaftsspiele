@@ -47,7 +47,7 @@ socket.on("turnPrepare", (data) => {
   document.getElementById("prepare-title").textContent = "🔄 Zug vorbereiten";
   document.getElementById("prepare-message").textContent = data.message;
 
-  // Wort und Tabuwörter nur für Erklärer und Kontrolleur anzeigen
+  // Wort und Tabuwörter nur für Erklärer und bestätigten Kontrolleur anzeigen
   const wordDiv = document.getElementById("prepare-word");
   const forbiddenDiv = document.getElementById("prepare-forbidden");
   const letterDiv = document.getElementById("prepare-letter");
@@ -80,11 +80,10 @@ socket.on("turnPrepare", (data) => {
 
   showScreen("screen-prepare");
 
-  // Erklärer: LOS-Button zum manuellen Start. Alle anderen: Warte-Anzeige.
+  // Buttons je nach Rolle
   const timerEl = document.getElementById("prepare-timer");
   const btnContainer = document.getElementById("btn-prepare-container");
   if (!btnContainer) {
-    // Einmaliger Button-Container erstellen
     const container = document.createElement("div");
     container.id = "btn-prepare-container";
     container.style.marginTop = "20px";
@@ -93,15 +92,37 @@ socket.on("turnPrepare", (data) => {
   document.getElementById("btn-prepare-container").innerHTML = "";
 
   if (data.role === "explainer") {
-    timerEl.textContent = "";
+    timerEl.textContent = "Warte auf den Kontrolleur, bis er die Runde bestätigt...";
     const btn = document.createElement("button");
     btn.className = "btn";
     btn.textContent = "🚀 LOS – Runde starten";
+    btn.disabled = true;
+    btn.id = "btn-los";
     btn.onclick = () => socket.emit("turnReady", { code: sessionCode });
     document.getElementById("btn-prepare-container").appendChild(btn);
+  } else if (data.role === "controller") {
+    timerEl.textContent = "";
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "✅ Als Kontrolleur bestätigen";
+    btn.onclick = () => socket.emit("controllerConfirm", { code: sessionCode });
+    document.getElementById("btn-prepare-container").appendChild(btn);
   } else {
-    timerEl.textContent = "Warte auf den Erklärer, bis die Runde startet...";
+    timerEl.textContent = "Warte auf den Kontrolleur, bis die Runde startet...";
   }
+});
+
+// Kontrolleur hat sich bestätigt – LOS-Button fuer Erklärer aktivieren
+socket.on("controllerConfirmed", (data) => {
+  document.getElementById("prepare-message").textContent =
+    "Kontrolleur " + data.controllerName + " hat bestätigt. Erklärer kann starten.";
+  const btn = document.getElementById("btn-los");
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = "🚀 LOS – Runde starten";
+  }
+  const timerEl = document.getElementById("prepare-timer");
+  if (timerEl) timerEl.textContent = "";
 });
 
 socket.on("newWord", (data) => {

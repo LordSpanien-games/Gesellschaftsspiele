@@ -17,7 +17,8 @@ function createRoom() {
     wordsPerRound: parseInt(document.getElementById("cfg-words").value),
     timer: parseInt(document.getElementById("cfg-timer").value),
     difficulty: document.getElementById("cfg-difficulty").value,
-    mode: document.getElementById("cfg-mode").value
+    mode: document.getElementById("cfg-mode").value,
+    debugMode: document.getElementById("cfg-debug-mode") ? document.getElementById("cfg-debug-mode").value === "on" : false
   };
   socket.emit("createRoom", { name, config });
 }
@@ -119,7 +120,7 @@ socket.on("roundPrepare", (data) => {
   document.getElementById("prepare-title").textContent = "🔄 Runde vorbereiten";
   document.getElementById("prepare-message").textContent = data.message;
 
-  // Nur Nicht-Rater sehen das zu ratende Wort
+  // Alle Nicht-Raeter (gegnerisches Team) sehen das zu ratende Wort
   if (data.role === "hintGiver" && data.word) {
     document.getElementById("prepare-word").style.display = "block";
     document.getElementById("prepare-term").textContent = data.word;
@@ -129,7 +130,7 @@ socket.on("roundPrepare", (data) => {
 
   showScreen("screen-prepare");
 
-  // Rater: LOS-Button zum manuellen Start. Alle anderen: Warte-Anzeige.
+  // Buttons je nach Rolle
   const timerEl = document.getElementById("prepare-timer");
   const btnContainer = document.getElementById("btn-prepare-container");
   if (!btnContainer) {
@@ -141,22 +142,38 @@ socket.on("roundPrepare", (data) => {
   document.getElementById("btn-prepare-container").innerHTML = "";
 
   if (data.role === "guesser") {
-    timerEl.textContent = "";
+    timerEl.textContent = "Warte auf den Kontrolleur, bis er die Runde bestätigt...";
     const btn = document.createElement("button");
     btn.className = "btn";
     btn.textContent = "🚀 LOS – Runde starten";
+    btn.disabled = true;
+    btn.id = "btn-los";
     btn.onclick = () => socket.emit("roundReady");
     document.getElementById("btn-prepare-container").appendChild(btn);
+  } else if (data.role === "hintGiver") {
+    timerEl.textContent = "";
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "✅ Als Kontrolleur bestätigen";
+    btn.onclick = () => socket.emit("controllerConfirm");
+    document.getElementById("btn-prepare-container").appendChild(btn);
   } else {
-    timerEl.textContent = "Warte auf den Ratenden, bis die Runde startet...";
+    timerEl.textContent = "Warte auf den Kontrolleur, bis die Runde startet...";
   }
 });
 
-// Manuell weiter zur Runde (wenn alle bereit sind)
-function continueGame() {
-  document.getElementById("screen-prepare").style.display = "none";
-  // Der Server schickt in Kürze "roundStart", der dann den echten Rundenbildschirm zeigt.
-}
+// Kontrolleur hat sich bestätigt – LOS-Button fuer Raeter aktivieren
+socket.on("controllerConfirmed", (data) => {
+  document.getElementById("prepare-message").textContent =
+    "Kontrolleur " + data.controllerName + " hat bestätigt. Raeter kann starten.";
+  const btn = document.getElementById("btn-los");
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = "🚀 LOS – Runde starten";
+  }
+  const timerEl = document.getElementById("prepare-timer");
+  if (timerEl) timerEl.textContent = "";
+});
 
 socket.on("roundStart", ({ round, totalRounds, isGuesser: ig, word, guesserName, timerSeconds }) => {
   isGuesser = ig;
